@@ -51,23 +51,23 @@ def errors_fb_inv(conn):
 
             searchObj = re.search(r'^(GT|PN|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR|DO)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)_(B-)?([0-9]+)_(S-)?([0-9]+).*', Nomenclatura, re.M|re.I)
             if searchObj:
-                if result[7]=='23843423455430637':
-                    print result[7]
-                    print result[10]
-                NomInversion= searchObj.group(11)
+
+                NomInversion= float(searchObj.group(11))
 
                 if result[4]==0:
-                    if result[6]>NomInversion:
+                    if float(result[6])>NomInversion:
 
-                        Error=result[6]
+                        Error=float(result[6])
                         Comentario="Cuidado error de inversion diaria verifica la plataforma"
+                        cur.execute(sqlSelectErrors,(CampaingID,2,'FB'))
                         rescampaing=cur.fetchone()
                         if rescampaing[0]==0:
                             if CampaingID!='':
                                 nuevoerror=(Error,Comentario,'FB',2,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
-                    if result[10]>NomInversion:
-                        Error=result[10]
+
+                    if float(result[10])>NomInversion:
+                        Error=float(result[10])
                         Comentario="Cuidado error de inversion diaria de conjunto de anuncios verifica la plataforma "
                         cur.execute(sqlSelectErrors,(CampaingID,4,'FB'))
                         rescampaing=cur.fetchone()
@@ -76,7 +76,7 @@ def errors_fb_inv(conn):
                                 nuevoerror=(Error,Comentario,'FB',4,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
                     if result[5]>0:
-                        Error=result[5]
+                        Error=float(result[5])
                         Comentario="Error de inversion no debe ser mayor a la planificada"
                         cur.execute(sqlSelectErrors,(CampaingID,3,'FB'))
                         rescampaing=cur.fetchone()
@@ -85,7 +85,7 @@ def errors_fb_inv(conn):
                                 nuevoerror=(Error,Comentario,'FB',3,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
                     if result[11]>0:
-                        Error=result[11]
+                        Error=float(result[11])
                         Comentario="Error de inversion de conjunto de anuncios no debe ser mayor a la planificada"
                         cur.execute(sqlSelectErrors,(CampaingID,5,'FB'))
                         rescampaing=cur.fetchone()
@@ -103,8 +103,6 @@ def errors_fb_inv(conn):
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors,Errores)
-
-
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
     except Exception as e:
@@ -374,8 +372,7 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
-   push_errors(conn)
-   reviewerrors(conn)
+   errors_fb_inv(conn)
    conn.close()
     #fb_ads()
    #reviewerrors()
