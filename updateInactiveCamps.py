@@ -5,7 +5,6 @@ import sys
 import re
 import mysql.connector as mysql
 from datetime import datetime
-import logger
 
 def openConnection():
     global conn
@@ -124,4 +123,5 @@ def goPaused(conn):
 if __name__ == '__main__':
    openConnection()
    fbPaused(conn)
+   goPaused(conn)
    conn.close()
