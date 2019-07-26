@@ -8,6 +8,8 @@ from datetime import datetime
 import schedule
 import time
 #3.95.117.169
+#host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True
+#host='localhost',port="8889",database='MediaPlatformsDev',user='omgdev',password='Sdev@2002!',autocommit=True
 def openConnection():
     global conn
     try:
@@ -328,6 +330,103 @@ def errors_tw(conn):
     finally:
         print('Success Errores TW Comprobados')
 
+def errors_mm_inv(conn):
+    cur=conn.cursor(buffered=True)
+    startTime = datetime.now()
+    print (datetime.now())
+    Comentario=''
+    TipoErrorID=0
+    a=0
+    Estatus=''
+    try:
+        sqlConjuntosFB="select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='MM' group by b.CampaingID  desc "
+        sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        cur.execute(sqlConjuntosFB,)
+        resultscon=cur.fetchall()
+        Errores=[]
+        Impressions=0
+        for result in resultscon:
+            Estatus='ACTIVE'
+
+            Nomenclatura=result[3].encode('utf-8')
+            CampaingID=result[2]
+            Media=result[12]
+
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+            if searchObj:
+                NomInversion= float(searchObj.group(11))
+
+                if result[4]==0:
+                    if float(result[6])>NomInversion:
+                        Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[6]))
+                        Comentario="Cuidado error de inversion verifica la plataforma"
+                        cur.execute(sqlSelectErrors,(CampaingID,2,'MM'))
+                        rescampaing=cur.fetchone()
+                        if rescampaing[0]==0:
+                            if CampaingID!='':
+                                nuevoerror=(Error,Comentario,'MM',2,CampaingID,0,Estatus)
+                                Errores.append(nuevoerror)
+
+                    if searchObj.group(25)>0:
+                        Acumulado=float(searchObj.group(25))-float(result[5])
+                        if Acumulado>NomInversion:
+                            Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(Acumulado)
+                            Comentario="Error de inversion no debe ser mayor a la planificada"
+                            cur.execute(sqlSelectErrors,(CampaingID,2,'MM'))
+                            rescampaing=cur.fetchone()
+                            if rescampaing[0]==0:
+                                if CampaingID!='':
+                                    nuevoerror=(Error,Comentario,'MM',2,CampaingID,0,Estatus)
+                                    Errores.append(nuevoerror)
+
+                    elif float(result[10])>NomInversion:
+                        Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[10]))
+                        Comentario="Cuidado error de inversion de conjuntos mayor que la planificada "
+                        cur.execute(sqlSelectErrors,(CampaingID,4,'MM'))
+                        rescampaing=cur.fetchone()
+                        if rescampaing[0]==0:
+                            if CampaingID!='':
+                                nuevoerror=(Error,Comentario,'MM',4,CampaingID,0,Estatus)
+                                Errores.append(nuevoerror)
+
+                    elif float(result[5])>0:
+                        Error='Inversiion Diaria: '+str(float(result[5]))
+                        Comentario="Cuidado error de inversion diaria "
+                        cur.execute(sqlSelectErrors,(CampaingID,3,'MM'))
+                        rescampaing=cur.fetchone()
+                        if rescampaing[0]==0:
+                            if CampaingID!='':
+                                nuevoerror=(Error,Comentario,'MM',3,CampaingID,0,Estatus)
+                                Errores.append(nuevoerror)
+
+                    elif float(result[11])>0:
+                        Error='Inversiion Diaria Conjunto: '+ str(float(result[11]))
+                        Comentario="Error de inversion diaria del conjunto de anuncios no debe ser mayor a la planificada"
+                        cur.execute(sqlSelectErrors,(CampaingID,5,'MM'))
+                        rescampaing=cur.fetchone()
+                        if rescampaing[0]==0:
+                            if CampaingID!='':
+                                nuevoerror=(Error,Comentario,'MM',5,CampaingID,0,Estatus)
+                                Errores.append(nuevoerror)
+            else:
+                Comentario="Error de nomenclatura verifica cada uno de sus elementos"
+                cur.execute(sqlSelectErrors,(CampaingID,1,'MM'))
+                rescampaing=cur.fetchone()
+                if rescampaing[0]<1:
+                    if CampaingID!='':
+                        nuevoerror=(Nomenclatura,Comentario,'MM',1,CampaingID,0,Estatus)
+                        Errores.append(nuevoerror)
+
+        cur.executemany(sqlInserErrors,Errores)
+    #ANALISIS IMPRESIONES Y
+        #print(m.groups())
+    except Exception as e:
+        print(e)
+    finally:
+        print('Success Errores MM Inversion Comprobados')
+
+
 def reviewerrorsNom(conn):
     global cur
     cur=conn.cursor(buffered=True)
@@ -386,7 +485,7 @@ def reviewerrorsInv(conn):
     print (datetime.now())
     try:
         berror="SELECT * FROM ErrorsCampaings"
-        bcampaings='select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where b.CampaingID=%s and a.Media="FB" group by b.CampaingID  desc  '
+        bcampaings='select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where b.CampaingID=%s  group by b.CampaingID  desc  '
         btcampaings='SELECT CampaingID,Campaingname,Campaignstatus FROM Campaings'
         btStatus="select a.CampaingID,a.Campaingname,a.Campaignstatus,b.Status,c.Adstatus from Campaings  a INNER JOIN  Adsets b on a.CampaingID=b.CampaingID  INNER JOIN  Ads c on b.AdSetID=c.AdSetID where a.Campaignstatus='PAUSED' or a.Campaignstatus='enable' or b.Status='PAUSED' or b.Status='enable' or c.Adstatus='PAUSED' or c.Adstatus='enable'"
         bupdatestatus="UPDATE ErrorsCampaings SET StatusCampaing=%s where CampaingID=%s"
@@ -440,19 +539,21 @@ def reviewerrorsInv(conn):
     finally:
         print('Actualización Errores Inversion OK')
 
+
+
 def push_errors(conn):
     errors_fb_inv(conn)
     errors_fb_pais(conn)
+    errors_mm_inv(conn)
     errors_tw(conn)
     errors_go(conn)
 
 if __name__ == '__main__':
    openConnection()
-   push_errors(conn)
    #errors_go(conn)
+   push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
-   #push_errors(conn)
    #reviewerrorsInv(conn)
    conn.close()
     #fb_ads()
