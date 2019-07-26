@@ -154,7 +154,7 @@ def GetMediaMathADSets(conn):
                 adsets.append(adset)
                 adsetmetric=[row[3],row[4],row[9],row[10]]
                 adsetmetrics.append(adsetmetric)
-        #cur.executemany(sqlInsertAdSet ,adsets)
+        cur.executemany(sqlInsertAdSet ,adsets)
         cur.executemany(sqlInsertAdsSetsMetrics ,adsetmetrics)
         print('Success MM Adsets')
     except Exception as e:
@@ -196,7 +196,7 @@ def GetMediaMathADs(conn):
         data = data.to_numpy()
         for row in data:
             if row[3]!='':
-                ad=[row[2],row[3],row[4]]
+                ad=[row[3],row[4],row[2]]
                 ads.append(ad)
                 admetric=[row[3],row[4],row[5],row[6],row[7],row[8],row[11],row[12]]
                 adsmetrics.append(admetric)
