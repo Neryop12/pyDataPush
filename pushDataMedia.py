@@ -12,13 +12,11 @@ def openConnection():
     global conn
     try:
         conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
-        return conn
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
 def fb_ads(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     print (datetime.now())
     r=requests.get("https://spreadsheets.google.com/feeds/list/1ZL49TIgJU9qJsqx_7qhghZ6XaGh_QEyzHkQXH6JagBI/od6/public/values?alt=json")
@@ -108,7 +106,6 @@ def fb_ads(conn):
         print('Success Facebook Ads')
 #FIN VISTA
 def fb_camp(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
@@ -170,7 +167,6 @@ def fb_camp(conn):
         print('Success Facebook Camp')
 #FIN VISTA
 def fb_adsets(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     #CONEXION
     startTime = datetime.now()
@@ -224,7 +220,6 @@ def fb_adsets(conn):
         print('Success Facebook AdSets')
 #FIN VISTA
 def go_camp(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     r=requests.get("https://spreadsheets.google.com/feeds/list/13bmX2G2PX7MHd49bHMRJtkeJZXb0vHClzBJw4_GmvjA/od6/public/values?alt=json")
@@ -286,7 +281,6 @@ def go_camp(conn):
         print('Success GOOGLE Campanas')
 #FIN VISTA
 def go_adsets(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
@@ -327,7 +321,6 @@ def go_adsets(conn):
         print('Success Google Adsets')
 #FIN VISTA
 def go_ads(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
@@ -372,8 +365,10 @@ def go_ads(conn):
     finally:
         print('Success Google Ads')
 #FIN VISTA
+def tw_camps(conn):
+    print conn
 def tw_camp(conn):
-    global cur
+    #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
@@ -383,7 +378,6 @@ def tw_camp(conn):
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
     #CONEXION
-
     cuentas=[]
     campanas=[]
     campmetrics=[]
@@ -430,7 +424,6 @@ def tw_camp(conn):
         print('Success Campanas Twitter')
 #FIN VISTA
 def tw_adsets(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
@@ -474,7 +467,6 @@ def tw_adsets(conn):
         print('Success Twitter Adsets')
 #FIN VISTA
 def tw_ads(conn):
-    global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
@@ -537,6 +529,7 @@ def push_ads(conn):
 
 if __name__ == '__main__':
    openConnection()
+   #tw_camps(conn)
    push_camps(conn)
    push_adsets(conn)
    push_ads(conn)
