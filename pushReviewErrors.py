@@ -49,16 +49,14 @@ def errors_fb_inv(conn):
             CampaingID=result[2]
             Media=result[12]
 
-            searchObj = re.search(r'^(GT|PN|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR|DO)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)_(B-)?([0-9]+)_(S-)?([0-9]+).*', Nomenclatura, re.M|re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
-
                 NomInversion= float(searchObj.group(11))
 
                 if result[4]==0:
                     if float(result[6])>NomInversion:
-
-                        Error=float(result[6])
-                        Comentario="Cuidado error de inversion diaria verifica la plataforma"
+                        Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[6]))
+                        Comentario="Cuidado error de inversion verifica la plataforma"
                         cur.execute(sqlSelectErrors,(CampaingID,2,'FB'))
                         rescampaing=cur.fetchone()
                         if rescampaing[0]==0:
@@ -66,27 +64,41 @@ def errors_fb_inv(conn):
                                 nuevoerror=(Error,Comentario,'FB',2,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
 
-                    if float(result[10])>NomInversion:
-                        Error=float(result[10])
-                        Comentario="Cuidado error de inversion diaria de conjunto de anuncios verifica la plataforma "
+                    if searchObj.group(25)>0:
+                        Acumulado=float(searchObj.group(25))-float(result[5])
+                        if Acumulado>NomInversion:
+                            Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(Acumulado)
+                            Comentario="Error de inversion no debe ser mayor a la planificada"
+                            cur.execute(sqlSelectErrors,(CampaingID,2,'FB'))
+                            rescampaing=cur.fetchone()
+                            if rescampaing[0]==0:
+                                if CampaingID!='':
+                                    nuevoerror=(Error,Comentario,'FB',2,CampaingID,0,Estatus)
+                                    Errores.append(nuevoerror)
+
+                    elif float(result[10])>NomInversion:
+                        Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[10]))
+                        Comentario="Cuidado error de inversion de conjuntos mayor que la planificada "
                         cur.execute(sqlSelectErrors,(CampaingID,4,'FB'))
                         rescampaing=cur.fetchone()
                         if rescampaing[0]==0:
                             if CampaingID!='':
                                 nuevoerror=(Error,Comentario,'FB',4,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
-                    if result[5]>0:
-                        Error=float(result[5])
-                        Comentario="Error de inversion no debe ser mayor a la planificada"
+
+                    elif float(result[5])>0:
+                        Error='Inversiion Diaria: '+str(float(result[5]))
+                        Comentario="Cuidado error de inversion diaria "
                         cur.execute(sqlSelectErrors,(CampaingID,3,'FB'))
                         rescampaing=cur.fetchone()
                         if rescampaing[0]==0:
                             if CampaingID!='':
                                 nuevoerror=(Error,Comentario,'FB',3,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
-                    if result[11]>0:
-                        Error=float(result[11])
-                        Comentario="Error de inversion de conjunto de anuncios no debe ser mayor a la planificada"
+
+                    elif float(result[11])>0:
+                        Error='Inversiion Diaria Conjunto: '+ str(float(result[11]))
+                        Comentario="Error de inversion diaria del conjunto de anuncios no debe ser mayor a la planificada"
                         cur.execute(sqlSelectErrors,(CampaingID,5,'FB'))
                         rescampaing=cur.fetchone()
                         if rescampaing[0]==0:
@@ -143,7 +155,7 @@ def errors_fb_pais(conn):
             else:
                 Estatus=StatusCampaing
             #VALORES NOMENCLATURA
-            searchObj = re.search( r'^(GT|PN|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR|DO)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)_(B-)?([0-9]+)_(S-)?([0-9]+).*', Nomenclatura, re.M|re.I)
+            searchObj = re.search( r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomPais= searchObj.group(1)
                 NomCliente= searchObj.group(2)
@@ -188,7 +200,7 @@ def errors_fb_pais(conn):
                 if NomCliente!='CCR' and NomCliente!='CCPRADERA':
 
                     if result[14]!=NomPais:
-                        if result[14]=='PE' and NomPais!=PR or result[14]=='DO' and NomPais!=RD or result[14]=='PA' and NomPais!='PN':
+                        if result[14]=='PE' and NomPais!='PR' or result[14]=='DO' and NomPais!='RD' or result[14]=='PA' and NomPais!='PN':
                             Error=result[14]
                             TipoErrorID=6
                             Comentario="Error de paises se estan imprimiendo anuncios en otros paises"
@@ -216,10 +228,9 @@ def errors_go(conn):
     TipoErrorID=0
     a=0
     try:
-        sqlCampaingsGO="select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget, c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,c.Adsetdailybudget, d.AdID,d.Adname,d.CreateDate,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID  INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN Ads d on d.AdSetID=c.AdSetID where a.Media='GO'  group by d.AdID ORDER BY d.CreateDate desc LIMIT 50000000000"
-        sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions) VALUES (%s,%s,%s,%s,%s,%s)"
+        sqlCampaingsGO="select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget, c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,c.Adsetdailybudget, d.AdID,d.Adname,d.CreateDate,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN Ads d on d.AdSetID=c.AdSetID  where a.Media='GO'    group by b.CampaingID ORDER BY d.CreateDate desc "
+        sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
-
         Errores=[]
         Impressions=0
         Estatus=''
@@ -232,16 +243,20 @@ def errors_go(conn):
             #VALORES NOMENCLATURA
             StatusCampaing=result[15]
             StatusAdsets=result[16]
+            StatusAds=result[17]
             if StatusCampaing!='enabled':
                 if StatusAdsets!='enabled':
-                    Estatus=StatusAdsets
+                        if StatusAds!='enabled':
+                            Estatus=StatusAdsets
+                        else:
+                            Estatus=StatusAdsets
                 else:
                     Estatus=StatusAdsets
             else:
                 Estatus=StatusCampaing
 
 
-            searchObj = re.search(r'^(GT|PN|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR|DO)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)_(B-)?([0-9]+)_(S-)?([0-9]+).*', Nomenclatura, re.M|re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 a=1
             else:
@@ -251,8 +266,8 @@ def errors_go(conn):
                 cur.execute(sqlSelectErrors,(CampaingID,TipoErrorID,Media))
                 rescampaing=cur.fetchone()
                 if rescampaing[0]<1:
-                    if CampaingIDS!='':
-                        nuevoerror=(Error,Comentario,Media,TipoErrorID,CampaingID,0)
+                    if CampaingID!='':
+                        nuevoerror=(Error,Comentario,Media,TipoErrorID,CampaingID,0,Estatus)
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors,Errores)
@@ -289,7 +304,7 @@ def errors_tw(conn):
             #VALORES NOMENCLATURA
             if result[8]>0:
 
-                searchObj = re.search(r'^(GT|PN|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR|DO)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)_(B-)?([0-9]+)_(S-)?([0-9]+).*', Nomenclatura, re.M|re.I)
+                searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
                 if searchObj:
                     a=1
                 else:
@@ -313,7 +328,7 @@ def errors_tw(conn):
     finally:
         print('Success Errores TW Comprobados')
 
-def reviewerrors(conn):
+def reviewerrorsNom(conn):
     global cur
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
@@ -330,9 +345,9 @@ def reviewerrors(conn):
         rest=cur.fetchall()
         for res in rest:
             CampID=res[0]
-            if res[2]!='PAUSED' or res[2]!='enabled':
-                if res[3]!='PAUSED' or res[2]!='enabled':
-                    if res[4]!='PAUSED' or res[2]!='enabled':
+            if res[2]!='PAUSED' or res[2]!='paused':
+                if res[3]!='PAUSED' or res[2]!='paused':
+                    if res[4]!='PAUSED' or res[2]!='paused':
                         Estatus=res[4]
                     else:
                         Estatus=res[4]
@@ -354,7 +369,7 @@ def reviewerrors(conn):
                 for res in ncampanas:
                     ID=res[0]
                     Nomenclatura=res[1].encode('utf-8')
-                    searchObj = re.search(r'^(GT|PN|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR|DO)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)_(B-)?([0-9]+)_(S-)?([0-9]+).*', Nomenclatura, re.M|re.I)
+                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
                     if searchObj:
                         cur.execute(bupdate,(ID,))
                     else:
@@ -362,7 +377,68 @@ def reviewerrors(conn):
     except Exception as e:
         print(e)
     finally:
-        print('Actualización Errores OK')
+        print('Actualización Errores NomenclaturaOK')
+
+def reviewerrorsInv(conn):
+    global cur
+    cur=conn.cursor(buffered=True)
+    startTime = datetime.now()
+    print (datetime.now())
+    try:
+        berror="SELECT * FROM ErrorsCampaings"
+        bcampaings='select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where b.CampaingID=%s and a.Media="FB" group by b.CampaingID  desc  '
+        btcampaings='SELECT CampaingID,Campaingname,Campaignstatus FROM Campaings'
+        btStatus="select a.CampaingID,a.Campaingname,a.Campaignstatus,b.Status,c.Adstatus from Campaings  a INNER JOIN  Adsets b on a.CampaingID=b.CampaingID  INNER JOIN  Ads c on b.AdSetID=c.AdSetID where a.Campaignstatus='PAUSED' or a.Campaignstatus='enable' or b.Status='PAUSED' or b.Status='enable' or c.Adstatus='PAUSED' or c.Adstatus='enable'"
+        bupdatestatus="UPDATE ErrorsCampaings SET StatusCampaing=%s where CampaingID=%s"
+        bupdate="UPDATE ErrorsCampaings SET estado=0 where CampaingID=%s and TipoErrorID=%s"
+        bupdateCamp="UPDATE ErrorsCampaings SET estado=0 where CampaingID=%s "
+        cupdate="UPDATE ErrorsCampaings SET error=%s where CampaingID=%s"
+
+        cur.execute(berror,)
+        resultscon=cur.fetchall()
+        #SELECIONAMOS TODOS LOS ERRORES ACTUALES
+        for res in resultscon:
+            ##SI EL ERROR ES TIPO NOMENCLATURA
+            if res[3]>0 and res[5]>1 and res[5]<6:
+                #IDCAMPAING
+                rs=res[6]
+                TipoError=res[5]
+                cur.execute(bcampaings,(rs,))
+                resultscon=cur.fetchall()
+                for result in resultscon:
+                    Nomenclatura=result[3].encode('utf-8')
+                    ID=result[2]
+                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+                    if searchObj:
+                        NomInversion= float(searchObj.group(11))
+                        if float(result[4])>0:
+                            cur.execute(bupdateCamp,(ID,))
+                        else:
+                            #ERROR ACUMULADO PERFORMACE
+                            if searchObj.group(25)>0 and TipoError==2:
+                                Acumulado=float(result[6])-float(searchObj.group(25))
+                                print Acumulado
+                                print NomInversion
+                                if int(NomInversion) >=int(Acumulado):
+                                    cur.execute(bupdate,(ID,2))
+
+                            #Verificacion Inversion Nomenclatura
+                            if float(result[6])<=NomInversion and TipoError==2:
+                                cur.execute(bupdate,(ID,2))
+
+                            if float(result[10])<=NomInversion and TipoError==4:
+                                cur.execute(bupdate,(ID,4))
+
+                            if float(result[5])==0 and float(result[6])<=NomInversion and TipoError==3:
+                                cur.execute(bupdate,(ID,3))
+
+                            if float(result[11])==0 and float(result[10])<=NomInversion and TipoError==5:
+                                cur.execute(bupdate,(ID,5))
+
+    except Exception as e:
+        print(e)
+    finally:
+        print('Actualización Errores Inversion OK')
 
 def push_errors(conn):
     errors_fb_inv(conn)
@@ -372,7 +448,12 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
-   errors_fb_inv(conn)
+   push_errors(conn)
+   #errors_go(conn)
+   reviewerrorsInv(conn)
+   reviewerrorsNom(conn)
+   #push_errors(conn)
+   #reviewerrorsInv(conn)
    conn.close()
     #fb_ads()
    #reviewerrors()
