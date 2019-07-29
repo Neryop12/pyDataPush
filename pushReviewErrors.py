@@ -51,7 +51,7 @@ def errors_fb_inv(conn):
             CampaingID=result[2]
             Media=result[12]
 
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomInversion= float(searchObj.group(11))
 
@@ -157,7 +157,7 @@ def errors_fb_pais(conn):
             else:
                 Estatus=StatusCampaing
             #VALORES NOMENCLATURA
-            searchObj = re.search( r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+            searchObj = re.search( r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomPais= searchObj.group(1)
                 NomCliente= searchObj.group(2)
@@ -258,7 +258,7 @@ def errors_go(conn):
                 Estatus=StatusCampaing
 
 
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 a=1
             else:
@@ -306,7 +306,7 @@ def errors_tw(conn):
             #VALORES NOMENCLATURA
             if result[8]>0:
 
-                searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+                searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
                 if searchObj:
                     a=1
                 else:
@@ -353,7 +353,7 @@ def errors_mm_inv(conn):
             CampaingID=result[2]
             Media=result[12]
 
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomInversion= float(searchObj.group(11))
 
@@ -468,7 +468,7 @@ def reviewerrorsNom(conn):
                 for res in ncampanas:
                     ID=res[0]
                     Nomenclatura=res[1].encode('utf-8')
-                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
                     if searchObj:
                         cur.execute(bupdate,(ID,))
                     else:
@@ -507,7 +507,7 @@ def reviewerrorsInv(conn):
                 for result in resultscon:
                     Nomenclatura=result[3].encode('utf-8')
                     ID=result[2]
-                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/&]+)_([a-zA-Z0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/&]+)_([a-zA-Z-/]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
+                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
                     if searchObj:
                         NomInversion= float(searchObj.group(11))
                         if float(result[4])>0:
@@ -551,7 +551,7 @@ def push_errors(conn):
 if __name__ == '__main__':
    openConnection()
    #errors_go(conn)
-   push_errors(conn)
+   #push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
    #reviewerrorsInv(conn)
