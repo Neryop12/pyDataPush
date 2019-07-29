@@ -472,7 +472,7 @@ def reviewerrorsNom(conn):
                     if searchObj:
                         cur.execute(bupdate,(ID,))
                     else:
-                        cur.execute(cupdate,(Nomenclatura,ID))
+                            cur.execute(cupdate,(Nomenclatura,ID))
     except Exception as e:
         print(e)
     finally:
@@ -551,7 +551,7 @@ def push_errors(conn):
 if __name__ == '__main__':
    openConnection()
    #errors_go(conn)
-   #push_errors(conn)
+   push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
    #reviewerrorsInv(conn)
