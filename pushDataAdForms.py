@@ -279,7 +279,7 @@ def GetAdFormCreativeAds(conn):
 if __name__ == '__main__':
     openConnection()
     GetToken()
-    #GetAdformCampaign(conn)
-    #GetAdformAdsets(conn)
-    #GetAdformAds(conn)
+    GetAdformCampaign(conn)
+    GetAdformAdsets(conn)
+    GetAdformAds(conn)
     GetAdFormCreativeAds(conn)
