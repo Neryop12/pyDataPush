@@ -11,19 +11,19 @@ def openConnection():
     try:
         conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
     except:
-        logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
+        print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
 def SuperMetricsConnect(URL,MEDIA):
-    startTime = datetime.now()
     print (datetime.now())
-    global data,temp_k
+    global data
+    global temp_k
     try:
         r=requests.get('https://spreadsheets.google.com/feeds/list/'+URL+'/od6/public/values?alt=json')
         data=r.json()
         temp_k=data['feed']['entry']
     except:
-        logger.error("ERROR: CONEXION CON SUPERMETRICS",MEDIA)
+        print("ERROR: CONEXION CON SUPERMETRICS",MEDIA)
         sys.exit()
 
 def fbPaused(conn):
@@ -32,10 +32,10 @@ def fbPaused(conn):
     StatusCampaings=[]
     StatusAdsets=[]
     StatusAds=[]
+    SErrors=[]
     StatusErrorsCampaings=[]
-    Estatus=''
     try:
-        cursor = conn.cursor()
+        cur = conn.cursor()
         for atr in temp_k:
             campaingid=atr['gsx$campaignid']['$t']
             adsetid=atr['gsx$adsetid']['$t']
@@ -47,15 +47,13 @@ def fbPaused(conn):
             Adsetsstatus='UPDATE Adsets set Status=%s where AdSetID=%s'
             Ads='UPDATE Ads set Adstatus=%s where AdID=%s'
             ErrorsCamping='UPDATE ErrorsCampaings set StatusCampaing=%s where CampaingID=%s'
-            SCamp=(campstatus, campaingid)
-            SAdsets=(adsetstatus, adsetstatus)
-            SAds=(adstatus,adid)
+
             if campstatus!='PAUSED':
                 if adsetstatus!='PAUSED':
-                    if SAds!='PAUSED':
-                        Estatus=SAds
+                    if adstatus!='PAUSED':
+                        Estatus=adstatus
                     else:
-                        Estatus=SAds
+                        Estatus=adstatus
                 else:
                     Estatus=adsetstatus
             else:
@@ -63,11 +61,14 @@ def fbPaused(conn):
 
             SErrors=(Estatus, campaingid)
 
+            SCamp=(campstatus, campaingid)
+            SAdsets=(adsetstatus, adsetstatus)
+            SAds=(adstatus,adid)
+            SErrors=(campstatus, campaingid)
             StatusAds.append(SAds)
             StatusAdsets.append(SAdsets)
             StatusCampaings.append(SCamp)
             StatusErrorsCampaings.append(SErrors)
-
         cur.executemany(Campstatus,StatusCampaings)
         cur.executemany(ErrorsCamping,StatusErrorsCampaings)
         print('SUCCESS')
@@ -82,7 +83,7 @@ def goPaused(conn):
     StatusAds=[]
     StatusErrorsCampaings=[]
     try:
-        cursor = conn.cursor()
+        cur = conn.cursor()
         for atr in temp_k:
             campaingid=atr['gsx$campaignid']['$t']
             adsetid=atr['gsx$adgroupid']['$t']

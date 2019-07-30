@@ -19,7 +19,7 @@ ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',database='MediaPlatforms',user='root',password='1234',autocommit=True)
+        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
     except:
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -41,21 +41,21 @@ def GetToken():
                 )
     Token=Token.json()
 
-    
+
 #API GET, obtiene el cookie de session para MediaMath
 def GetSession():
     global session
     url='https://api.mediamath.com/api/v2.0/session'
     Result = requests.get(
-                        url, 
+                        url,
                         headers={
-                            'Authorization': 'Bearer '+ Token['access_token'], 
+                            'Authorization': 'Bearer '+ Token['access_token'],
                             }
                     )
     tree = ElementTree.fromstring(Result.content)
     root = tree.getchildren()
     session = root[1].attrib
-    
+
 ## Funcion para la insersion de informacion a la base de datos desde MediaMath, Dimensio:Campaing -> Campaing.
 def GetMediaMathCampaing(conn):
      global cur
@@ -68,14 +68,14 @@ def GetMediaMathCampaing(conn):
      sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
      sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
      try:
-         #Direccion del API, las variable session se pasas com oun Cookie 
-        url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=advertiser_name%2cadvertiser_id%2ccampaign_id%2ccampaign_name%2ccampaign_budget&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'                                                   
+         #Direccion del API, las variable session se pasas com oun Cookie
+        url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=advertiser_name%2cadvertiser_id%2ccampaign_id%2ccampaign_name%2ccampaign_budget&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'
         #Request GET, para obtener el reporte de Performance de MediaMath
         Result2 = requests.get(
                             url,
-                            
+
                             headers={
-                                'Content-Type': 'application/javascript', 
+                                'Content-Type': 'application/javascript',
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
@@ -105,7 +105,7 @@ def GetMediaMathCampaing(conn):
         print(e)
      finally:
         print (datetime.now())
-        
+
 
 
 def GetMediaMathADSets(conn):
@@ -118,14 +118,14 @@ def GetMediaMathADSets(conn):
     sqlInsertAdsSetsMetrics = "INSERT INTO AdSetMetrics(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
     sqlInsertAdSet = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,Adsetend,Adsetstart,CampaingID) VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName),Adsetlifetimebudget=VALUES(Adsetlifetimebudget)"
     try:
-         #Direccion del API, las variable session se pasas com oun Cookie 
+         #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=campaign_id%2cstrategy_id%2cstrategy_name%2cstrategy_budget%2cstrategy_start_date%2cstrategy_end_date%2cstrategy_type&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'
          #Request GET, para obtener el reporte de Performance de MediaMath
         Result2 = requests.get(
                             url,
-                            
+
                             headers={
-                                'Content-Type': 'application/javascript', 
+                                'Content-Type': 'application/javascript',
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
@@ -141,7 +141,7 @@ def GetMediaMathADSets(conn):
         data = data.to_numpy()
         for row in data:
             if row[3]!='':
-                #se verifica si la fecha es null, de serlo se toma el valor de la fecha 
+                #se verifica si la fecha es null, de serlo se toma el valor de la fecha
                 if isinstance(row[6],str):
                     endate = row[6]
                 else:
@@ -171,16 +171,16 @@ def GetMediaMathADs(conn):
     #Querys
     sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname);"
     sqlInsertMetricsAds = "INSERT INTO MetricsAds(AdID,Adname,Impressions,Clicks,Cost,Cpm,ctr, Videowatchesat75) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-                                                
+
     try:
-         #Direccion del API, las variable session se pasas com oun Cookie 
+         #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=strategy_id%2ccreative_id%2ccreative_name&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'
          #Request GET, para obtener el reporte de Performance de MediaMath
         Result2 = requests.get(
                             url,
-                            
+
                             headers={
-                                'Content-Type': 'application/javascript', 
+                                'Content-Type': 'application/javascript',
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
@@ -207,7 +207,7 @@ def GetMediaMathADs(conn):
         print(e)
     finally:
         print (datetime.now())
-        
+
 
 if __name__ == '__main__':
     openConnection()
