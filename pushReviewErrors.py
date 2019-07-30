@@ -5,28 +5,19 @@ import sys
 import re
 import mysql.connector as mysql
 from datetime import datetime
-import schedule
 import time
-#3.95.117.169
-#host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True
-#host='localhost',port="8889",database='MediaPlatformsDev',user='omgdev',password='Sdev@2002!',autocommit=True
 def openConnection():
     global conn
     try:
         conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
-        return conn
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
 def errors_fb_inv(conn):
     global cur
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
-    print (datetime.now())
+    cur=conn.cursor()
     Comentario=''
-    TipoErrorID=0
-    a=0
     Estatus=''
     try:
         sqlConjuntosFB="select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='FB' group by b.CampaingID  desc "
@@ -35,7 +26,6 @@ def errors_fb_inv(conn):
         cur.execute(sqlConjuntosFB,)
         resultscon=cur.fetchall()
         Errores=[]
-        Impressions=0
         for result in resultscon:
             StatusCampaing=result[13]
             StatusAdsets=result[14]
@@ -49,12 +39,10 @@ def errors_fb_inv(conn):
 
             Nomenclatura=result[3].encode('utf-8')
             CampaingID=result[2]
-            Media=result[12]
 
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomInversion= float(searchObj.group(11))
-
                 if result[4]==0:
                     if float(result[6])>NomInversion:
                         Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[6]))
@@ -117,6 +105,7 @@ def errors_fb_inv(conn):
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors,Errores)
+        cur.close()
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
     except Exception as e:
@@ -126,25 +115,19 @@ def errors_fb_inv(conn):
 
 def errors_fb_pais(conn):
     global cur
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
+    cur=conn.cursor()
     print (datetime.now())
     Comentario=''
-    TipoErrorID=0
     Estatus=''
-    a=0
     try:
         sqlCampaingsFB="select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget, c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,c.Adsetdailybudget, d.AdID,d.Adname,d.country,d.CreateDate,e.Impressions,b.Campaignstatus,d.Adstatus from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN Ads d on d.AdSetID=c.AdSetID INNER JOIN MetricsAds e on e.AdID=d.AdID where a.Media='FB' group by d.Adname, d.Country ORDER BY d.CreateDate desc"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
-
         Errores=[]
-        Impressions=0
         cur.execute(sqlCampaingsFB,)
         results=cur.fetchall()
         for result in results:
             Nomenclatura=result[4].encode('utf-8')
-            Media=result[2]
             CampaingIDS=result[3]
             Impressions=result[16]
             StatusCampaing=result[17]
@@ -161,25 +144,7 @@ def errors_fb_pais(conn):
             if searchObj:
                 NomPais= searchObj.group(1)
                 NomCliente= searchObj.group(2)
-                NomMarca= searchObj.group(3)
                 NomProducto= searchObj.group(4)
-                NomCampana= searchObj.group(5)
-                NomVersion= searchObj.group(6)
-                NomMedio= searchObj.group(7)
-                NomFormato= searchObj.group(8)
-                NomMes= searchObj.group(9)
-                NomAno= searchObj.group(10)
-                NomInversion= searchObj.group(11)
-                NomObjetivo= searchObj.group(12)
-                NomMetObjetivo= searchObj.group(13)
-                NomTipoKpi= searchObj.group(14)
-                NomCostoKpi= searchObj.group(15)
-                NomFormato= searchObj.group(16)
-                NomEstrategia= searchObj.group(17)
-                NomTactica= searchObj.group(18)
-                NomOrden= searchObj.group(19)
-                NomBono= searchObj.group(20)
-                NomSaldo= searchObj.group(21)
                 if NomCliente=='CCPRADERA':
                         if NomProducto=='HUE':
                             if result[14]=='MX':
@@ -197,7 +162,7 @@ def errors_fb_pais(conn):
                             rescampaing=cur.fetchone()
                             if rescampaing[0]<1:
                                 if CampaingIDS!='':
-                                    nuevoerror=(Error,Comentario,Media,TipoErrorID,CampaingIDS,Impressions,Estatus)
+                                    nuevoerror=(Error,Comentario,'FB',TipoErrorID,CampaingIDS,Impressions,Estatus)
                                     Errores.append(nuevoerror)
                 if NomCliente!='CCR' and NomCliente!='CCPRADERA':
 
@@ -206,11 +171,11 @@ def errors_fb_pais(conn):
                             Error=result[14]
                             TipoErrorID=6
                             Comentario="Error de paises se estan imprimiendo anuncios en otros paises"
-                            cur.execute(sqlSelectErrors,(CampaingIDS,TipoErrorID,Media))
+                            cur.execute(sqlSelectErrors,(CampaingIDS,TipoErrorID,'FB'))
                             rescampaing=cur.fetchone()
                             if rescampaing[0]<1:
                                 if CampaingIDS!='':
-                                    nuevoerror=(Error,Comentario,Media,TipoErrorID,CampaingIDS,Impressions,Estatus)
+                                    nuevoerror=(Error,Comentario,'FB',TipoErrorID,CampaingIDS,Impressions,Estatus)
                                     Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors,Errores)
@@ -223,18 +188,18 @@ def errors_fb_pais(conn):
 
 def errors_go(conn):
     global cur
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
+    cur=conn.cursor()
+    
     print (datetime.now())
     Comentario=''
-    TipoErrorID=0
-    a=0
+    
+    
     try:
         sqlCampaingsGO="select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget, c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,c.Adsetdailybudget, d.AdID,d.Adname,d.CreateDate,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN Ads d on d.AdSetID=c.AdSetID  where a.Media='GO'    group by b.CampaingID ORDER BY d.CreateDate desc "
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
         Errores=[]
-        Impressions=0
+        
         Estatus=''
         cur.execute(sqlCampaingsGO,)
         results=cur.fetchall()
@@ -284,14 +249,10 @@ def errors_go(conn):
 #FIN VISTA
 def errors_tw(conn):
     global cur
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
+    cur=conn.cursor()
     print (datetime.now())
     Comentario=''
-    TipoErrorID=0
-    a=0
     Errores=[]
-    Impressions=0
     try:
         sqlCampaingsTW="select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,e.Impressions,b.Campaignstatus from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID  INNER JOIN CampaingMetrics e on b.CampaingID = e.CampaingID where a.Media='TW'  group by b.CampaingID ORDER BY a.CreateDate desc LIMIT 50000000000"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions) VALUES (%s,%s,%s,%s,%s,%s)"
@@ -315,7 +276,7 @@ def errors_tw(conn):
                     cur.execute(sqlSelectErrors,(CampaingID,TipoErrorID,Media))
                     rescampaing=cur.fetchone()
                     if rescampaing[0]<1:
-                        if CampaingIDS!='':
+                        if CampaingID!='':
                             nuevoerror=(Error,Comentario,Media,TipoErrorID,CampaingID,0)
                             Comentario="Error de nomenclatura verifica cada uno de sus elementos"
                             Errores.append(nuevoerror)
@@ -331,12 +292,10 @@ def errors_tw(conn):
         print('Success Errores TW Comprobados')
 
 def errors_mm_inv(conn):
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
+    global cur
+    cur=conn.cursor()
     print (datetime.now())
     Comentario=''
-    TipoErrorID=0
-    a=0
     Estatus=''
     try:
         sqlConjuntosFB="select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='MM' group by b.CampaingID  desc "
@@ -345,14 +304,10 @@ def errors_mm_inv(conn):
         cur.execute(sqlConjuntosFB,)
         resultscon=cur.fetchall()
         Errores=[]
-        Impressions=0
         for result in resultscon:
             Estatus='ACTIVE'
-
             Nomenclatura=result[3].encode('utf-8')
             CampaingID=result[2]
-            Media=result[12]
-
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomInversion= float(searchObj.group(11))
@@ -420,22 +375,18 @@ def errors_mm_inv(conn):
 
         cur.executemany(sqlInserErrors,Errores)
     #ANALISIS IMPRESIONES Y
-        #print(m.groups())
     except Exception as e:
         print(e)
     finally:
         print('Success Errores MM Inversion Comprobados')
 
-
 def reviewerrorsNom(conn):
     global cur
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
+    cur=conn.cursor()
     print (datetime.now())
     try:
         berror="SELECT * FROM ErrorsCampaings"
         bcampaings='SELECT CampaingID,Campaingname,Campaignstatus  FROM Campaings where CampaingID=%s'
-        btcampaings='SELECT CampaingID,Campaingname,Campaignstatus FROM Campaings'
         btStatus="select a.CampaingID,a.Campaingname,a.Campaignstatus,b.Status,c.Adstatus from Campaings  a INNER JOIN  Adsets b on a.CampaingID=b.CampaingID  INNER JOIN  Ads c on b.AdSetID=c.AdSetID where a.Campaignstatus='PAUSED' or a.Campaignstatus='enable' or b.Status='PAUSED' or b.Status='enable' or c.Adstatus='PAUSED' or c.Adstatus='enable'"
         bupdatestatus="UPDATE ErrorsCampaings SET StatusCampaing=%s where CampaingID=%s"
         bupdate="UPDATE ErrorsCampaings SET estado=0 where CampaingID=%s"
@@ -480,19 +431,13 @@ def reviewerrorsNom(conn):
 
 def reviewerrorsInv(conn):
     global cur
-    cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
+    cur=conn.cursor()
     print (datetime.now())
     try:
         berror="SELECT * FROM ErrorsCampaings"
         bcampaings='select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where b.CampaingID=%s  group by b.CampaingID  desc  '
-        btcampaings='SELECT CampaingID,Campaingname,Campaignstatus FROM Campaings'
-        btStatus="select a.CampaingID,a.Campaingname,a.Campaignstatus,b.Status,c.Adstatus from Campaings  a INNER JOIN  Adsets b on a.CampaingID=b.CampaingID  INNER JOIN  Ads c on b.AdSetID=c.AdSetID where a.Campaignstatus='PAUSED' or a.Campaignstatus='enable' or b.Status='PAUSED' or b.Status='enable' or c.Adstatus='PAUSED' or c.Adstatus='enable'"
-        bupdatestatus="UPDATE ErrorsCampaings SET StatusCampaing=%s where CampaingID=%s"
         bupdate="UPDATE ErrorsCampaings SET estado=0 where CampaingID=%s and TipoErrorID=%s"
         bupdateCamp="UPDATE ErrorsCampaings SET estado=0 where CampaingID=%s "
-        cupdate="UPDATE ErrorsCampaings SET error=%s where CampaingID=%s"
-
         cur.execute(berror,)
         resultscon=cur.fetchall()
         #SELECIONAMOS TODOS LOS ERRORES ACTUALES
@@ -516,8 +461,6 @@ def reviewerrorsInv(conn):
                             #ERROR ACUMULADO PERFORMACE
                             if searchObj.group(25)>0 and TipoError==2:
                                 Acumulado=float(result[6])-float(searchObj.group(25))
-                                print Acumulado
-                                print NomInversion
                                 if int(NomInversion) >=int(Acumulado):
                                     cur.execute(bupdate,(ID,2))
 
@@ -533,13 +476,10 @@ def reviewerrorsInv(conn):
 
                             if float(result[11])==0 and float(result[10])<=NomInversion and TipoError==5:
                                 cur.execute(bupdate,(ID,5))
-
     except Exception as e:
         print(e)
     finally:
         print('Actualización Errores Inversion OK')
-
-
 
 def push_errors(conn):
     errors_fb_inv(conn)
@@ -550,12 +490,8 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
-   #errors_go(conn)
+   #errors_fb_pais(conn)
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
-   #reviewerrorsInv(conn)
    conn.close()
-    #fb_ads()
-   #reviewerrors()
-   #reviewerrors()

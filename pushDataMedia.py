@@ -28,7 +28,7 @@ def fb_ads(conn):
         #Verificar si existe
         #Guardar Datos
         sqlInsertAd = "INSERT INTO Ads(AdID,Adname,Country,Adstatus,AdSetID) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname);"
-        sqlInsertCreativeAds = "INSERT INTO CreativeAds(AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname, PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID,Adname,Country) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Creativename=VALUES(Creativename);"
+        sqlInsertCreativeAds = "INSERT INTO CreativeAds(AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname, PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID,Adname,Country) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdcreativeID=VALUES(AdcreativeID),Creativename=VALUES(Creativename);"
         sqlInsertMetricsAds = "INSERT INTO MetricsAds(Impressions, Ctr, Cpm, Cro,Cost, Frequency, Reach, Pagelikes, Peopletakingaction, Postreactions, Postshares, Photoviews, Clickstoplayvideo, Outboundclicks, Leads, Eventresponses, Messagingreplies, Videowatchesat75, Videowatchesat100, Websiteleads, Desktopappinstalls, Mobileappinstalls, AdID, Country, Adname,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
         #results = cur.fetchall()  Mostrar datos de una consulta
         ads=[]
@@ -96,9 +96,11 @@ def fb_ads(conn):
                 adscreatives.append(adcrea)
                 adme=(impressions, ctr, cpm, cro,cost, frequency, reach, pagelikes, peopletakingaction, postreactions, postshares, photoviews, clickstoplayvideo, outboundclicks, leads, eventresponses, messagingreplies, videowatchesat75, videowatchesat100, websiteleads, desktopappinstalls, mobileappinstalls, adid, country, adname,outboundclicks)
                 adsmetrics.append(adme)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAd,ads)
         cur.executemany(sqlInsertCreativeAds,adscreatives)
         cur.executemany(sqlInsertMetricsAds,adsmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
 
     except Exception as e:
         print(e)
@@ -118,8 +120,8 @@ def fb_camp(conn):
         #QUERYS
         GuardarCuentas="""INSERT INTO  Accounts (AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"""
         GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus)"""
-        GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks) VALUES (%s,%s,%s,%s,%s,%s)"
-        GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s)"
+        GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         cuentas=[]
         campanas=[]
         campmetrics=[]
@@ -145,6 +147,8 @@ def fb_camp(conn):
             startdate=atr['gsx$campaignstartdate']['$t']
             enddate=atr['gsx$campaignenddate']['$t']
             clicks=atr['gsx$outboundclicks']['$t']
+            cost=atr['gsx$cost']['$t']
+
             #FIN VARIABLES
             if accountid!='' or accountid!=0:
                 cuenta=[accountid,account,'FB']
@@ -153,7 +157,7 @@ def fb_camp(conn):
                 campanas.append(campana)
                 campdisplay=(campaingid,publisherplatform,placement)
                 campdisplays.append(campdisplay)
-                campmetric=(campaingid,reach,frequency,impressions,placement,clicks)
+                campmetric=(campaingid,reach,frequency,impressions,placement,clicks,cost)
                 campmetrics.append(campmetric)
             #FIN CICLOx
         cur.executemany(GuardarCuentas,cuentas)
@@ -209,9 +213,10 @@ def fb_adsets(conn):
                 adsetmetric=(adsetid,adsetname,country,reach,frequency,impressions,clicks)
                 adsetmetrics.append(adsetmetric)
             #FIN CICLO
-
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAdSet,adsets)
         cur.executemany(sqlInsertAdsSetsMetrics,adsetmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
 
 
     except Exception as e:
@@ -234,12 +239,10 @@ def go_camp(conn):
         campmetrics=[]
         campdisplays=[]
         #QUERYS
-        sqlSelectCampaing = "SELECT count(*) FROM Campaings where CampaingID=%s and AccountsID=%s"
-        sqlSelectCampaingDisplay = "SELECT count(*) FROM CampaingDisplay where CampaingID=%s  and Publisherplatform=%s and Placement=%s"
         sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
         sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks) VALUES (%s,%s,%s,%s,%s)"
-        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s)"
+        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks,cost) VALUES (%s,%s,%s,%s,%s,%s)"
+        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t']
@@ -255,6 +258,7 @@ def go_camp(conn):
             campaignobjective=''
             impressions=atr['gsx$impressions']['$t']
             clicks=atr['gsx$clicks']['$t']
+            cost=atr['gsx$cost']['$t']
             campaignstatus=atr['gsx$campaignstatus']['$t'].encode('utf-8')
             placement=atr['gsx$advertisingchanneltype']['$t'].encode('utf-8')
             publisherplatform=atr['gsx$advertisingchannelsub-type']['$t'].encode('utf-8')
@@ -266,7 +270,7 @@ def go_camp(conn):
                 campanas.append(campana)
                 campdisplay=(campaingid,publisherplatform,placement)
                 campdisplays.append(campdisplay)
-                campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks)
+                campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks,cost)
                 campmetrics.append(campmetric)
 
         cur.executemany(sqlInsertAccount ,cuentas)
@@ -365,8 +369,6 @@ def go_ads(conn):
     finally:
         print('Success Google Ads')
 #FIN VISTA
-def tw_camps(conn):
-    print conn
 def tw_camp(conn):
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     cur=conn.cursor(buffered=True)
@@ -386,8 +388,8 @@ def tw_camp(conn):
     try:
         sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
         sqlInsertAccount = "INSERT INTO Accounts(AccountsID,Account,Media) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Impressions,Clicks) VALUES (%s,%s,%s)"
-        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,Placement) VALUES (%s,%s)"
+        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Impressions,Clicks,cost) VALUES (%s,%s,%s,%s)"
+        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,Placement) VALUES (%s,%s)ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t'].encode('utf-8')
@@ -403,6 +405,7 @@ def tw_camp(conn):
             placement=atr['gsx$lineitemplacements']['$t'].encode('utf-8')
             impressions=atr['gsx$impressions']['$t']
             clicks=atr['gsx$clicks']['$t']
+            cost=atr['gsx$cost']['$t']
             if accountid!='':
                 cuenta=[accountid,account,'TW']
                 cuentas.append(cuenta)
@@ -410,7 +413,7 @@ def tw_camp(conn):
                 campanas.append(campana)
                 campdisplay=(campaingid,placement)
                 campdisplays.append(campdisplay)
-                campmetric=(campaingid,impressions,clicks)
+                campmetric=(campaingid,impressions,clicks,cost)
                 campmetrics.append(campmetric)
             #FIN CICLOx
         cur.executemany(sqlInsertAccount ,cuentas)
@@ -451,15 +454,17 @@ def tw_adsets(conn):
             #ADSET
             adsetlifetimebudget=atr['gsx$lineitemtotalbudget']['$t']
             clicks=atr['gsx$clicks']['$t']
+
             if adsetid!='':
                 adset=(adsetid,adsetname,adsetlifetimebudget,campaingid)
                 adsets.append(adset)
                 adsetmetric=(adsetid,adsetname,impressions,clicks)
                 adsetmetrics.append(adsetmetric)
             #ADSET
-
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAdsSets,adsets)
         cur.executemany(sqlInsertAdsSetsMetrics,adsetmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
 
     except Exception as e:
         print(e)
@@ -502,9 +507,10 @@ def tw_ads(conn):
 
                 adme=(impressions, cost,ctr,cpm, adsetid)
                 adsmetrics.append(adme)
-
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAds,ads)
         cur.executemany(sqlInsertMetricsAds,adsmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
 
 
     except Exception as e:
