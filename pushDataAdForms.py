@@ -78,7 +78,7 @@ def GetAdformCampaign(conn):
                                     "cost"
                                 ],
                                 "filter": {
-                                    "date": "campaignStartToEnd"
+                                    "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
                                 }
                     }
          )
@@ -142,7 +142,7 @@ def GetAdformAdsets(conn):
                                     "cost"
                                 ],
                                 "filter": {
-                                    "date": "campaignStartToEnd"
+                                    "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
                                 }
                     }
          )
@@ -203,7 +203,7 @@ def GetAdformAds(conn):
                             "conversions"
                         ],
                         "filter": {
-                            "date": "campaignStartToEnd"
+                            "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
                         }
                     }
          )
@@ -259,7 +259,7 @@ def GetAdFormCreativeAds(conn):
                         "impressions"
                     ],
                     "filter": {
-                        "date": "campaignStartToEnd"
+                        "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
                     }
                     }
          )

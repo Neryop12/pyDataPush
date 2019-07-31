@@ -18,16 +18,30 @@ def openConnection():
 
 def ComparacionErrores(conn):
     cur=conn.cursor(buffered=True)
+    Errores=[]
     try:
-        sqlSelectCompra = "select DISTINCT  com.id,  odc id_compra, idpresupuesto presupuesto, m.id	  from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc;"
+        sqlSelectCompra = "select DISTINCT   odc id_compra, idpresupuesto presupuesto, m.id flow_id, com.id from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc order by com.id;"
         cur.execute(sqlSelectCompra)
         #Lo paso a numpy para que las busquedas sean más rapidas, dado a que son arrays.
         data = mp.array(cur.fetchall())
         r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-01-01/2019-01-31")
         r=r.json()
-        ap=mp.asarray(r) 
-        resutl=mp.where(r[0] == 'OMD')
-        print(resutl[0])
+        ap=mp.array(r) 
+        for rowBase in data:
+            existe=False
+            for rowApi in ap:
+                if(rowBase[1]==rowApi['codigo_presupuesto']):
+                    existe=True
+                    break
+            if not existe:
+                Errores.append('si')
+
+
+
+        if(ap[0]['codigo_agencia']==data[0][1]):
+            print('llego')
+        else:
+            print('nop')
     except Exception as e:
         print(e)
     finally:
