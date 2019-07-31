@@ -6,7 +6,6 @@ import re
 import mysql.connector as mysql
 from datetime import datetime
 import time
-import logger
 import pandas as pd
 import numpy as mp
 from xml.etree import ElementTree
@@ -19,7 +18,7 @@ ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',database='MediaPlatforms',user='root',password='1234',autocommit=True)
+        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
     except:
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -30,17 +29,17 @@ def GetToken():
     Token=requests.post(
                 url,
                  headers={
-                            'Content-Type': 'application/json', 
+                            'Content-Type': 'application/json',
                             },
                 json={
                         "UserName": "JDELEON",
                         "Password": "Joseandre2019"
                     }
-               
+
                 )
     Token=Token.json()
 #GET ReportStas, primero se debe generar el Token de session, solo se pueden obtener 8 dimensioines por Requests
-#Falta agregar el budget, aun no se sabe como obtenerlo, 
+#Falta agregar el budget, aun no se sabe como obtenerlo,
 def GetAdformCampaign(conn):
      global cur
      cur=conn.cursor(buffered=True)
@@ -50,7 +49,7 @@ def GetAdformCampaign(conn):
      campmetrics=[]
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
+     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget), Campaignstatus=VALUES(Campaignstatus)"
      sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks,frequency) VALUES (%s,%s,%s,%s,%s)"
      try:
          url='https://api.adform.com/v1/reportingstats/agency/reportdata'
@@ -62,7 +61,7 @@ def GetAdformCampaign(conn):
                  'Content-Type':'application/json'
              },
              #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-             #Para enviarlo se tiene que guardar en formato Json. 
+             #Para enviarlo se tiene que guardar en formato Json.
              json={
                        "dimensions": [
                                     "campaignID",
@@ -88,7 +87,7 @@ def GetAdformCampaign(conn):
              if(row[0]!=''):
                  cuenta=[row[2],row[3],'AF']
                  cuentas.append(cuenta)
-                 campana=[row[0],row[1],'0',row[9],row[2],row[4],row[5]]
+                 campana=[row[0],row[1],'0',row[9],row[2],row[4],row[5],'ACTIVE']
                  campanas.append(campana)
                  #Se verifica si Frequency es numerico
                  if(row[6].isnumeric()):
@@ -96,9 +95,11 @@ def GetAdformCampaign(conn):
                  else:
                     campanametrica=[row[0],row[9],row[8],row[7],'0']
                  campmetrics.append(campanametrica)
+         cur.execute("SET FOREIGN_KEY_CHECKS=0")
          cur.executemany(sqlInsertAccount ,cuentas)
          cur.executemany(sqlInsertCampaing,campanas)
          cur.executemany(sqlInsertCampaingMetrics,campmetrics)
+         cur.execute("SET FOREIGN_KEY_CHECKS=1")
          print('Success AF Campanas')
      except Exception as e:
          print(e)
@@ -114,7 +115,7 @@ def GetAdformAdsets(conn):
     adsetmetrics=[]
     #Querys
     sqlInsertAdsSetsMetrics = "INSERT INTO AdSetMetrics(AdSetID,AdSetName,Impressions,Clicks,frequency) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
-    sqlInsertAdSet = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,Adsetend,Adsetstart,CampaingID) VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName),Adsetlifetimebudget=VALUES(Adsetlifetimebudget)"
+    sqlInsertAdSet = "INSERT INTO Adsets(AdSetID,AdSetName,Adsetlifetimebudget,Adsetend,Adsetstart,CampaingID,Status) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName),Adsetlifetimebudget=VALUES(Adsetlifetimebudget),Status=VALUES(Status);"
     try:
          url='https://api.adform.com/v1/reportingstats/agency/reportdata'
          data=requests.post(
@@ -125,9 +126,9 @@ def GetAdformAdsets(conn):
                  'Content-Type':'application/json'
              },
              #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-             #Para enviarlo se tiene que guardar en formato Json. 
+             #Para enviarlo se tiene que guardar en formato Json.
              json={
-                       "dimensions": [              
+                       "dimensions": [
                                     "campaignID",
                                     "lineItemID",
                                     "lineItem",
@@ -148,16 +149,18 @@ def GetAdformAdsets(conn):
          data=data.json()
          for row in data['reportData']['rows']:
              if(row[1]>0):
-                 adset=[row[1],row[2],'0',row[3],row[4],row[0]]
+                 adset=[row[1],row[2],'0',row[3],row[4],row[0],'ACTIVE']
                  adsets.append(adset)
                  if(row[5].isnumeric()):
                     adsetmetric=[row[1],row[2],row[7],row[6],row[5]]
                  else:
                     adsetmetric=[row[1],row[2],row[7],row[6],'0']
                  adsetmetrics.append(adsetmetric)
+         cur.execute("SET FOREIGN_KEY_CHECKS=0")
          cur.executemany(sqlInsertAdSet ,adsets)
          cur.executemany(sqlInsertAdsSetsMetrics ,adsetmetrics)
-         print('Success MM Adsets')
+         cur.execute("SET FOREIGN_KEY_CHECKS=1")
+         print('Success AF Adsets')
     except Exception as e:
         print(e)
     finally:
@@ -170,7 +173,7 @@ def GetAdformAds(conn):
     ads=[]
     adsmetrics=[]
     #Querys
-    sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID,ReferrerType,Media) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname),ReferrerTYpe=VALUES(ReferrerType),Media=VALUES(Media);"
+    sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID,ReferrerType,Media,Status) VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname),ReferrerTYpe=VALUES(ReferrerType),Media=VALUES(Media),Status=VALUES(Status);"
     sqlInsertMetricsAds = "INSERT INTO MetricsAds(AdID,Adname,Clicks,Impressions,Cost,ctr,cpm,convertions) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
     try:
         url='https://api.adform.com/v1/reportingstats/agency/reportdata'
@@ -182,7 +185,7 @@ def GetAdformAds(conn):
                  'Content-Type':'application/json'
              },
              #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-             #Para enviarlo se tiene que guardar en formato Json. 
+             #Para enviarlo se tiene que guardar en formato Json.
              json={
                        "dimensions": [
                             "lineItemID",
@@ -207,12 +210,14 @@ def GetAdformAds(conn):
         data=data.json()
         for row in data['reportData']['rows']:
             if(row[1]>0):
-                ad=[row[1],row[2],row[0],row[3],row[4]]
+                ad=[row[1],row[2],row[0],row[3],row[4],'ACTIVE']
                 ads.append(ad)
                 admetric=[row[1],row[2],row[5],row[6],row[7],row[8],row[9],row[10]]
                 adsmetrics.append(admetric)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAd ,ads)
         cur.executemany(sqlInsertMetricsAds ,adsmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success AF AD')
     except Exception as e:
         print(e)
@@ -237,7 +242,7 @@ def GetAdFormCreativeAds(conn):
                  'Content-Type':'application/json'
              },
              #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-             #Para enviarlo se tiene que guardar en formato Json. 
+             #Para enviarlo se tiene que guardar en formato Json.
              json={
                     "dimensions": [
                         "bannerID",
@@ -277,7 +282,7 @@ def GetAdFormCreativeAds(conn):
 if __name__ == '__main__':
     openConnection()
     GetToken()
-    #GetAdformCampaign(conn)
-    #GetAdformAdsets(conn)
+    GetAdformCampaign(conn)
+    GetAdformAdsets(conn)
     GetAdformAds(conn)
     #GetAdFormCreativeAds(conn)
