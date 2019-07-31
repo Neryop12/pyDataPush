@@ -170,8 +170,8 @@ def GetAdformAds(conn):
     ads=[]
     adsmetrics=[]
     #Querys
-    sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname);"
-    sqlInsertMetricsAds = "INSERT INTO MetricsAds(AdID,Adname,Clicks,Impressions,Cost,ctr,cpm,convertions,Frequency) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+    sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID,ReferrerType,Media) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname),ReferrerTYpe=VALUES(ReferrerType),Media=VALUES(Media);"
+    sqlInsertMetricsAds = "INSERT INTO MetricsAds(AdID,Adname,Clicks,Impressions,Cost,ctr,cpm,convertions) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
     try:
         url='https://api.adform.com/v1/reportingstats/agency/reportdata'
         data=requests.post(
@@ -188,7 +188,8 @@ def GetAdformAds(conn):
                             "lineItemID",
                             "bannerID",
                             "banner",
-                            "frequencyLineItem"
+                            "referrerType",
+                            "media"
                         ],
                         "metrics": [
                             "clicks",
@@ -206,12 +207,9 @@ def GetAdformAds(conn):
         data=data.json()
         for row in data['reportData']['rows']:
             if(row[1]>0):
-                ad=[row[1],row[2],row[0]]
+                ad=[row[1],row[2],row[0],row[3],row[4]]
                 ads.append(ad)
-                if(row[3].isnumeric()):
-                    admetric=[row[1],row[2],row[4],row[5],row[6],row[7],row[8],row[9],row[3]]
-                else:
-                    admetric=[row[1],row[2],row[4],row[5],row[6],row[7],row[8],row[9],'0']
+                admetric=[row[1],row[2],row[5],row[6],row[7],row[8],row[9],row[10]]
                 adsmetrics.append(admetric)
         cur.executemany(sqlInsertAd ,ads)
         cur.executemany(sqlInsertMetricsAds ,adsmetrics)
@@ -279,7 +277,7 @@ def GetAdFormCreativeAds(conn):
 if __name__ == '__main__':
     openConnection()
     GetToken()
-    GetAdformCampaign(conn)
-    GetAdformAdsets(conn)
+    #GetAdformCampaign(conn)
+    #GetAdformAdsets(conn)
     GetAdformAds(conn)
-    GetAdFormCreativeAds(conn)
+    #GetAdFormCreativeAds(conn)
