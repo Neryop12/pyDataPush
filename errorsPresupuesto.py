@@ -16,42 +16,43 @@ def openConnection():
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
-#Coneccion a la base de datos de mfcgt
-def openConnectionMedia():
-    global connMedia
-    try:
-        connMedia = mysql.connect(host='localhost',database='mediaplatforms',user='root',password='1234',autocommit=True)
-    except:
-        logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
-        sys.exit()        
+        
 
-def ComparacionErrores(conn, connMedia):
+def ComparacionErrores(conn):
     cur=conn.cursor(buffered=True)
-    curInsert = connMedia.cursor(buffered=True)
     Errores=[]
+    #Query para insertar los datos, Media  -> OC
     sqlInserErrors = "INSERT INTO mediaplatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     try:
         print(datetime.now())
-        sqlSelectCompra = "select DISTINCT   odc id_compra, idpresupuesto presupuesto, m.id flow_id, com.id from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc where m.aprobado = 1 order by com.id;"
+        #Query para seleccionar los datos de (orden de compra, presupuesto, flowid y el idcompra) se realizo dos inner joins en con los pk
+        #Se filtra para mostrar solo el estado aprobado del MFC (aprobado=1)
+        sqlSelectCompra = "select DISTINCT   odc id_compra, idpresupuesto presupuesto, m.id flow_id, com.id from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc where m.aprobado = 1 AND com.idformatodigital > 0  order by com.id;"
         cur.execute(sqlSelectCompra)
         #Lo paso a numpy para que las busquedas sean más rapidas, dado a que son arrays.
         data = mp.array(cur.fetchall())
         r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-01-01/2019-01-31")
+        #Primero se convierte el request a JSON
         r=r.json()
+        #Posteriormente se convierte a un array numpy
         ap=mp.array(r) 
         #Buqueda de la base de datos al API
         for rowBase in data:
+            #Se declaran dos variables Booleanas, para saber si se encuentra el dato dentro del API existe->Presupuseto codigo->orden de compra
             existe=False
             codigo=False
             #Busqueda de presupuesto
+            #Primero reviza si el presupuesto en la base de datos no esta vacio, es nullo o es 0
             if not rowBase[1] or rowBase[1]=='0':
                 Error = 'Codigo de Presupuesto esta vacio o es 0.'
                 Comentario = 'El Codigo de presupuesto no esta asignado.'
                 nuevo=[Error,Comentario,'OC','7',rowBase[2],'0','ACTIVE']
                 Errores.append(nuevo)
+            #De no serlo se recorre el array del API, para buscar alguna considencia en el mismo. 
             else:
                 for rowApi in ap:
                     if(rowBase[1]==rowApi['codigo_presupuesto']):
+                        #De existir un presupuesto, reviza si en esa row se encuntra el mismo Flow_id que en la base de datos
                         if(str(rowBase[3])==rowApi['flow_id']):
                             existe=True
                         else:
@@ -60,6 +61,7 @@ def ComparacionErrores(conn, connMedia):
                              nuevo=[Error,Comentario,'OC','7',rowBase[2],'0','ACTIVE']
                              Errores.append(nuevo)
                         break
+                #Si no existe se inserta un nuevo error
                 if not existe:
                     Error = 'Codigo de Presupuesto No.' + str(rowBase[1]) + ' no encontrado.'
                     Comentario = 'Error el codigo de Presupuesto Ingresado no se encuentra en '
@@ -147,7 +149,7 @@ def ComparacionErrores(conn, connMedia):
                         nuevo=[Error,Comentario,'OC','8',rowApi['flow_id'],'0','ACTIVE']
                         Errores.append(nuevo)
                     
-        curInsert.executemany(sqlInserErrors,Errores)
+        cur.executemany(sqlInserErrors,Errores)
     except Exception as e:
         print(e)
     finally:
@@ -155,6 +157,5 @@ def ComparacionErrores(conn, connMedia):
 
 
 if __name__ == '__main__':
-    openConnection()
-    openConnectionMedia()
-    ComparacionErrores(conn, connMedia)
+    openConnection()    
+    ComparacionErrores(conn)
