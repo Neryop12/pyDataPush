@@ -9,7 +9,7 @@ import time
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
+        conn = conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -306,13 +306,13 @@ def errors_mm_inv(conn):
         Errores=[]
         for result in resultscon:
             Estatus='ACTIVE'
-            Nomenclatura=result[3].encode('utf-8')
+            Nomenclatura=result[3]
             CampaingID=result[2]
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M|re.I)
             if searchObj:
                 NomInversion= float(searchObj.group(11))
 
-                if result[4]==0:
+                if not result[4] or result[4]==0:
                     if float(result[6])>NomInversion:
                         Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[6]))
                         Comentario="Cuidado error de inversion verifica la plataforma"
@@ -322,18 +322,18 @@ def errors_mm_inv(conn):
                             if CampaingID!='':
                                 nuevoerror=(Error,Comentario,'MM',2,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
-
-                    if searchObj.group(25)>0:
-                        Acumulado=float(searchObj.group(25))-float(result[5])
-                        if Acumulado>NomInversion:
-                            Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(Acumulado)
-                            Comentario="Error de inversion no debe ser mayor a la planificada"
-                            cur.execute(sqlSelectErrors,(CampaingID,2,'MM'))
-                            rescampaing=cur.fetchone()
-                            if rescampaing[0]==0:
-                                if CampaingID!='':
-                                    nuevoerror=(Error,Comentario,'MM',2,CampaingID,0,Estatus)
-                                    Errores.append(nuevoerror)
+                    if searchObj.group(25) is not None: 
+                        if searchObj.group(25)>0:
+                            Acumulado=float(searchObj.group(25))-float(result[5])
+                            if Acumulado>NomInversion:
+                                Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(Acumulado)
+                                Comentario="Error de inversion no debe ser mayor a la planificada"
+                                cur.execute(sqlSelectErrors,(CampaingID,2,'MM'))
+                                rescampaing=cur.fetchone()
+                                if rescampaing[0]==0:
+                                    if CampaingID!='':
+                                        nuevoerror=(Error,Comentario,'MM',2,CampaingID,0,Estatus)
+                                        Errores.append(nuevoerror)
 
                     elif float(result[10])>NomInversion:
                         Error='Planificado: ' + str(NomInversion) + '/ Plataforma: '+str(float(result[10]))
@@ -344,26 +344,26 @@ def errors_mm_inv(conn):
                             if CampaingID!='':
                                 nuevoerror=(Error,Comentario,'MM',4,CampaingID,0,Estatus)
                                 Errores.append(nuevoerror)
-
-                    elif float(result[5])>0:
-                        Error='Inversiion Diaria: '+str(float(result[5]))
-                        Comentario="Cuidado error de inversion diaria "
-                        cur.execute(sqlSelectErrors,(CampaingID,3,'MM'))
-                        rescampaing=cur.fetchone()
-                        if rescampaing[0]==0:
-                            if CampaingID!='':
-                                nuevoerror=(Error,Comentario,'MM',3,CampaingID,0,Estatus)
-                                Errores.append(nuevoerror)
-
-                    elif float(result[11])>0:
-                        Error='Inversiion Diaria Conjunto: '+ str(float(result[11]))
-                        Comentario="Error de inversion diaria del conjunto de anuncios no debe ser mayor a la planificada"
-                        cur.execute(sqlSelectErrors,(CampaingID,5,'MM'))
-                        rescampaing=cur.fetchone()
-                        if rescampaing[0]==0:
-                            if CampaingID!='':
-                                nuevoerror=(Error,Comentario,'MM',5,CampaingID,0,Estatus)
-                                Errores.append(nuevoerror)
+                    elif result[5] is not None:
+                        if float(result[5])>0:
+                            Error='Inversiion Diaria: '+str(float(result[5]))
+                            Comentario="Cuidado error de inversion diaria "
+                            cur.execute(sqlSelectErrors,(CampaingID,3,'MM'))
+                            rescampaing=cur.fetchone()
+                            if rescampaing[0]==0:
+                                if CampaingID!='':
+                                    nuevoerror=(Error,Comentario,'MM',3,CampaingID,0,Estatus)
+                                    Errores.append(nuevoerror)
+                    elif result[11] is not None:
+                        if float(result[11])>0:
+                            Error='Inversiion Diaria Conjunto: '+ str(float(result[11]))
+                            Comentario="Error de inversion diaria del conjunto de anuncios no debe ser mayor a la planificada"
+                            cur.execute(sqlSelectErrors,(CampaingID,5,'MM'))
+                            rescampaing=cur.fetchone()
+                            if rescampaing[0]==0:
+                                if CampaingID!='':
+                                    nuevoerror=(Error,Comentario,'MM',5,CampaingID,0,Estatus)
+                                    Errores.append(nuevoerror)
             else:
                 Comentario="Error de nomenclatura verifica cada uno de sus elementos"
                 cur.execute(sqlSelectErrors,(CampaingID,1,'MM'))
