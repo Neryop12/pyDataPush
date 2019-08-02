@@ -80,19 +80,7 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
                                 'start_date': '2019-01-01',
-=======
-                                'start_date':'2019-07-31',
->>>>>>> parent of 93115ea... Errores MediaMath
-=======
-                                'start_date':'2019-07-31',
->>>>>>> parent of 93115ea... Errores MediaMath
-=======
-                                'start_date':'2019-07-31',
->>>>>>> parent of 93115ea... Errores MediaMath
                                 'time_rollup':'by_day',
                             }
                         )
@@ -142,12 +130,8 @@ def GetMediaMathADSets(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-<<<<<<< HEAD
-
-=======
                                 'start_date':'2019-07-31',
                                 'time_rollup':'by_day',
->>>>>>> parent of 93115ea... Errores MediaMath
                             }
                         )
         #Variable para guardar el contenido del request.
@@ -201,19 +185,8 @@ def GetMediaMathADs(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                                 'start_date': '2019-01-01',
-=======
-                                'start_date':'2019-07-31',
->>>>>>> parent of 93115ea... Errores MediaMath
-=======
-                                'start_date':'2019-07-31',
->>>>>>> parent of 93115ea... Errores MediaMath
-=======
-                                'start_date':'2019-07-31',
->>>>>>> parent of 93115ea... Errores MediaMath
                                 'time_rollup':'by_day',
                             }
                         )
