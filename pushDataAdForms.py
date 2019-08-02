@@ -12,13 +12,13 @@ from xml.etree import ElementTree
 import io
 import math
 conn = None
-
+#conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
 ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 #Coneccion a la base de datos
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
+        conn = mysql.connect(host='localhost',port=8889,database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
     except:
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
