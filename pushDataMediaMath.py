@@ -59,8 +59,6 @@ def GetSession():
 ## Funcion para la insersion de informacion a la base de datos desde MediaMath, Dimensio:Campaing -> Campaing.
 def GetMediaMathCampaing(conn):
      global cur
-     fecha = datetime.now() - timedelta(days=1)
-     day = fecha.strftime("%Y-%m-%d")
      cur=conn.cursor(buffered=True)
      cuentas=[]
      campanas=[]
@@ -81,7 +79,7 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date':str(day),
+                                'start_date': '2019-01-01',
                                 'time_rollup':'by_day',
                             }
                         )
@@ -113,8 +111,6 @@ def GetMediaMathCampaing(conn):
 def GetMediaMathADSets(conn):
     global cur
     cur=conn.cursor(buffered=True)
-    fecha = datetime.now() - timedelta(days=1)
-    day = fecha.strftime("%Y-%m-%d")
     print (datetime.now())
     adsets=[]
     adsetmetrics=[]
@@ -133,7 +129,7 @@ def GetMediaMathADSets(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date':str(day),
+                                'start_date': '2019-01-01',
                                 'time_rollup':'by_day',
                             }
                         )
@@ -169,8 +165,6 @@ def GetMediaMathADSets(conn):
 def GetMediaMathADs(conn):
     global cur
     cur=conn.cursor(buffered=True)
-    fecha = datetime.now() - timedelta(days=1)
-    day = fecha.strftime("%Y-%m-%d")
     print (datetime.now())
     ads=[]
     adsmetrics=[]
@@ -190,7 +184,7 @@ def GetMediaMathADs(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date':str(day),
+                                'start_date': '2019-01-01',
                                 'time_rollup':'by_day',
                             }
                         )
