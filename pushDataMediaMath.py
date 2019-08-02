@@ -19,7 +19,8 @@ ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',database='mediaplatforms',user='root',password='1234',autocommit=True)
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
+                             user='omgdev', password='Sdev@2002!', autocommit=True)
     except:
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()

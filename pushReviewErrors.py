@@ -56,7 +56,7 @@ def errors_fb_inv(conn):
                         cur.execute(sqlSelectErrors, (CampaingID, 2, 'FB'))
                         rescampaing = cur.fetchone()
                         if rescampaing[0] == 0:
-                            if CampaingID != '':
+
                                 nuevoerror = (Error, Comentario,
                                               'FB', 2, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
@@ -635,9 +635,9 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
-   errors_fb_inv(conn)
-   #push_errors(conn)
-   #reviewerrorsInv(conn)
-   #reviewerrorsNom(conn)
+   #errors_fb_inv(conn)
+   push_errors(conn)
+   reviewerrorsInv(conn)
+   reviewerrorsNom(conn)
    conn.close()
 
