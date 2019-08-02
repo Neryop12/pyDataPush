@@ -26,6 +26,7 @@ def openConnection():
 #API GET, obtiene el token de session para MediaMath
 def GetToken():
     global Token
+    #URL para la obtencion del Token
     url='https://auth.mediamath.com/oauth/token'
     Token=requests.post(
                 ACCESS_TOKEN_URL,
