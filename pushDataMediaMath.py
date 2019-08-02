@@ -4,7 +4,7 @@ import requests
 import sys
 import re
 import mysql.connector as mysql
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
 import logger
 import pandas as pd
@@ -13,7 +13,7 @@ from xml.etree import ElementTree
 import io
 import math
 conn = None
-fecha=None
+
 ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 #Coneccion a la base de datos
 def openConnection():
@@ -80,7 +80,11 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
+<<<<<<< HEAD
                                 'start_date': '2019-01-01',
+=======
+                                'start_date':'2019-07-31',
+>>>>>>> parent of 93115ea... Errores MediaMath
                                 'time_rollup':'by_day',
                             }
                         )
@@ -130,7 +134,11 @@ def GetMediaMathADSets(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
+<<<<<<< HEAD
                                 'start_date': '2019-01-01',
+=======
+                                'start_date':'2019-07-31',
+>>>>>>> parent of 93115ea... Errores MediaMath
                                 'time_rollup':'by_day',
                             }
                         )
@@ -185,7 +193,11 @@ def GetMediaMathADs(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
+<<<<<<< HEAD
                                 'start_date': '2019-01-01',
+=======
+                                'start_date':'2019-07-31',
+>>>>>>> parent of 93115ea... Errores MediaMath
                                 'time_rollup':'by_day',
                             }
                         )
@@ -214,6 +226,6 @@ if __name__ == '__main__':
     openConnection()
     GetToken()
     GetSession()
-    GetMediaMathCampaing(conn)
+    #GetMediaMathCampaing(conn)
     GetMediaMathADSets(conn)
-    GetMediaMathADs(conn)
+    #GetMediaMathADs(conn)
