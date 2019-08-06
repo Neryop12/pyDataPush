@@ -3,7 +3,7 @@ import requests
 import sys
 import re
 import mysql.connector as mysql
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as mp
 conn = None
 
@@ -30,8 +30,12 @@ def ComparacionErrores(conn):
         sqlSelectCompra = "select DISTINCT   odc id_compra, idpresupuesto presupuesto, m.id flow_id, com.id from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc where m.aprobado = 1 AND com.idformatodigital > 0  order by com.id;"
         cur.execute(sqlSelectCompra)
         #Lo paso a numpy para que las busquedas sean más rapidas, dado a que son arrays.
+        fechaayer = datetime.now() - timedelta(days=1)
+        dayayer = fechaayer.strftime("%Y-%m-%d")
+        fechahoy = datetime.now() 
+        dayhoy = fechahoy.strftime("%Y-%m-%d")
         data = mp.array(cur.fetchall())
-        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-01-01/2019-01-31")
+        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/{}/{}".format(str(dayayer),str(dayhoy)))
         #Primero se convierte el request a JSON
         r=r.json()
         #Posteriormente se convierte a un array numpy
@@ -95,61 +99,10 @@ def ComparacionErrores(conn):
                     Comentario = 'Error el numero de orden Ingresado no se encuentra en '
                     nuevo=[Error,Comentario,'OC','8',rowBase[2],'0','ACTIVE']
                     Errores.append(nuevo)
-        #Busqueda del Api hacia la base de datos
-        for rowApi in ap:
-            existe=False
-            codigo=False
-            flow=False
-            #Busqueda de presupuesto en base de datos
-            if not rowApi['codigo_presupuesto'] or rowApi['codigo_presupuesto']=='0':
-                Error = 'Codigo de Presupuesto esta vacio o es 0.'
-                Comentario = 'El Codigo de presupuesto no esta asignado.'
-                nuevo=[Error,Comentario,'OC','7',rowBase[2],'0','ACTIVE']
-                Errores.append(nuevo)
-            else:
-                for rowBase in data:
-                    if(rowApi['codigo_presupuesto']==rowBase[1]):
-                        existe=True
-                        break
-                if not existe:
-                    Error = 'Codigo de Presupuesto No.' + str(rowApi['flow_id']) + ' no encontrado.'
-                    Comentario = 'Error el codigo de Presupuesto Ingresado no se encuentra en '
-                    nuevo=[Error,Comentario,'OC','7',rowApi['flow_id'],'0','ACTIVE']
-                    Errores.append(nuevo)
-            #Busque de codigo en la base de datos
-            if not rowApi['numero_orden'] or rowApi['numero_orden']=='0':
-                Error = 'Codigo de Presupuesto esta vacio o es 0.'
-                Comentario = 'El Codigo de presupuesto no esta asignado.'
-                nuevo=[Error,Comentario,'OC','7',rowApi['flow_id'],'0','ACTIVE']
-                Errores.append(nuevo)
-            else:
-                for rowBase in data:
-                    if(rowApi['numero_orden']==str(rowBase[0])):
-                        codigo=True
-                        break
-                if not codigo:
-                        Error = 'Numero de Orden ' + str(rowBase[1]) + '.'
-                        Comentario = 'Error el numero de orden Ingresado  no esta asigando al mismo presupuesto'
-                        nuevo=[Error,Comentario,'OC','8',rowApi['flow_id'],'0','ACTIVE']
-                        Errores.append(nuevo)
-             #Busque de Flow en la base de datos
-            if not rowApi['flow_id'] or rowApi['flow_id']=='0':
-                Error = 'Flow Id esta vacio o es 0.'
-                Comentario = 'El Codigo de presupuesto no esta asignado.'
-                nuevo=[Error,Comentario,'OC','7',rowApi['flow_id'],'0','ACTIVE']
-                Errores.append(nuevo)
-            else:
-                for rowBase in data:
-                    if(rowApi['flow_id']==str(rowBase[3])):
-                        flow=True
-                        break
-                if not flow:
-                        Error = 'Numero de Orden ' + str(rowBase[1]) + '.'
-                        Comentario = 'Error el numero de orden Ingresado  no esta asigando al mismo presupuesto'
-                        nuevo=[Error,Comentario,'OC','8',rowApi['flow_id'],'0','ACTIVE']
-                        Errores.append(nuevo)
+        
                     
         cur.executemany(sqlInserErrors,Errores)
+
     except Exception as e:
         print(e)
     finally:
