@@ -43,10 +43,10 @@ def fbPaused(conn):
             campstatus=atr['gsx$campaignconfiguredstatus']['$t']
             adsetstatus=atr['gsx$adsetconfiguredstatus']['$t']
             adstatus=atr['gsx$adconfiguredstatus']['$t']
-            Campstatus='UPDATE Campaings set Campaignstatus=%s  where CampaingID=%s'
-            Adsetsstatus='UPDATE Adsets set Status=%s where AdSetID=%s'
-            Ads='UPDATE Ads set Adstatus=%s where AdID=%s'
-            ErrorsCamping='UPDATE ErrorsCampaings set StatusCampaing=%s where CampaingID=%s'
+            Campstatus='UPDATE Campaings set Campaignstatus=%s,CreateDate=%s  where CampaingID=%s'
+            Adsetsstatus='UPDATE Adsets set Status=%s,CreateDate=%s where AdSetID=%s'
+            Ads='UPDATE Ads set Adstatus=%s,CreateDate=%s where AdID=%s'
+            ErrorsCamping='UPDATE ErrorsCampaings set StatusCampaing=%s,CreateDate=%s where CampaingID=%s'
 
             if campstatus!='PAUSED':
                 if adsetstatus!='PAUSED':
@@ -59,12 +59,12 @@ def fbPaused(conn):
             else:
                 Estatus=campstatus
 
-            SErrors=(Estatus, campaingid)
+            SErrors=(Estatus, campaingid,datetime.now())
 
-            SCamp=(campstatus, campaingid)
-            SAdsets=(adsetstatus, adsetstatus)
-            SAds=(adstatus,adid)
-            SErrors=(campstatus, campaingid)
+            SCamp=(campstatus, campaingid,datetime.now())
+            SAdsets=(adsetstatus, adsetstatus,datetime.now())
+            SAds=(adstatus,adid,datetime.now())
+            SErrors=(campstatus, campaingid,datetime.now())
             StatusAds.append(SAds)
             StatusAdsets.append(SAdsets)
             StatusCampaings.append(SCamp)
@@ -91,10 +91,10 @@ def goPaused(conn):
             campstatus=atr['gsx$campaignstatus']['$t']
             adsetstatus=atr['gsx$adgroupstatus']['$t']
             adstatus=atr['gsx$adstatus']['$t']
-            Campstatus='UPDATE Campaings set Campaignstatus=%s where CampaingID=%s'
-            Adsetsstatus='UPDATE Adsets set Status=%s where AdSetID=%s'
-            Ads='UPDATE Ads set Adstatus=%s where AdID=%s'
-            ErrorsCamping='UPDATE ErrorsCampaings set StatusCampaing=%s where CampaingID=%s'
+            Campstatus='UPDATE Campaings set Campaignstatus=%s,CreateDate=%s where CampaingID=%s'
+            Adsetsstatus='UPDATE Adsets set Status=%s,CreateDate=%s where AdSetID=%s'
+            Ads='UPDATE Ads set Adstatus=%s,CreateDate=%s where AdID=%s'
+            ErrorsCamping='UPDATE ErrorsCampaings set StatusCampaing=%s,CreateDate=%s where CampaingID=%s'
             if campstatus!='enabled':
                 if adsetstatus!='enabled':
                     if SAds!='enabled':
@@ -105,10 +105,10 @@ def goPaused(conn):
                     Estatus=adsetstatus
             else:
                 Estatus=campstatus
-            SCamp=(campstatus, campaingid)
-            SAdsets=(adsetstatus, adsetstatus)
-            SAds=(adstatus,adid)
-            SErrors=(campstatus, campaingid)
+            SCamp=(campstatus, campaingid,datetime.now())
+            SAdsets=(adsetstatus, adsetstatus,datetime.now())
+            SAds=(adstatus,adid,datetime.now())
+            SErrors=(campstatus, campaingid,datetime.now())
             StatusAds.append(SAds)
             StatusAdsets.append(SAdsets)
             StatusCampaings.append(SCamp)
@@ -118,8 +118,6 @@ def goPaused(conn):
         print('SUCCESS')
     except mysql.Error as error:
         print("Failed to update record to database: {}".format(error))
-
-
 
 if __name__ == '__main__':
    openConnection()
