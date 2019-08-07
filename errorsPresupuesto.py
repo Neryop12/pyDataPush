@@ -30,11 +30,14 @@ def ComparacionErrores(conn):
         sqlSelectCompra = "select DISTINCT   odc id_compra, idpresupuesto presupuesto, m.id flow_id, com.id from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc where m.aprobado = 1 AND com.idformatodigital > 0  order by com.id;"
         cur.execute(sqlSelectCompra)
         #Lo paso a numpy para que las busquedas sean más rapidas, dado a que son arrays.
+        #Obtencion de la fecha acutal y la fecha de un día antes
         fechaayer = datetime.now() - timedelta(days=1)
+        #Formato de las fechas para aceptar en el GET
         dayayer = fechaayer.strftime("%Y-%m-%d")
         fechahoy = datetime.now() 
         dayhoy = fechahoy.strftime("%Y-%m-%d")
         data = mp.array(cur.fetchall())
+        #Obttencion del GET con los datos de PBI
         r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/{}/{}".format(str(dayayer),str(dayhoy)))
         #Primero se convierte el request a JSON
         r=r.json()
