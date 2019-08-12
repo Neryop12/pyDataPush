@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 import json
 import requests
 import sys
@@ -11,17 +12,18 @@ conn = None
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',database='MediaPlatforms',user='root',password='1234',autocommit=True)
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
+                             user='omgdev', password='Sdev@2002!', autocommit=True)
     except:
-        logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
+        print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
-        
+
 
 def ComparacionErrores(conn):
     cur=conn.cursor(buffered=True)
     Errores=[]
-    fechahoy = datetime.now() 
+    fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
     sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) select %s,%s,%s,%s,%s,%s,%s,%s WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
@@ -32,12 +34,12 @@ def ComparacionErrores(conn):
         #Se filtra para mostrar solo el estado aprobado del MFC (aprobado=1)
         sqlSelectCompra = "select DISTINCT   odc id_compra, idpresupuesto presupuesto, m.id flow_id, com.id from mfcgt.mfccompradiaria com inner join mfcgt.mfccampana cam on cam.id = com.idcampana inner join mfcgt.mfc m on m.id = cam.idmfc where m.aprobado = 1 AND com.idformatodigital > 0  order by com.id;"
         cur.execute(sqlSelectCompra)
-        #Lo paso a numpy para que las busquedas sean más rapidas, dado a que son arrays.
-        #Obtencion de la fecha acutal y la fecha de un día antes
+        #Lo paso a numpy para que las busquedas sean mas rapidas, dado a que son arrays.
+        #Obtencion de la fecha acutal y la fecha de un dia antes
         fechaayer = datetime.now() - timedelta(days=1)
         #Formato de las fechas para aceptar en el GET
         dayayer = fechaayer.strftime("%Y-%m-%d")
-       
+
         data = mp.array(cur.fetchall())
         cur.execute(sqlCamping)
         camp = cur.fetchall()
@@ -46,7 +48,7 @@ def ComparacionErrores(conn):
         #Primero se convierte el request a JSON
         r=r.json()
         #Posteriormente se convierte a un array numpy
-        ap=mp.array(r) 
+        ap=mp.array(r)
         #Buqueda de la base de datos al API
         for result in camp:
             #Variables bool para saber si se tubo una coencidencia en el ciclo for
@@ -54,7 +56,7 @@ def ComparacionErrores(conn):
             ODCb = False
             #Variable para el Presupuesto
             Presb = False
-            #Variable para el numero de orden de compra 
+            #Variable para el numero de orden de compra
             Codb = False
             #Variable para el flow id
             Flowb = False
@@ -65,7 +67,7 @@ def ComparacionErrores(conn):
             if searchObj:
                 #Posicion 19 Numero de Orden << Como pueden ver más de una por campaña se agrrega a un arreglo
                 NomODCAR = searchObj.group(19)
-                #Se realiza un split - para obtener todos los nummeros de orden 
+                #Se realiza un split - para obtener todos los nummeros de orden
                 NomODC = NomODCAR.split('-')
                 #For para recorrer los numeros de orden
                 for Nom in NomODC:
@@ -100,7 +102,7 @@ def ComparacionErrores(conn):
                                             #De encontrase se reviza si el codigo de presupuesto es el mismo que en MTS
                                             if str(rowApi['codigo_presupuesto']) == rowMFC[1]:
                                                 Presb = True
-                                            #De igual manera se pregunta para el numero de orden 
+                                            #De igual manera se pregunta para el numero de orden
                                             if int(rowApi['numero_orden']) == rowMFC[0]:
                                                 Codb = True
                                             Flowb = True
@@ -123,11 +125,10 @@ def ComparacionErrores(conn):
                                             Errores.append(nuevo)
                                         if Presb and Codb:
                                             if NomInversion >= float(rowApi['valor_total']):
-                                                Error = 'Error de inversion ' 
+                                                Error = 'Error de inversion '
                                                 Comentario = 'Error la inversion supera lo planificado'
                                                 nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0','12',CampaingID]
                                                 Errores.append(nuevo)
-                                    
                                     break
                         if not ODCb:
                             Error = 'Numero de Orden ' + str(Nom) + '.'
@@ -142,5 +143,5 @@ def ComparacionErrores(conn):
 
 
 if __name__ == '__main__':
-    openConnection()    
+    openConnection()
     ComparacionErrores(conn)

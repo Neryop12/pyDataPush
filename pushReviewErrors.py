@@ -347,7 +347,7 @@ def errors_mm_inv(conn):
                                 nuevoerror = (Error, Comentario,
                                               'MM', 2, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
-                    if searchObj.group(25) is not None: 
+                    if searchObj.group(25) is not None:
                         if searchObj.group(25) > 0:
                             Acumulado = float(searchObj.group(25))-float(result[5])
                             if Acumulado > NomInversion:
@@ -362,7 +362,7 @@ def errors_mm_inv(conn):
                                         nuevoerror = (
                                             Error, Comentario, 'MM', 2, CampaingID, 0, Estatus)
                                         Errores.append(nuevoerror)
-                    elif result[10] is not None: 
+                    elif result[10] is not None:
                         if float(result[10]) > NomInversion:
                             Error = 'Planificado: ' + \
                                 str(NomInversion) + '/ Plataforma: ' + \
@@ -375,7 +375,7 @@ def errors_mm_inv(conn):
                                     nuevoerror = (Error, Comentario,
                                                 'MM', 4, CampaingID, 0, Estatus)
                                     Errores.append(nuevoerror)
-                    elif result[10] is not None: 
+                    elif result[10] is not None:
                         if float(result[5]) > 0:
                             Error = 'Inversiion Diaria: '+str(float(result[5]))
                             Comentario = "Cuidado error de inversion diaria "
@@ -386,7 +386,7 @@ def errors_mm_inv(conn):
                                     nuevoerror = (Error, Comentario,
                                                 'MM', 3, CampaingID, 0, Estatus)
                                     Errores.append(nuevoerror)
-                    elif result[10] is not None: 
+                    elif result[10] is not None:
                         if float(result[11]) > 0:
                             Error = 'Inversiion Diaria Conjunto: ' + \
                                 str(float(result[11]))
@@ -626,14 +626,14 @@ def reviewerrorsInv(conn):
 
 def reviewerrorsMTS(conn):
     cur=conn.cursor(buffered=True)
-    
-    fechahoy = datetime.now() 
+
+    fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
-    
+
     sqlCamping = "select c.CampaingID,c.Campaingname, e.idErrorsCampaings, e.TipoErrorID  from ErrorsCampaings e Inner join Campaings c on c.CampaingID = e.CampaingID Inner join Accounts a on a.AccountsID= c.AccountsID  where e.Media = 'OC' AND e.Estado=1;"
     bupdate = "UPDATE ErrorsCampaings SET estado=0 where idErrorsCampaings=%s and TipoErrorID=%s"
-    
+
     try:
         print(datetime.now())
         cur.execute(sqlCamping)
@@ -641,7 +641,7 @@ def reviewerrorsMTS(conn):
         r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-01-01/{}".format(str(dayhoy)))
         #Primero se convierte el request a JSON
         r=r.json()
-        ap=mp.array(r) 
+        ap=mp.array(r)
         for rowCamp in camp:
             ODCb = False
             Nomenclatura = rowCamp[1]
@@ -651,7 +651,7 @@ def reviewerrorsMTS(conn):
             if searchObj:
                 #Posicion 19 Numero de Orden << Como pueden haber más de una por campaña se agrrega a un arreglo
                 NomODCAR = searchObj.group(19)
-                #Se realiza un split - para obtener todos los nummeros de orden 
+                #Se realiza un split - para obtener todos los nummeros de orden
                 NomODC = NomODCAR.split('-')
                 #For para recorrer los numeros de orden
                 for Nom in NomODC:
@@ -661,7 +661,7 @@ def reviewerrorsMTS(conn):
                         for rowApi in ap:
                             if int(Nom) == rowApi['numero_orden']:
                                 cur.execute(bupdate, (str(ID), 8))
-        print('Success Update Errors Orden de compra')                
+        print('Success Update Errors Orden de compra')
     except Exception as e:
         print(e)
     finally:
@@ -670,11 +670,11 @@ def reviewerrorsMTS(conn):
 
 def push_errors(conn):
     errors_fb_inv(conn)
-    #errors_fb_pais(conn)
-    #errors_mm_inv(conn)
+    errors_fb_pais(conn)
+    errors_mm_inv(conn)
     #errors_af(conn)
-    #errors_tw(conn)
-    #errors_go(conn)
+    errors_tw(conn)
+    errors_go(conn)
 
 
 if __name__ == '__main__':
