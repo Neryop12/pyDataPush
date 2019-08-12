@@ -26,7 +26,7 @@ def ComparacionErrores(conn):
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
-    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) select %s,%s,%s,%s,%s,%s,%s,%s WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
+    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) select distinct %s,%s,%s,%s,%s,%s,%s,%s `MediaPlatforms`.`ErrorsCampaings` WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
     sqlCamping = "select CampaingID,Campaingname from MediaPlatforms.Campaings where EndDate > '{}' and (Campaignstatus='ACTIVE' or Campaignstatus='enabled') ;".format(str(dayhoy))
     try:
         print(datetime.now())
