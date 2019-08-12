@@ -6,12 +6,12 @@ import re
 import mysql.connector as mysql
 from datetime import datetime
 import time
-
+import numpy as mp
 
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',database='mediaplatforms',user='root',password='1234',autocommit=True)
+        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -40,10 +40,10 @@ def errors_fb_inv(conn):
             else:
                 Estatus = StatusCampaing
 
-            Nomenclatura = result[3].encode('utf-8')
+            Nomenclatura = result[3]
             CampaingID = result[2]
 
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M | re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', str(Nomenclatura), re.M | re.I)
             if searchObj:
                 NomInversion = float(searchObj.group(11))
                 if result[4] == 0:
@@ -119,7 +119,7 @@ def errors_fb_inv(conn):
                                       'FB', 1, CampaingID, 0, Estatus)
                         Errores.append(nuevoerror)
 
-        cur.executemany(sqlInserErrors, Errores)
+        #cur.executemany(sqlInserErrors, Errores)
         cur.close()
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
@@ -623,13 +623,58 @@ def reviewerrorsInv(conn):
         print('Actualización Errores Inversion OK')
 
 
+
+def reviewerrorsMTS(conn):
+    cur=conn.cursor(buffered=True)
+    
+    fechahoy = datetime.now() 
+    dayhoy = fechahoy.strftime("%Y-%m-%d")
+    #Query para insertar los datos, Media  -> OC
+    
+    sqlCamping = "select c.CampaingID,c.Campaingname, e.idErrorsCampaings, e.TipoErrorID  from ErrorsCampaings e Inner join Campaings c on c.CampaingID = e.CampaingID Inner join Accounts a on a.AccountsID= c.AccountsID  where e.Media = 'OC' AND e.Estado=1;"
+    bupdate = "UPDATE ErrorsCampaings SET estado=0 where idErrorsCampaings=%s and TipoErrorID=%s"
+    
+    try:
+        print(datetime.now())
+        cur.execute(sqlCamping)
+        camp = mp.array(cur.fetchall())
+        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-01-01/{}".format(str(dayhoy)))
+        #Primero se convierte el request a JSON
+        r=r.json()
+        ap=mp.array(r) 
+        for rowCamp in camp:
+            ODCb = False
+            Nomenclatura = rowCamp[1]
+            CampaingID = rowCamp[0]
+            ID = rowCamp[2]
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M | re.I)
+            if searchObj:
+                #Posicion 19 Numero de Orden << Como pueden ver más de una por campaña se agrrega a un arreglo
+                NomODCAR = searchObj.group(19)
+                #Se realiza un split - para obtener todos los nummeros de orden 
+                NomODC = NomODCAR.split('-')
+                #For para recorrer los numeros de orden
+                for Nom in NomODC:
+                    if int(Nom) > 1 and int(rowCamp[3])==7:
+                        cur.execute(bupdate, (str(ID), 7))
+                    if int(rowCamp[3])==8:
+                        for rowApi in ap:
+                            if int(Nom) == rowApi['numero_orden']:
+                                cur.execute(bupdate, (str(ID), 8))
+        print('Success Update Errors Orden de compra')                
+    except Exception as e:
+        print(e)
+    finally:
+        print(datetime.now())
+
+
 def push_errors(conn):
     errors_fb_inv(conn)
-    errors_fb_pais(conn)
-    errors_mm_inv(conn)
-    errors_af(conn)
-    errors_tw(conn)
-    errors_go(conn)
+    #errors_fb_pais(conn)
+    #errors_mm_inv(conn)
+    #errors_af(conn)
+    #errors_tw(conn)
+    #errors_go(conn)
 
 
 if __name__ == '__main__':
@@ -638,4 +683,5 @@ if __name__ == '__main__':
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
+   reviewerrorsMTS(conn)
    conn.close()

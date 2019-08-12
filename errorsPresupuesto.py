@@ -75,7 +75,7 @@ def ComparacionErrores(conn):
                     if int(Nom) < 1:
                         Error = 'Implementado sin orden de compra'
                         Comentario = 'El numero de orden de compra no esta asignado.'
-                        nuevo=[Error,Comentario,'OC','8',CampaingID,'0','ACTIVE','1']
+                        nuevo=[Error,Comentario,'OC','7',CampaingID,'0','ACTIVE','1']
                         Errores.append(nuevo)
                     else:
                         #De lo contrario se recorre el API de MTS para encontrar el numero de orden
