@@ -11,7 +11,7 @@ conn = None
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
+        conn = mysql.connect(host='localhost',database='MediaPlatforms',user='root',password='1234',autocommit=True)
     except:
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -24,7 +24,7 @@ def ComparacionErrores(conn):
     fechahoy = datetime.now() 
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
-    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) select %s,%s,%s,%s,%s,%s,%s,%s WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
     sqlCamping = "select CampaingID,Campaingname from MediaPlatforms.Campaings where EndDate > '{}' and (Campaignstatus='ACTIVE' or Campaignstatus='enabled') ;".format(str(dayhoy))
     try:
         print(datetime.now())
@@ -69,13 +69,14 @@ def ComparacionErrores(conn):
                 NomODC = NomODCAR.split('-')
                 #For para recorrer los numeros de orden
                 for Nom in NomODC:
+                    ODCb = False
                     #Poscion 11 inversion de la campaña
                     NomInversion = float(searchObj.group(11))
                     #Si el numero de orden es menor a 1 quiere decir que no esta asignado
                     if int(Nom) < 1:
                         Error = 'Implementado sin orden de compra'
                         Comentario = 'El numero de orden de compra no esta asignado.'
-                        nuevo=[Error,Comentario,'OC','7',CampaingID,'0','ACTIVE','1']
+                        nuevo=[Error,Comentario,'OC','7',CampaingID,'0','ACTIVE','1','7',CampaingID]
                         Errores.append(nuevo)
                     else:
                         #De lo contrario se recorre el API de MTS para encontrar el numero de orden
@@ -85,7 +86,7 @@ def ComparacionErrores(conn):
                                 if not rowApi['flow_id'] or int(rowApi['flow_id'])==0:
                                     Error = 'Error no existe Flow asignado'
                                     Comentario = 'El flow id  no esta asignado.'
-                                    nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0']
+                                    nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0','12',CampaingID]
                                     Errores.append(nuevo)
                                     ODCb = True
                                     break
@@ -108,30 +109,30 @@ def ComparacionErrores(conn):
                                         if not Flowb:
                                             Error = 'Error flow ' + str(rowApi['flow_id']) + '.'
                                             Comentario = 'Error el flow no se encontro'
-                                            nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0']
+                                            nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0','12',CampaingID]
                                             Errores.append(nuevo)
                                         if not Presb:
                                             Error = 'Error Presupuesto ' + str(rowApi['codigo_presupuesto']) + '.'
                                             Comentario = 'Error el Presupuesto no se encontro'
-                                            nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0']
+                                            nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0','12',CampaingID]
                                             Errores.append(nuevo)
                                         if not Codb:
                                             Error = 'Error orden de compra ' + str(rowApi['numero_orden']) + '.'
                                             Comentario = 'Error la orden de compra no se encontro'
-                                            nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0']
+                                            nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0', '12',CampaingID]
                                             Errores.append(nuevo)
                                         if Presb and Codb:
                                             if NomInversion >= float(rowApi['valor_total']):
                                                 Error = 'Error de inversion ' 
                                                 Comentario = 'Error la inversion supera lo planificado'
-                                                nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0']
+                                                nuevo=[Error,Comentario,'OC','12',CampaingID,'0','ACTIVE','0','12',CampaingID]
                                                 Errores.append(nuevo)
-                                    ODCb = True
+                                    
                                     break
                         if not ODCb:
                             Error = 'Numero de Orden ' + str(Nom) + '.'
                             Comentario = 'Error el numero de orden Ingresado  no esta asigando al mismo presupuesto'
-                            nuevo=[Error,Comentario,'OC','8',CampaingID,'0','ACTIVE','1']
+                            nuevo=[Error,Comentario,'OC','8',CampaingID,'0','ACTIVE','1','8',CampaingID]
                             Errores.append(nuevo)
         cur.executemany(sqlInserErrors,Errores)
     except Exception as e:
