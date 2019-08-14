@@ -11,7 +11,7 @@ import numpy as mp
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
+        conn = mysql.connect(host='localhost',database='MediaPlatforms',user='root',password='1234',autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -25,7 +25,7 @@ def errors_fb_inv(conn):
     try:
         sqlConjuntosFB = "select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='FB' group by b.CampaingID  desc "
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         cur.execute(sqlConjuntosFB,)
         resultscon = cur.fetchall()
         Errores = []
@@ -59,20 +59,21 @@ def errors_fb_inv(conn):
                                 nuevoerror = (Error, Comentario,
                                               'FB', 2, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
-                    if searchObj.group(25) > 0:
-                        Acumulado = float(result[6])-float(searchObj.group(25))
-                        if Acumulado > NomInversion:
-                            Error = 'Planificado: ' + \
-                                str(NomInversion) + \
-                                '/ Plataforma: '+str(Acumulado)
-                            Comentario = "Error de inversion no debe ser mayor a la planificada"
-                            cur.execute(sqlSelectErrors, (CampaingID, 2, 'FB'))
-                            rescampaing = cur.fetchone()
-                            if rescampaing[0] == 0:
-                                if CampaingID != '':
-                                    nuevoerror = (
-                                        Error, Comentario, 'FB', 2, CampaingID, 0, Estatus)
-                                    Errores.append(nuevoerror)
+                    if searchObj.group(25):
+                        if searchObj.group(25) > 0:
+                            Acumulado = float(result[6])-float(searchObj.group(25))
+                            if Acumulado > NomInversion:
+                                Error = 'Planificado: ' + \
+                                    str(NomInversion) + \
+                                    '/ Plataforma: '+str(Acumulado)
+                                Comentario = "Error de inversion no debe ser mayor a la planificada"
+                                cur.execute(sqlSelectErrors, (CampaingID, 2, 'FB'))
+                                rescampaing = cur.fetchone()
+                                if rescampaing[0] == 0:
+                                    if CampaingID != '':
+                                        nuevoerror = (
+                                            Error, Comentario, 'FB', 2, CampaingID, 0, Estatus)
+                                        Errores.append(nuevoerror)
 
                     elif float(result[10]) > NomInversion:
                         Error = 'Planificado: ' + \
@@ -119,7 +120,7 @@ def errors_fb_inv(conn):
                                       'FB', 1, CampaingID, 0, Estatus)
                         Errores.append(nuevoerror)
 
-        #cur.executemany(sqlInserErrors, Errores)
+        cur.executemany(sqlInserErrors, Errores)
         cur.close()
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
@@ -138,7 +139,7 @@ def errors_fb_pais(conn):
     try:
         sqlCampaingsFB = "select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget, c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,c.Adsetdailybudget, d.AdID,d.Adname,d.country,d.CreateDate,e.Impressions,b.Campaignstatus,d.Adstatus from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN Ads d on d.AdSetID=c.AdSetID INNER JOIN MetricsAds e on e.AdID=d.AdID where a.Media='FB' group by d.Adname, d.Country ORDER BY d.CreateDate desc"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         Errores = []
         cur.execute(sqlCampaingsFB,)
         results = cur.fetchall()
@@ -217,7 +218,7 @@ def errors_go(conn):
     try:
         sqlCampaingsGO = "select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget, c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,c.Adsetdailybudget, d.AdID,d.Adname,d.CreateDate,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN Ads d on d.AdSetID=c.AdSetID  where a.Media='GO'    group by b.CampaingID ORDER BY d.CreateDate desc "
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         Errores = []
 
         Estatus = ''
@@ -277,7 +278,7 @@ def errors_tw(conn):
     try:
         sqlCampaingsTW = "select a.AccountsID,a.Account,a.Media,b.CampaingID,b.Campaingname,b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,e.Impressions,b.Campaignstatus from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID  INNER JOIN CampaingMetrics e on b.CampaingID = e.CampaingID where a.Media='TW'  group by b.CampaingID ORDER BY a.CreateDate desc LIMIT 50000000000"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions) VALUES (%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         cur.execute(sqlCampaingsTW,)
         results = cur.fetchall()
         for result in results:
@@ -323,7 +324,7 @@ def errors_mm_inv(conn):
     try:
         sqlConjuntosFB = "select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='MM' group by b.CampaingID  desc "
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         cur.execute(sqlConjuntosFB,)
         resultscon = cur.fetchall()
         Errores = []
@@ -425,7 +426,7 @@ def errors_af(conn):
     try:
         sqlConjuntosFB = "select a.AccountsID, a.Account, b.CampaingID, b.Campaingname, b.Campaignspendinglimit, b.Campaigndailybudget, b.Campaignlifetimebudget, c.AdSetID,c.Adsetname, c.Adsetlifetimebudget, SUM(c.Adsetlifetimebudget) as tlotalconjungo, c.Adsetdailybudget, a.Media, b.Campaignstatus, b.Campaignstatus, d.ReferrerType, d.Media, c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID INNER JOIN  Ads d on c.AdSetID=d.AdSetID where a.Media='AF' group by b.CampaingID  desc  LIMIT 50000000"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         cur.execute(sqlConjuntosFB,)
         resultscon = cur.fetchall()
         Errores = []
@@ -450,21 +451,21 @@ def errors_af(conn):
                                 nuevoerror = (Error, Comentario,
                                               'MM', 2, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
-
-                    if searchObj.group(25) > 0:
-                        Acumulado = float(searchObj.group(25))-float(result[5])
-                        if Acumulado > NomInversion:
-                            Error = 'Planificado: ' + \
-                                str(NomInversion) + \
-                                '/ Plataforma: '+str(Acumulado)
-                            Comentario = "Error de inversion no debe ser mayor a la planificada"
-                            cur.execute(sqlSelectErrors, (CampaingID, 2, 'AF'))
-                            rescampaing = cur.fetchone()
-                            if rescampaing[0] == 0:
-                                if CampaingID != '':
-                                    nuevoerror = (
-                                        Error, Comentario, 'AF', 2, CampaingID, 0, Estatus)
-                                    Errores.append(nuevoerror)
+                    if searchObj.group(25) is not None:
+                        if searchObj.group(25) > 0:
+                            Acumulado = float(searchObj.group(25))-float(result[5])
+                            if Acumulado > NomInversion:
+                                Error = 'Planificado: ' + \
+                                    str(NomInversion) + \
+                                    '/ Plataforma: '+str(Acumulado)
+                                Comentario = "Error de inversion no debe ser mayor a la planificada"
+                                cur.execute(sqlSelectErrors, (CampaingID, 2, 'AF'))
+                                rescampaing = cur.fetchone()
+                                if rescampaing[0] == 0:
+                                    if CampaingID != '':
+                                        nuevoerror = (
+                                            Error, Comentario, 'AF', 2, CampaingID, 0, Estatus)
+                                        Errores.append(nuevoerror)
 
                     elif float(result[10]) > NomInversion:
                         Error = 'Planificado: ' + \
