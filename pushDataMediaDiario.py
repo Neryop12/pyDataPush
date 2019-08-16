@@ -27,43 +27,18 @@ def fb_ads(conn):
         #SQLS
         #Verificar si existe
         #Guardar Datos
-        sqlInsertAd = "INSERT INTO Ads(AdID,Adname,Country,Adstatus,AdSetID) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname);"
-        sqlInsertCreativeAds = "INSERT INTO CreativeAds(AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname, PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID,Adname,Country) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdcreativeID=VALUES(AdcreativeID),Creativename=VALUES(Creativename);"
-        sqlInsertMetricsAds = "INSERT INTO MetricsAds(Impressions, Ctr, Cpm, Cro,Cost, Frequency, Reach, Pagelikes, Peopletakingaction, Postreactions, Postshares, Photoviews, Clickstoplayvideo, Outboundclicks, Leads, Eventresponses, Messagingreplies, Videowatchesat75, Videowatchesat100, Websiteleads, Desktopappinstalls, Mobileappinstalls, AdID, Country, Adname,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+        sqlInsertDailyAd = "INSERT INTO dailyads(AdID, Adname, Status, Impressions, Ctr, Cpm, Cro, Cost, Frequency, Reach, Pagelikes, Peopletakingaction, Postreactions, Postshares, Photoviews, Clickstoplayvideo, Leads, Eventresponses, Messagingreplies, Videowatchesat75, Videowatchesat100, Websiteleads, Desktopappinstalls, Mobileappinstalls, Clicks) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         #results = cur.fetchall()  Mostrar datos de una consulta
-        ads=[]
-        adscreatives=[]
-        adsmetrics=[]
+        Dailyads=[]
         for atr in temp_k:
-            #ADSET
-            adsetid=atr['gsx$adsetid']['$t']
-            adsetname=atr['gsx$adsetname']['$t'].encode('utf-8')
-            adsetlifetimebudget=atr['gsx$adsetlifetimebudget']['$t']
-            adsetdailybudget=atr['gsx$adsetdailybudget']['$t']
-            adsettargeting=atr['gsx$adsettargeting']['$t']
-            adsetend=atr['gsx$adsetendtime']['$t']
-            adsetstart=atr['gsx$adsetstarttime']['$t']
+          
             #Ads
             adid=atr['gsx$adid']['$t']
             adname=atr['gsx$adname']['$t'].encode('unicode_escape')
             country=atr['gsx$country']['$t'].encode('utf-8')
             adstatus=atr['gsx$adstatus']['$t'].encode('utf-8')
             #CREATIVE
-            adcreativeid=atr['gsx$adcreativeid']['$t']
-            creativename=atr['gsx$creativename']['$t'].encode('unicode_escape')
-            linktopromotedpost=atr['gsx$linktopromotedpost']['$t']
-            adcreativethumbnailurl=atr['gsx$adcreativethumbnailurl']['$t']
-            adcreativeimageurl=atr['gsx$adcreativeimageurl']['$t']
-            externaldestinationurl=atr['gsx$externaldestinationurl']['$t']
-            adcreativeobjecttype=atr['gsx$adcreativeobjecttype']['$t'].encode('utf-8')
-            promotedpostid=atr['gsx$promotedpostid']['$t']
-            promotedpostname=atr['gsx$promotedpostname']['$t'].encode('unicode_escape')
-            promotedpostinstagramid=atr['gsx$promotedpostinstagramid']['$t']
-            promotedpostmessage=atr['gsx$promotedpostmessage']['$t'].encode('unicode_escape')
-            promotedpostcaption=atr['gsx$promotedpostcaption']['$t'].encode('unicode_escape')
-            promotedpostdestinationurl=atr['gsx$promotedpostdestinationurl']['$t']
-            promotedpostimageurl=atr['gsx$promotedpostimageurl']['$t']
-            linktopromotedinstagrampost=atr['gsx$linktopromotedinstagrampost']['$t']
+            
             #MetricsAds
             impressions=atr['gsx$impressions']['$t']
             ctr=atr['gsx$outboundctr']['$t']
@@ -90,26 +65,20 @@ def fb_ads(conn):
             #ACCOUT
             #AD
             if adid!='':
-                ad=(adid,adname,country,adstatus,adsetid)
-                ads.append(ad)
-                adcrea=(adcreativeid, creativename, linktopromotedpost, adcreativethumbnailurl, adcreativeimageurl, externaldestinationurl, adcreativeobjecttype, promotedpostid, promotedpostname, promotedpostinstagramid, promotedpostmessage, promotedpostcaption, promotedpostdestinationurl, promotedpostimageurl, linktopromotedinstagrampost, adid,adname,country)
-                adscreatives.append(adcrea)
-                adme=(impressions, ctr, cpm, cro,cost, frequency, reach, pagelikes, peopletakingaction, postreactions, postshares, photoviews, clickstoplayvideo, outboundclicks, leads, eventresponses, messagingreplies, videowatchesat75, videowatchesat100, websiteleads, desktopappinstalls, mobileappinstalls, adid, country, adname,outboundclicks)
-                adsmetrics.append(adme)
+                dailyad=(adid,adname,adstatus,impressions,ctr,cpm,cro,cost,frequency,reach,pagelikes,peopletakingaction,postreactions,postshares,photoviews,clickstoplayvideo,leads,eventresponses,messagingreplies,videowatchesat75,videowatchesat100,websiteleads,desktopappinstalls,mobileappinstalls,outboundclicks)
+                Dailyads.append(dailyad)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertAd,ads)
-        cur.executemany(sqlInsertCreativeAds,adscreatives)
-        cur.executemany(sqlInsertMetricsAds,adsmetrics)
+        cur.executemany(sqlInsertDailyAd,Dailyads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
-
+        print('Success Facebook Ads')
     except Exception as e:
         print(e)
     finally:
-        print('Success Facebook Ads')
+        print(datetime.now())
 #FIN VISTA
+
 def fb_camp(conn):
     cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
     print (datetime.now())
     r = requests.get(
         "https://spreadsheets.google.com/feeds/list/1sJcYtuYMZvtD_MxIbwVkRIeBXBOAQXCRxsuc3_UHOYQ/od6/public/values?alt=json")
@@ -119,14 +88,8 @@ def fb_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarCuentas="""INSERT INTO  Accounts (AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"""
-        GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus)"""
-        GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
-        cuentas=[]
+        GuardarDailyCampaing="INSERT INTO Dailycampaing(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
-        campmetrics=[]
-        campdisplays=[]
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t'].encode('utf-8')
@@ -151,42 +114,32 @@ def fb_camp(conn):
             cost=atr['gsx$cost']['$t']
 
             #FIN VARIABLES
-            if accountid!='' or accountid!=0:
-                cuenta=[accountid,account,'FB']
-                cuentas.append(cuenta)
-                campana=[campaingid,campaingname,campaignspendinglimit,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate]
+            if campaingid!='':
+                campana=(campaingid,reach,frequency,impressions,placement,clicks,cost)
                 campanas.append(campana)
-                campdisplay=(campaingid,publisherplatform,placement)
-                campdisplays.append(campdisplay)
-                campmetric=(campaingid,reach,frequency,impressions,placement,clicks,cost)
-                campmetrics.append(campmetric)
             #FIN CICLOx
-        cur.executemany(GuardarCuentas,cuentas)
-        cur.executemany(GuardarCampaing,campanas)
-        cur.executemany(GuardarCampMetrics,campmetrics)
-        cur.executemany(GuardarCampDisplays,campdisplays)
-
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(GuardarDailyCampaing,campanas)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success Facebook Camp')
     except Exception as e:
         print(e)
     finally:
-        print('Success Facebook Camp')
+        print(datetime.now())
 #FIN VISTA
 def fb_adsets(conn):
     cur=conn.cursor(buffered=True)
     #CONEXION
     startTime = datetime.now()
     r = requests.get(
-        "https://spreadsheets.google.com/feeds/list/1NHiFwvhG5rpdgJNB26PZ_y8DnOPHnB9GI17pfTy4MZQ/od6/public/values?alt=json")
+        "https://spreadsheets.google.com/feeds/list/1BgB9EvWYKX0j8xYW1_jjPDjN-OTyO1pUKW_kIyr95mc/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
     try:
             #QUERYS
         adsets=[]
-        adsetmetrics=[]
-        sqlInsertAdsSetsMetrics = "INSERT INTO AdSetMetrics(AdSetID,AdSetName,Country,Reach,Frequency,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
-        sqlSelectAdSet = "SELECT count(*) FROM Adsets where AdSetID=%s"
-        sqlInsertAdSet = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,Adsetdailybudget,Adsettargeting,Adsetend,Adsetstart,CampaingID,Status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName),Adsetlifetimebudget=VALUES(Adsetlifetimebudget),Adsetdailybudget=VALUES(Adsetdailybudget),Status=VALUES(Status)"
+        sqlInsertDailyAdsets = "INSERT INTO dailyadset(AdSetID,AdSetName,Country,Reach,Frequency,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s) "
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$adsetid']['$t']
@@ -210,14 +163,11 @@ def fb_adsets(conn):
             status=atr['gsx$adsetconfiguredstatus']['$t']
             #ADSET
             if adsetid!='':
-                adset=(adsetid,adsetname,adsetlifetimebudget,adsetdailybudget,adsettargeting,adsetend,adsetstart,campaingid,status)
+                adset=(adsetid,adsetname,country,reach,frequency,impressions,clicks)
                 adsets.append(adset)
-                adsetmetric=(adsetid,adsetname,country,reach,frequency,impressions,clicks)
-                adsetmetrics.append(adsetmetric)
             #FIN CICLO
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertAdSet,adsets)
-        cur.executemany(sqlInsertAdsSetsMetrics,adsetmetrics)
+        cur.executemany(sqlInsertDailyAdsets,adsets)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
 
 
@@ -228,69 +178,55 @@ def fb_adsets(conn):
 #FIN VISTA
 def go_camp(conn):
     cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
-    r=requests.get("https://spreadsheets.google.com/feeds/list/13bmX2G2PX7MHd49bHMRJtkeJZXb0vHClzBJw4_GmvjA/od6/public/values?alt=json")
-    #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
+    print (datetime.now())
+    r = requests.get(
+        "https://spreadsheets.google.com/feeds/list/1CxZPB3uAGTFH3j8RAAfEcEorL1r6Iy-eWBY_X4mpXRw/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
     #CONEXION
     try:
-        cuentas=[]
-        campanas=[]
-        campmetrics=[]
-        campdisplays=[]
         #QUERYS
-        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
-        sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks,cost) VALUES (%s,%s,%s,%s,%s,%s)"
-        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
+        GuardarDailyCampaing="INSERT INTO Dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused) VALUES (%s,%s,%s,%s,%s)"
+        campanas=[]
         for atr in temp_k:
             #ACCOUNT
-            accountid=atr['gsx$accountid']['$t']
-            account=atr['gsx$account']['$t'].encode('utf-8')
+            accountid=atr['gsx$accountid']['$t'].encode('utf-8')
+            account=atr['gsx$account']['$t']
+            account2=atr['gsx$account']['$t'].encode('utf-8')
             #CAMPAING
             campaingid=atr['gsx$campaignid']['$t']
-            campaingname=atr['gsx$campaignname']['$t']
-            campaigndailybudget=atr['gsx$dailybudget']['$t']
-            campaignlifetimebudget=atr['gsx$budget']['$t']
-            percentofbudgetused=atr['gsx$percentofbudgetused']['$t']
-            startdate=atr['gsx$startdate']['$t']
-            enddate=atr['gsx$enddate']['$t']
-            campaignobjective=''
+            campaingname=atr['gsx$campaignname']['$t'].encode('utf-8')
+
             impressions=atr['gsx$impressions']['$t']
-            clicks=atr['gsx$clicks']['$t']
             cost=atr['gsx$cost']['$t']
-            campaignstatus=atr['gsx$campaignstatus']['$t'].encode('utf-8')
-            placement=atr['gsx$advertisingchanneltype']['$t'].encode('utf-8')
-            publisherplatform=atr['gsx$advertisingchannelsub-type']['$t'].encode('utf-8')
-
-            if accountid!='':
-                cuenta=[accountid,account,'GO']
-                cuentas.append(cuenta)
-                campana=[campaingid,campaingname,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate]
-                campanas.append(campana)
-                campdisplay=(campaingid,publisherplatform,placement)
-                campdisplays.append(campdisplay)
-                campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks,cost)
-                campmetrics.append(campmetric)
-
-        cur.executemany(sqlInsertAccount ,cuentas)
-        cur.executemany(sqlInsertCampaing,campanas)
-        cur.executemany(sqlInsertCampaingMetrics,campmetrics)
-        cur.executemany(sqlInsertCampaingDisplay,campdisplays)
-
+            clicks=atr['gsx$clicks']['$t']
+            #Percent of budget used
+            percentofbudgetused=atr['gsx$percentofbudgetused']['$t']
+            #FIN VARIABLES
+            if campaingid!='':
+                if percentofbudgetused!='':
+                    campana=(campaingid,impressions,clicks,cost,percentofbudgetused)
+                    campanas.append(campana)
+                else:
+                    campana=(campaingid,impressions,clicks,cost,0)
+                    campanas.append(campana)
+            #FIN CICLOx
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(GuardarDailyCampaing,campanas)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success GOOGLE Campanas')
     except Exception as e:
         print(e)
     finally:
-        print (datetime.now())
-        print('Success GOOGLE Campanas')
+        print(datetime.now())
+        
 #FIN VISTA
 def go_adsets(conn):
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1LfQVv-DbT7Nit_7Q32kN59-slUJhK6UL0tG0KAnkFxY/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1gLKwKf5NWo09HmgadIVG_FLeJFrAKLYEKBMo93HEgJk/od6/public/values?alt=json")
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
@@ -299,9 +235,7 @@ def go_adsets(conn):
     try:
         #QUERYS
         adsets=[]
-        adsetmetrics=[]
-        sqlInsertAdsSets = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,CampaingID,Status) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName),Adsetlifetimebudget=VALUES(Adsetlifetimebudget),Status=VALUES(Status)"
-        sqlInsertAdsSetsMetrics = "INSERT INTO AdSetMetrics(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
+        sqlInsertDailyAdsets = "INSERT INTO dailyadset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
 
         for atr in temp_k:
             #ACCOUNT
@@ -313,24 +247,24 @@ def go_adsets(conn):
             clicks=atr['gsx$clicks']['$t']
             status=atr['gsx$adgroupstatus']['$t']
             if adsetid!='':
-                adset=(adsetid,adsetname,cost,campaingid,status)
+                adset=(adsetid,adsetname,impressions,clicks)
                 adsets.append(adset)
-                adsetmetric=(adsetid,adsetname,impressions,clicks)
-                adsetmetrics.append(adsetmetric)
             #FIN CICLO
-        cur.executemany(sqlInsertAdsSets,adsets)
-        cur.executemany(sqlInsertAdsSetsMetrics,adsetmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertDailyAdsets,adsets)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success Google Adsets')
 
     except Exception as e:
         print(e)
     finally:
-        print('Success Google Adsets')
+        print(datetime.now())
 #FIN VISTA
 def go_ads(conn):
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1repEph-Yd6IzQATtYOFajq3GDUkJ4GVNaH2HNT9_HMw/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1XAeBrJIyPB2n6Jz3pMGph5IazSCqZBS7PjsNVfGWt3w/od6/public/values?alt=json")
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
@@ -338,11 +272,8 @@ def go_ads(conn):
     #CONEXION
     try:
         ads=[]
-        adscreatives=[]
-        adsmetrics=[]
         #QUERYS
-        sqlInsertAds = "INSERT INTO Ads(AdID,Adstatus,AdSetID) VALUES (%s,%s,%s)ON DUPLICATE KEY UPDATE AdID=VALUES(AdID)"
-        sqlInsertMetricsAds = "INSERT INTO MetricsAds(Cost,Ctr,Cpm,Convertions,Videowatchesat100,Videowatchesat75,AdID,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sqlInsertDailyAd = "INSERT INTO dailyads(Cost,Ctr,Cpm,Convertions,Videowatchesat100,Videowatchesat75,AdID,Adname,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$adgroupid']['$t']
@@ -359,39 +290,35 @@ def go_ads(conn):
             videowatchesat75=atr['gsx$watch75rate']['$t']
             videowatchesat100=atr['gsx$watch100rate']['$t']
             if adid!='':
-                ad=(adid,adstatus,adsetid)
+                ad=(cost,ctr,cpm,convertions,videowatchesat100,videowatchesat75,adid,descripcion,impressions,clicks)
                 ads.append(ad)
-                adme=(cost,ctr,cpm,convertions,videowatchesat100,videowatchesat75,adid,impressions,clicks)
-                adsmetrics.append(adme)
-        cur.executemany(sqlInsertAds,ads)
-        cur.executemany(sqlInsertMetricsAds,adsmetrics)
+        
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertDailyAd,ads)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success Google Ads')
 
     except Exception as e:
         print(e)
     finally:
-        print('Success Google Ads')
+        print(datetime.now())
 #FIN VISTA
 def tw_camp(conn):
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1oVsLY6IdOY4AvFz4BMLlSvlHDmG1rtw9HMZrsZzxqJY/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/10UMdRoZal--BLcZYtq63PSvv6AStQ9Dye-dMgtdPUs0/od6/public/values?alt=json")
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
     #CONEXION
-    cuentas=[]
+    
     campanas=[]
-    campmetrics=[]
-    campdisplays=[]
     #QUERYS
     try:
-        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
-        sqlInsertAccount = "INSERT INTO Accounts(AccountsID,Account,Media) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Impressions,Clicks,cost) VALUES (%s,%s,%s,%s)"
-        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,Placement) VALUES (%s,%s)ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
+        GuardarDailyCampaing="INSERT INTO Dailycampaing(CampaingID,Impressions,Clicks,cost) VALUES (%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t'].encode('utf-8')
@@ -409,30 +336,23 @@ def tw_camp(conn):
             clicks=atr['gsx$clicks']['$t']
             cost=atr['gsx$cost']['$t']
             if accountid!='':
-                cuenta=[accountid,account,'TW']
-                cuentas.append(cuenta)
-                campana=[campaingid,campaingname,campaigndailybudget,campaignlifetimebudget,campaignobjective,accountid,startdate,enddate]
+                campana=(campaingid,impressions,clicks,cost)
                 campanas.append(campana)
-                campdisplay=(campaingid,placement)
-                campdisplays.append(campdisplay)
-                campmetric=(campaingid,impressions,clicks,cost)
-                campmetrics.append(campmetric)
             #FIN CICLOx
-        cur.executemany(sqlInsertAccount ,cuentas)
-        cur.executemany(sqlInsertCampaing ,campanas)
-        cur.executemany(sqlInsertCampaingMetrics,campmetrics)
-        cur.executemany(sqlInsertCampaingDisplay,campdisplays)
-
+       
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(GuardarDailyCampaing ,campanas)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success Campanas Twitter')
     except Exception as e:
         print(e)
     finally:
-        print('Success Campanas Twitter')
+        print(datetime.now())
 #FIN VISTA
 def tw_adsets(conn):
     cur=conn.cursor(buffered=True)
-    startTime = datetime.now()
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1ZDP70FMghz9fu2yDpRzEhZw4_JNnBzWSU5pWi42E3lA/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1dpabfqdQkD6GAZ1pFRQlvNpcsjdVA_scEWTF90eBEBg/od6/public/values?alt=json")
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     try:
         data=r.json()
@@ -441,10 +361,8 @@ def tw_adsets(conn):
         #CONEXION
 
         adsets=[]
-        adsetmetrics=[]
         #QUERYS
-        sqlInsertAdsSetsMetrics = "INSERT INTO AdSetMetrics(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
-        sqlInsertAdsSets = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,CampaingID) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
+        sqlInsertDailyAdsets = "INSERT INTO dailyadset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$campaignid']['$t']+atr['gsx$fundinginstrumentid']['$t']
@@ -458,26 +376,23 @@ def tw_adsets(conn):
             clicks=atr['gsx$clicks']['$t']
 
             if adsetid!='':
-                adset=(adsetid,adsetname,adsetlifetimebudget,campaingid)
+                adset=(adsetid,adsetname,impressions,clicks)
                 adsets.append(adset)
-                adsetmetric=(adsetid,adsetname,impressions,clicks)
-                adsetmetrics.append(adsetmetric)
             #ADSET
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertAdsSets,adsets)
-        cur.executemany(sqlInsertAdsSetsMetrics,adsetmetrics)
+        cur.executemany(sqlInsertDailyAdsets,adsets)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
-
+        print('Success Twitter Adsets')
     except Exception as e:
         print(e)
     finally:
-        print('Success Twitter Adsets')
+        print(datetime.now())
 #FIN VISTA
 def tw_ads(conn):
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1eHGuoB4gxqASR-I9RijMNtEax2xFWIAo4xqAyRhCfcM/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1gJYMnVO7MCey1LC5goqW0Igksq6GN_vs358JKMYzI4I/od6/public/values?alt=json")
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
@@ -491,6 +406,7 @@ def tw_ads(conn):
         sqlInsertAds = "INSERT INTO Ads(AdID,AdSetID,Adname) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Adname=VALUES(Adname)"
         sqlInsertMetricsAds = "INSERT INTO MetricsAds(Impressions,Cost,Ctr,Cpm,AdID) VALUES (%s,%s,%s,%s,%s)"
         sqlSelectAds = "SELECT count(*) FROM Ads where AdID=%s and AdSetID=%s"
+        sqlInsertDailyAd = "INSERT INTO dailyads(Impressions,Cost,Ctr,Cpm,AdID) VALUES (%s,%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             adid=atr['gsx$campaignid']['$t']+atr['gsx$fundinginstrumentid']['$t']
@@ -503,22 +419,23 @@ def tw_ads(conn):
             ctr=atr['gsx$ctr']['$t']
             cpm=atr['gsx$cpm']['$t']
             cpc=atr['gsx$cpc']['$t']
-            if adid!='':
-                ad=(adid,adsetid,adname)
-                ads.append(ad)
-
-                adme=(impressions, cost,ctr,cpm, adsetid)
-                adsmetrics.append(adme)
+            if adid!='' and impressions != '':
+                if cost!='':
+                    adme=(impressions, cost,ctr,cpm, adsetid)
+                    ads.append(adme)
+                else:
+                    adme=(impressions, 0,ctr,cpm, adsetid)
+                    ads.append(adme)
+               
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertAds,ads)
-        cur.executemany(sqlInsertMetricsAds,adsmetrics)
+        cur.executemany(sqlInsertDailyAd,ads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
-
+        print('Success Ads Twittter')
 
     except Exception as e:
         print(e)
     finally:
-        print('Success Ads Twittter')
+        print(datetime.now())
 #FIN VISTA
 def push_camps(conn):
     fb_camp(conn)
@@ -537,11 +454,14 @@ def push_ads(conn):
 
 if __name__ == '__main__':
    openConnection()
-   #tw_camps(conn)
-   push_camps(conn)
-   push_adsets(conn)
-   push_ads(conn)
+   fb_ads(conn)
+   fb_camp(conn)
+   fb_adsets(conn)
+   go_camp(conn)
+   go_adsets(conn)
+   go_ads(conn)
+   tw_camp(conn)
+   tw_adsets(conn)
+   tw_ads(conn)
    conn.close()
-    #fb_ads()
-   #reviewerrors()
-   #reviewerrors()
+ 
