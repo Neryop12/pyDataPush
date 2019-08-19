@@ -88,7 +88,7 @@ def fb_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailyCampaing="INSERT INTO Dailycampaing(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -187,7 +187,7 @@ def go_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailyCampaing="INSERT INTO Dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused) VALUES (%s,%s,%s,%s,%s)"
+        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused) VALUES (%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -318,7 +318,7 @@ def tw_camp(conn):
     campanas=[]
     #QUERYS
     try:
-        GuardarDailyCampaing="INSERT INTO Dailycampaing(CampaingID,Impressions,Clicks,cost) VALUES (%s,%s,%s,%s)"
+        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost) VALUES (%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t'].encode('utf-8')
