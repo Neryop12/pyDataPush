@@ -43,7 +43,7 @@ def PresupusetoCamp(conn):
                 if Costo > NomInversion: 
                     Error = 'Error el presupuesto planificado es menor al presupuesto real '
                     Comentario = 'Error la campaña '+ result[0] +' excede el presupuesto real por: ' + str(Costo - NomInversion)
-                    nuevo=[Error,Comentario,result[5],'2',result[0],'0','ACTIVE']
+                    nuevo=[Error,Comentario,result[5],'15',result[0],'0','ACTIVE']
                     Errores.append(nuevo)
                 else:
                     date_time_obj = datetime.strptime(result[3],'%Y-%m-%d') - datetime.now()
@@ -52,7 +52,7 @@ def PresupusetoCamp(conn):
                         if porcentaje >= 0.9:
                             Error = '!Advertencia! el presupuesto esta a punto de llegar su tope '
                             Comentario = 'Advertencia la campaña '+ result[0] +' alcanzara pronto su tope'
-                            nuevo=[Error,Comentario,result[5],'2',result[1],'0','ACTIVE']
+                            nuevo=[Error,Comentario,result[5],'14',result[1],'0','ACTIVE']
                             Errores.append(nuevo)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInserErrors,Errores)

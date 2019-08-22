@@ -18,7 +18,8 @@ ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',port=8889,database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
+        conn = mysql.connect(host='localhost', database='MediaPlatforms',
+                             user='root', password='1234', autocommit=True)
     except:
         logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -78,7 +79,7 @@ def GetAdformCampaign(conn):
                                     "cost"
                                 ],
                                 "filter": {
-                                    "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
+                                    "date": {"from":"2019-01-01", "to": "{}".format(str(datetime.now()))}
                                 }
                     }
          )
@@ -173,7 +174,7 @@ def GetAdformAds(conn):
     ads=[]
     adsmetrics=[]
     #Querys
-    sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID,ReferrerType,Media,Status) VALUES (%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname),ReferrerTYpe=VALUES(ReferrerType),Media=VALUES(Media),Status=VALUES(Status);"
+    sqlInsertAd = "INSERT INTO Ads(AdID,Adname,AdSetID,Media,Status) VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdID=VALUES(AdID),Adname=VALUES(Adname),Media=VALUES(Media),Status=VALUES(Status);"
     sqlInsertMetricsAds = "INSERT INTO MetricsAds(AdID,Adname,Clicks,Impressions,Cost,ctr,cpm,convertions) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
     try:
         url='https://api.adform.com/v1/reportingstats/agency/reportdata'
@@ -210,7 +211,7 @@ def GetAdformAds(conn):
         data=data.json()
         for row in data['reportData']['rows']:
             if(row[1]>0):
-                ad=[row[1],row[2],row[0],row[3],row[4],'ACTIVE']
+                ad=[row[1],row[2],row[0],row[4],'ACTIVE']
                 ads.append(ad)
                 admetric=[row[1],row[2],row[5],row[6],row[7],row[8],row[9],row[10]]
                 adsmetrics.append(admetric)
@@ -283,6 +284,6 @@ if __name__ == '__main__':
     openConnection()
     GetToken()
     GetAdformCampaign(conn)
-    GetAdformAdsets(conn)
-    GetAdformAds(conn)
+    #GetAdformAdsets(conn)
+    #GetAdformAds(conn)
     #GetAdFormCreativeAds(conn)
