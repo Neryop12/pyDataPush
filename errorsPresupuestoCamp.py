@@ -52,7 +52,7 @@ def PresupusetoCamp(conn):
                         if porcentaje >= 0.9:
                             Error = '!Advertencia! el presupuesto esta a punto de llegar su tope '
                             Comentario = 'Advertencia la campaña '+ result[0] +' alcanzara pronto su tope'
-                            nuevo=[Error,Comentario,result[5],'14',result[1],'0','ACTIVE']
+                            nuevo=[Error,Comentario,result[5],'13',result[1],'0','ACTIVE']
                             Errores.append(nuevo)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInserErrors,Errores)

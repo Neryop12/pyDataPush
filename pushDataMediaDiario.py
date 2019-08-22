@@ -11,7 +11,8 @@ import time
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost',database='MediaPlatforms',user='root',password='1234',autocommit=True)
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
+                             user='omgdev', password='Sdev@2002!', autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -88,7 +89,7 @@ def fb_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -108,13 +109,14 @@ def fb_camp(conn):
             cost=atr['gsx$cost']['$t']
             budget=atr['gsx$campaignlifetimebudget']['$t']
             enddate=atr['gsx$campaignenddate']['$t']
+            placement=atr['gsx$placement']['$t']
             #FIN VARIABLES
             if campaingid!='':
                 if budget!='':
-                    campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate)
+                    campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,placement)
                     campanas.append(campana)
                 else:
-                    campana=(campaingid,reach,frequency,impressions,clicks,cost,0,enddate)
+                    campana=(campaingid,reach,frequency,impressions,clicks,cost,0,enddate,placement)
                     campanas.append(campana)
             #FIN CICLOx
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
@@ -186,7 +188,7 @@ def go_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,AdvertisingChannelType) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarDailyCampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -206,6 +208,7 @@ def go_camp(conn):
             budget=atr['gsx$budget']['$t']
             enddate=atr['gsx$enddate']['$t']
             advertising=atr['gsx$advertisingchanneltype']['$t']
+            subadvertising=atr['gsx$advertisingchannelsub-type']['$t']
             Nomenclatura=atr['gsx$campaignname']['$t']
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', str(Nomenclatura), re.M | re.I)
             if enddate=='' or enddate ==' --':
@@ -215,10 +218,10 @@ def go_camp(conn):
             #FIN VARIABLES
             if campaingid!='':
                 if percentofbudgetused!='':
-                    campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising)
+                    campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising)
                     campanas.append(campana)
                 else:
-                    campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising)
+                    campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising)
                     campanas.append(campana)
                 
 
@@ -468,14 +471,14 @@ def push_ads(conn):
 
 if __name__ == '__main__':
    openConnection()
-   #fb_ads(conn)
-   #fb_camp(conn)
-   #fb_adsets(conn)
+   fb_ads(conn)
+   fb_camp(conn)
+   fb_adsets(conn)
    go_camp(conn)
-   #go_adsets(conn)
-   #go_ads(conn)
-   #tw_camp(conn)
-   #tw_adsets(conn)
-   #tw_ads(conn)
+   go_adsets(conn)
+   go_ads(conn)
+   tw_camp(conn)
+   tw_adsets(conn)
+   tw_ads(conn)
    conn.close()
  
