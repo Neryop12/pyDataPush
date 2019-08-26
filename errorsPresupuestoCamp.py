@@ -24,10 +24,9 @@ def PresupusetoCamp(conn):
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
     sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s) "
-    sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID limit 1 ),0) costo,a.Media from Campaings c inner join dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID where c.EndDate > '{}' group by c.CampaingID;".format(dayhoy)
+    sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID group by m.id desc limit 1  ),0) costo,a.Media from Campaings c inner join dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID where c.EndDate > '{}'  group by c.CampaingID;".format(dayhoy)
     try:
         print(datetime.now())
-        cur.execute(sqlCamping)
         cur.execute(sqlCamping)
         camp = cur.fetchall()
         for result in camp:
@@ -40,9 +39,9 @@ def PresupusetoCamp(conn):
                     if float(searchObj.group(25)) > 0:
                         Costo = float(searchObj.group(25))-float(result[0])
                         Costo += float(result[4]) 
-                if Costo > NomInversion: 
+                if (Costo - NomInversion) > 1: 
                     Error = 'Error el presupuesto planificado es menor al presupuesto real '
-                    Comentario = 'Error la campaña '+ result[0] +' excede el presupuesto real por: ' + str(Costo - NomInversion)
+                    Comentario = 'Error la campaña '+ result[0] +' excede el presupuesto real por: ' + str(round(Costo - NomInversion,1))
                     nuevo=[Error,Comentario,result[5],'15',result[0],'0','ACTIVE']
                     Errores.append(nuevo)
                 else:
