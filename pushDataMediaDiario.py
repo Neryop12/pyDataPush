@@ -32,14 +32,14 @@ def fb_ads(conn):
         #results = cur.fetchall()  Mostrar datos de una consulta
         Dailyads=[]
         for atr in temp_k:
-          
+
             #Ads
             adid=atr['gsx$adid']['$t']
             adname=atr['gsx$adname']['$t'].encode('unicode_escape')
             country=atr['gsx$country']['$t'].encode('utf-8')
             adstatus=atr['gsx$adstatus']['$t'].encode('utf-8')
             #CREATIVE
-            
+
             #MetricsAds
             impressions=atr['gsx$impressions']['$t']
             ctr=atr['gsx$outboundctr']['$t']
@@ -93,7 +93,7 @@ def fb_camp(conn):
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
-            
+
             #CAMPAING
             campaingid=atr['gsx$campaignid']['$t']
             campaingname=atr['gsx$campaignname']['$t'].encode('utf-8')
@@ -210,7 +210,7 @@ def go_camp(conn):
             advertising=atr['gsx$advertisingchanneltype']['$t']
             subadvertising=atr['gsx$advertisingchannelsub-type']['$t']
             Nomenclatura=atr['gsx$campaignname']['$t']
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', str(Nomenclatura), re.M | re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', str(Nomenclatura), re.M | re.I)
             if enddate=='' or enddate ==' --':
                 enddate = None
             if searchObj:
@@ -223,7 +223,7 @@ def go_camp(conn):
                 else:
                     campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising)
                     campanas.append(campana)
-                
+
 
             #FIN CICLOx
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
@@ -234,7 +234,7 @@ def go_camp(conn):
         print(e)
     finally:
         print(datetime.now())
-        
+
 #FIN VISTA
 def go_adsets(conn):
     cur=conn.cursor(buffered=True)
@@ -306,7 +306,7 @@ def go_ads(conn):
             if adid!='':
                 ad=(cost,ctr,cpm,convertions,videowatchesat100,videowatchesat75,adid,descripcion,impressions,clicks)
                 ads.append(ad)
-        
+
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertDailyAd,ads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
@@ -328,7 +328,7 @@ def tw_camp(conn):
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
     #CONEXION
-    
+
     campanas=[]
     #QUERYS
     try:
@@ -356,7 +356,7 @@ def tw_camp(conn):
                 campana=(campaingid,impressions,clicks,cost,enddate)
                 campanas.append(campana)
             #FIN CICLOx
-       
+
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarDailyCampaing ,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
@@ -443,7 +443,7 @@ def tw_ads(conn):
                 else:
                     adme=(impressions, 0,ctr,cpm, adsetid)
                     ads.append(adme)
-               
+
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertDailyAd,ads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
@@ -481,4 +481,4 @@ if __name__ == '__main__':
    tw_adsets(conn)
    tw_ads(conn)
    conn.close()
- 
+
