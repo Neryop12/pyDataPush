@@ -26,7 +26,7 @@ def ComparacionErrores(conn):
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
-    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) select distinct %s,%s,%s,%s,%s,%s,%s,%s `MediaPlatforms`.`ErrorsCampaings` WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
+    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing,Estado) select distinct %s,%s,%s,%s,%s,%s,%s,%s from `MediaPlatforms`.`ErrorsCampaings` WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
     sqlCamping = "select CampaingID,Campaingname from MediaPlatforms.Campaings where EndDate > '{}' and (Campaignstatus='ACTIVE' or Campaignstatus='enabled') ;".format(str(dayhoy))
     try:
         print(datetime.now())
@@ -136,6 +136,7 @@ def ComparacionErrores(conn):
                             nuevo=[Error,Comentario,'OC','8',CampaingID,'0','ACTIVE','1','8',CampaingID]
                             Errores.append(nuevo)
         cur.executemany(sqlInserErrors,Errores)
+        print('Success')
     except Exception as e:
         print(e)
     finally:

@@ -23,7 +23,7 @@ def PresupusetoCamp(conn):
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
-    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) select distinct %s,%s,%s,%s,%s,%s,%s `MediaPlatforms`.`ErrorsCampaings` WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
+    sqlInserErrors = "INSERT INTO MediaPlatforms.ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) select distinct %s,%s,%s,%s,%s,%s,%s from `MediaPlatforms`.`ErrorsCampaings` WHERE NOT exists (SELECT DISTINCT * FROM MediaPlatforms.ErrorsCampaings where TipoErrorID=%s and CampaingID=%s);"
     sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID group by m.id desc limit 1  ),0) costo,a.Media from Campaings c inner join dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID where c.EndDate > '{}'  group by c.CampaingID;".format(dayhoy)
     try:
         print(datetime.now())
@@ -51,7 +51,7 @@ def PresupusetoCamp(conn):
                         if porcentaje >= 0.9:
                             Error = '!Advertencia! el presupuesto esta a punto de llegar su tope '
                             Comentario = 'Advertencia la campaña '+ result[0] +' alcanzara pronto su tope'
-                            nuevo=[Error,Comentario,result[5],'13',result[1],'0','ACTIVE','13',result[0]]
+                            nuevo=[Error,Comentario,result[5],'13',result[0],'0','ACTIVE','13',result[0]]
                             Errores.append(nuevo)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInserErrors,Errores)

@@ -61,7 +61,8 @@ def errors_fb_inv(conn):
                                               'FB', 2, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
                     if searchObj.group(25):
-                        if searchObj.group(25) > 0:
+                        valor = searchObj.group(25)
+                        if float(valor) > 0:
                             Acumulado = float(result[6])-float(searchObj.group(25))
                             if Acumulado > NomInversion:
                                 Error = 'Planificado: ' + \

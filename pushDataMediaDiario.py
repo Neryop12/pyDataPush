@@ -471,14 +471,14 @@ def push_ads(conn):
 
 if __name__ == '__main__':
    openConnection()
-   fb_ads(conn)
-   fb_camp(conn)
-   fb_adsets(conn)
+   #fb_ads(conn)
+   #fb_camp(conn)
+   #fb_adsets(conn)
    go_camp(conn)
-   go_adsets(conn)
-   go_ads(conn)
-   tw_camp(conn)
-   tw_adsets(conn)
-   tw_ads(conn)
+   #go_adsets(conn)
+   #go_ads(conn)
+   #tw_camp(conn)
+   #tw_adsets(conn)
+   #tw_ads(conn)
    conn.close()
 
