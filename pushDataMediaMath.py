@@ -99,9 +99,11 @@ def GetMediaMathCampaing(conn):
                 campanas.append(campana)
                 campanametrica=[row[4],row[9],row[8],row[7]]
                 campmetrics.append(campanametrica)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAccount ,cuentas)
         cur.executemany(sqlInsertCampaing,campanas)
         cur.executemany(sqlInsertCampaingMetrics,campmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM Campanas')
      except Exception as e:
         print(e)
@@ -156,8 +158,10 @@ def GetMediaMathADSets(conn):
                 adsets.append(adset)
                 adsetmetric=[row[3],row[4],row[9],row[10]]
                 adsetmetrics.append(adsetmetric)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAdSet ,adsets)
         cur.executemany(sqlInsertAdsSetsMetrics ,adsetmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         print('Success MM Adsets')
     except Exception as e:
         print(e)
@@ -203,8 +207,10 @@ def GetMediaMathADs(conn):
                 ads.append(ad)
                 admetric=[row[3],row[4],row[5],row[6],row[7],row[8],row[11],row[12]]
                 adsmetrics.append(admetric)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertAd ,ads)
         cur.executemany(sqlInsertMetricsAds ,adsmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM AD')
     except Exception as e:
         print(e)
@@ -216,6 +222,6 @@ if __name__ == '__main__':
     openConnection()
     GetToken()
     GetSession()
-    #GetMediaMathCampaing(conn)
+    GetMediaMathCampaing(conn)
     GetMediaMathADSets(conn)
-    #GetMediaMathADs(conn)
+    GetMediaMathADs(conn)

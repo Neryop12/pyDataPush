@@ -133,6 +133,7 @@ def errors_fb_inv(conn):
 
 
 def errors_fb_pais(conn):
+    a = False
     global cur
     cur = conn.cursor()
     print (datetime.now())
@@ -146,7 +147,8 @@ def errors_fb_pais(conn):
         cur.execute(sqlCampaingsFB,)
         results = cur.fetchall()
         for result in results:
-            Nomenclatura = result[4].encode('utf-8')
+            a = True
+            Nomenclatura = result[4]
             CampaingIDS = result[3]
             Impressions = result[16]
             StatusCampaing = result[17]
@@ -164,27 +166,36 @@ def errors_fb_pais(conn):
                 NomPais = searchObj.group(1)
                 NomCliente = searchObj.group(2)
                 NomProducto = searchObj.group(4)
-                if NomCliente == 'CCPRADERA':
-                        if NomProducto == 'HUE':
-                            if result[14] == 'MX':
-                                a += 1
-                        if NomProducto == 'CHIQ':
-                            if result[14] == 'GT':
-                                a += 1
-                            elif result[14] == 'HN':
-                                a += 1
-                        if a == 0:
-                            Error = result[14]
-                            TipoErrorID = 6
-                            Comentario = "Error de paises se estan imprimiendo anuncios en otros paises"
-                            cur.execute(sqlSelectErrors,
-                                        (CampaingIDS, TipoErrorID, Media))
-                            rescampaing = cur.fetchone()
-                            if rescampaing[0] < 1:
-                                if CampaingIDS != '':
-                                    nuevoerror = (
-                                        Error, Comentario, 'FB', TipoErrorID, CampaingIDS, Impressions, Estatus)
-                                    Errores.append(nuevoerror)
+                if NomCliente == 'CCPRADERA' and NomProducto == 'HUE':
+                    if result[14] == 'MX' or result[14]=='GT' :
+                        a = False
+                    if a:
+                        Error = result[14]
+                        TipoErrorID = 6
+                        Comentario = "Error de paises se estan imprimiendo anuncios en otros paises"
+                        cur.execute(sqlSelectErrors,
+                                    (CampaingIDS, TipoErrorID, 'FB'))
+                        rescampaing = cur.fetchone()
+                        if rescampaing[0] < 1:
+                            if CampaingIDS != '':
+                                nuevoerror = (
+                                    Error, Comentario, 'FB', TipoErrorID, CampaingIDS, Impressions, Estatus)
+                                Errores.append(nuevoerror)
+                elif NomCliente == 'CCPRADERA' and NomProducto == 'CHIQ':
+                    if result[14] == 'HN' or result[14]=='GT' :
+                        a = False
+                    if a:
+                        Error = result[14]
+                        TipoErrorID = 6
+                        Comentario = "Error de paises se estan imprimiendo anuncios en otros paises"
+                        cur.execute(sqlSelectErrors,
+                                    (CampaingIDS, TipoErrorID, 'FB'))
+                        rescampaing = cur.fetchone()
+                        if rescampaing[0] < 1:
+                            if CampaingIDS != '':
+                                nuevoerror = (
+                                    Error, Comentario, 'FB', TipoErrorID, CampaingIDS, Impressions, Estatus)
+                                Errores.append(nuevoerror)
                 if NomCliente != 'CCR' and NomCliente != 'CCPRADERA':
 
                     if result[14] != NomPais:
@@ -200,7 +211,6 @@ def errors_fb_pais(conn):
                                     nuevoerror = (
                                         Error, Comentario, 'FB', TipoErrorID, CampaingIDS, Impressions, Estatus)
                                     Errores.append(nuevoerror)
-
         cur.executemany(sqlInserErrors, Errores)
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
