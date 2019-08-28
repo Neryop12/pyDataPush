@@ -62,9 +62,15 @@ def SaldosGO(conn):
                             nuevo=[Error,Comentario,'GO','14',result[0],'0','ACTIVE']
                             Errores.append(nuevo)
         cur.executemany(sqlInserErrors,Errores)
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("SaldosGO", "success", "errorsSaldos.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
         print('Success GO')
     except Exception as e:
         print(e)
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("SaldosGo", "{}", "errorsSaldos.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 

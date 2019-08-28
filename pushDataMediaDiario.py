@@ -72,8 +72,15 @@ def fb_ads(conn):
         cur.executemany(sqlInsertDailyAd,Dailyads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Facebook Ads')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_ads", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_ads", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
@@ -123,8 +130,16 @@ def fb_camp(conn):
         cur.executemany(GuardarDailyCampaing,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Facebook Camp')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
@@ -170,10 +185,16 @@ def fb_adsets(conn):
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertDailyAdsets,adsets)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
-
-
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_adsets", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_adsets", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Facebook AdSets')
 #FIN VISTA
@@ -230,8 +251,16 @@ def go_camp(conn):
         cur.executemany(GuardarDailyCampaing,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success GOOGLE Campanas')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 
@@ -268,9 +297,16 @@ def go_adsets(conn):
         cur.executemany(sqlInsertDailyAdsets,adsets)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Google Adsets')
-
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_adsets", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_adsets", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
@@ -311,9 +347,16 @@ def go_ads(conn):
         cur.executemany(sqlInsertDailyAd,ads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Google Ads')
-
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
@@ -361,8 +404,16 @@ def tw_camp(conn):
         cur.executemany(GuardarDailyCampaing ,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Campanas Twitter')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_camp", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_camp", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
@@ -400,8 +451,16 @@ def tw_adsets(conn):
         cur.executemany(sqlInsertDailyAdsets,adsets)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Twitter Adsets')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_adsets", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_adsets", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
@@ -448,9 +507,16 @@ def tw_ads(conn):
         cur.executemany(sqlInsertDailyAd,ads)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Ads Twittter')
-
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_ads", "Success", "pushDataMediaDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_ads", "{}", "pushDataMediaDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA

@@ -135,10 +135,16 @@ def ComparacionErrores(conn):
                             Comentario = 'Error el numero de orden Ingresado  no esta asigando al mismo presupuesto'
                             nuevo=[Error,Comentario,'OC','8',CampaingID,'0','ACTIVE','1','8',CampaingID]
                             Errores.append(nuevo)
-        cur.executemany(sqlInserErrors,Errores)
+        #cur.executemany(sqlInserErrors,Errores)
         print('Success')
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = "INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ('ComparacionErrores', 'Success', 'errosPresupuesto.py','{}');".format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("ComparacionErrores", "{}", "errosPresupuesto.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 
@@ -146,3 +152,4 @@ def ComparacionErrores(conn):
 if __name__ == '__main__':
     openConnection()
     ComparacionErrores(conn)
+    conn.close()

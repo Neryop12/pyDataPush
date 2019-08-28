@@ -123,11 +123,19 @@ def errors_fb_inv(conn):
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Errores FB Inversion Comprobados')
 
@@ -212,10 +220,18 @@ def errors_fb_pais(conn):
                                         Error, Comentario, 'FB', TipoErrorID, CampaingIDS, Impressions, Estatus)
                                     Errores.append(nuevoerror)
         cur.executemany(sqlInserErrors, Errores)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_pais", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_pais", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Errores FB Pais Comprobados')
 
@@ -271,11 +287,18 @@ def errors_go(conn):
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
-
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_go", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_go", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Errores GO Comprobados')
 #FIN VISTA
@@ -318,11 +341,18 @@ def errors_tw(conn):
                             Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
-
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_tw", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     #ANALISIS IMPRESIONES Y
         #print(m.groups())
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_tw", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Errores TW Comprobados')
 
@@ -422,9 +452,17 @@ def errors_mm_inv(conn):
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     #ANALISIS IMPRESIONES Y
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Errores MM Inversion Comprobados')
 
@@ -525,9 +563,17 @@ def errors_af(conn):
                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_af", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     #ANALISIS IMPRESIONES Y
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_af", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Success Errores AF Inversion Comprobados')
 
@@ -576,8 +622,17 @@ def reviewerrorsNom(conn):
                         cur.execute(bupdate, (ID,))
                     else:
                             cur.execute(cupdate, (Nomenclatura, ID))
+
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("reviewerrorsNom", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("reviewerrorsNom", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Actualización Errores NomenclaturaOK')
 
@@ -630,8 +685,17 @@ def reviewerrorsInv(conn):
 
                             if float(result[11]) == 0 and float(result[10]) <= NomInversion and TipoError == 5:
                                 cur.execute(bupdate, (ID, 5))
+
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("reviewerrorsInv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("reviewerrorsInv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print('Actualización Errores Inversion OK')
 
@@ -675,8 +739,16 @@ def reviewerrorsMTS(conn):
                             if int(Nom) == rowApi['numero_orden']:
                                 cur.execute(bupdate, (str(ID), 8))
         print('Success Update Errors Orden de compra')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("reviewerrorsMTS", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("reviewerrorsMTS", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 

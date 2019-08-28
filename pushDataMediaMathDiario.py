@@ -97,8 +97,16 @@ def GetMediaMathCampaing(conn):
         cur.executemany(sqlInsertCampaingMetrics,campmetrics)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM Campanas')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("GetMediaMathCamp", "Success", "pushDataMediaMathDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
      except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("GetMediaMathCamp", "{}", "pushDataMediaMathDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
      finally:
         print (datetime.now())
 
@@ -146,8 +154,16 @@ def GetMediaMathADSets(conn):
         cur.executemany(sqlInsertAdsSetsMetrics ,adsetmetrics)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM Adsets')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("GetMediaMathADSets", "Success", "pushDataMediaMathDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("GetMediaMathADSets", "{}", "pushDataMediaMathDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
 
@@ -191,8 +207,16 @@ def GetMediaMathADs(conn):
         cur.executemany(sqlInsertMetricsAds ,adsmetrics)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM AD')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("GetMediaMathADs", "Success", "pushDataMediaMathDiario.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("GetMediaMathADs", "{}", "pushDataMediaMathDiario.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
 
