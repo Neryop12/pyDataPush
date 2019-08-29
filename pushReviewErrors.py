@@ -253,7 +253,7 @@ def errors_go(conn):
         cur.execute(sqlCampaingsGO,)
         results = cur.fetchall()
         for result in results:
-            Nomenclatura = result[4].encode('utf-8')
+            Nomenclatura = result[4]
             Media = result[2]
             CampaingID = result[3]
             #VALORES NOMENCLATURA
@@ -317,7 +317,7 @@ def errors_tw(conn):
         cur.execute(sqlCampaingsTW,)
         results = cur.fetchall()
         for result in results:
-            Nomenclatura = result[4].encode('utf-8')
+            Nomenclatura = result[4]
             Media = result[2]
             CampaingID = result[3]
             #Impressions=result[16]
@@ -658,33 +658,35 @@ def reviewerrorsInv(conn):
                 cur.execute(bcampaings, (rs,))
                 resultscon = cur.fetchall()
                 for result in resultscon:
-                    Nomenclatura = result[3].encode('utf-8')
+                    Nomenclatura = result[3]
                     ID = result[2]
                     searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M | re.I)
                     if searchObj:
                         NomInversion = float(searchObj.group(11))
-                        if float(result[4]) > 0:
-                            cur.execute(bupdateCamp, (ID,))
-                        else:
-                            #ERROR ACUMULADO PERFORMACE
-                            if searchObj.group(25) > 0 and TipoError == 2:
-                                Acumulado = float(
-                                    result[6])-float(searchObj.group(25))
-                                if int(NomInversion+1) >= int(Acumulado):
+                        if result[4]: 
+                            if float(result[4]) > 0:
+                                cur.execute(bupdateCamp, (ID,))
+                            else:
+                                #ERROR ACUMULADO PERFORMACE
+                                if searchObj.group(25):
+                                    if searchObj.group(25) > 0 and TipoError == 2:
+                                        Acumulado = float(
+                                            result[6])-float(searchObj.group(25))
+                                        if int(NomInversion+1) >= int(Acumulado):
+                                            cur.execute(bupdate, (ID, 2))
+
+                                #Verificacion Inversion Nomenclatura
+                                if float(result[6]) <= NomInversion and TipoError == 2:
                                     cur.execute(bupdate, (ID, 2))
 
-                            #Verificacion Inversion Nomenclatura
-                            if float(result[6]) <= NomInversion and TipoError == 2:
-                                cur.execute(bupdate, (ID, 2))
+                                if float(result[10]) <= NomInversion and TipoError == 4:
+                                    cur.execute(bupdate, (ID, 4))
+                                if result[5]:
+                                    if float(result[5]) == 0 and float(result[6]) <= NomInversion and TipoError == 3:
+                                        cur.execute(bupdate, (ID, 3))
 
-                            if float(result[10]) <= NomInversion and TipoError == 4:
-                                cur.execute(bupdate, (ID, 4))
-
-                            if float(result[5]) == 0 and float(result[6]) <= NomInversion and TipoError == 3:
-                                cur.execute(bupdate, (ID, 3))
-
-                            if float(result[11]) == 0 and float(result[10]) <= NomInversion and TipoError == 5:
-                                cur.execute(bupdate, (ID, 5))
+                                if float(result[11]) == 0 and float(result[10]) <= NomInversion and TipoError == 5:
+                                    cur.execute(bupdate, (ID, 5))
 
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
@@ -764,7 +766,7 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
-   #errors_fb_pais(conn)
+   errors_fb_pais(conn)
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
