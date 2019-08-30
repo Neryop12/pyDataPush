@@ -709,7 +709,9 @@ def reviewerrorsMTS(conn):
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
-
+    fechaayer = datetime.now() - timedelta(days=1)
+    #Formato de las fechas para aceptar en el GET
+    dayayer = fechaayer.strftime("%Y-%m-%d")
     sqlCamping = "select c.CampaingID,c.Campaingname, e.idErrorsCampaings, e.TipoErrorID  from ErrorsCampaings e Inner join Campaings c on c.CampaingID = e.CampaingID Inner join Accounts a on a.AccountsID= c.AccountsID  where e.Media = 'OC' AND e.Estado=1 and (c.Campaignstatus='ACTIVE' or c.Campaignstatus='enabled');"
     bupdate = "UPDATE ErrorsCampaings SET estado=0 where idErrorsCampaings=%s and TipoErrorID=%s"
 
@@ -717,7 +719,7 @@ def reviewerrorsMTS(conn):
         print(datetime.now())
         cur.execute(sqlCamping)
         camp = mp.array(cur.fetchall())
-        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-08-01/{}".format(str(dayhoy)))
+        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/{}}/{}".format(str(dayayer),str(dayhoy)))
         #Primero se convierte el request a JSON
         r=r.json()
         ap=mp.array(r)
