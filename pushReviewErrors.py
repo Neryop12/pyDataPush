@@ -4,7 +4,7 @@ import requests
 import sys
 import re
 import mysql.connector as mysql
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import numpy as mp
 from environs import Env
