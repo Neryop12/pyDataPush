@@ -44,7 +44,7 @@ def ComparacionErrores(conn):
         cur.execute(sqlCamping)
         camp = cur.fetchall()
         #Obttencion del GET con los datos de PBI
-        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/2019-01-01/{}".format(str(dayhoy)))
+        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/{}/{}".format(str(dayayer),str(dayhoy)))
         #Primero se convierte el request a JSON
         r=r.json()
         #Posteriormente se convierte a un array numpy
