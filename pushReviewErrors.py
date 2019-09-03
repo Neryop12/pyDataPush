@@ -772,5 +772,5 @@ if __name__ == '__main__':
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
-   reviewerrorsMTS(conn)
+   #reviewerrorsMTS(conn)
    conn.close()

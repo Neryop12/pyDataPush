@@ -65,14 +65,14 @@ def ComparacionErrores(conn):
             CampaingID = result[0]
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M | re.I)
             if searchObj:
-                #Posicion 19 Numero de Orden << Como pueden ver más de una por campaña se agrrega a un arreglo
+                #Posicion 19 Numero de Orden << Como pueden ver más de una por camp. se agrrega a un arreglo
                 NomODCAR = searchObj.group(19)
                 #Se realiza un split - para obtener todos los nummeros de orden
                 NomODC = NomODCAR.split('-')
                 #For para recorrer los numeros de orden
                 for Nom in NomODC:
                     ODCb = False
-                    #Poscion 11 inversion de la campaña
+                    #Poscion 11 inversion de la camp.
                     NomInversion = float(searchObj.group(11))
                     #Si el numero de orden es menor a 1 quiere decir que no esta asignado
                     if int(Nom) < 1:
