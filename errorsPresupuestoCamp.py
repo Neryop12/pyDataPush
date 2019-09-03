@@ -41,7 +41,7 @@ def PresupusetoCamp(conn):
                         Costo += float(result[4])
                 if (Costo - NomInversion) > 1:
                     Error = 'Error el presupuesto planificado es menor al presupuesto real '
-                    Comentario = 'Error la campaña '+ result[0] +' excede el presupuesto real por: ' + str(round(Costo - NomInversion,1))
+                    Comentario = 'Error la camp. '+ result[0] +' excede el presupuesto real por: ' + str(round(Costo - NomInversion,1))
                     nuevo=[Error,Comentario,result[5],'15',result[0],'0','ACTIVE','15',result[0]]
                     Errores.append(nuevo)
                 else:
@@ -50,7 +50,7 @@ def PresupusetoCamp(conn):
                         porcentaje = Costo / NomInversion
                         if porcentaje >= 0.9:
                             Error = '!Advertencia! el presupuesto esta a punto de llegar su tope '
-                            Comentario = 'Advertencia la campaña '+ result[0] +' alcanzara pronto su tope'
+                            Comentario = 'Advertencia la camp. '+ result[0] +' alcanzara pronto su tope'
                             nuevo=[Error,Comentario,result[5],'13',result[0],'0','ACTIVE','13',result[0]]
                             Errores.append(nuevo)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
