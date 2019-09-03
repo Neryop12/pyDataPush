@@ -12,8 +12,8 @@ conn = None
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
-                             user='omgdev', password='Sdev@2002!', autocommit=True)
+        conn = mysql.connect(host='localhost', database='MediaPlatforms',
+                             user='root', password='1234', autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -43,7 +43,7 @@ def pushAdsMovil(conn):
     cuentas=[]
     campanas=[]
     sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-    sqlInsertCampaing = "INSERT INTO CampaingsAM(`StartDate`,`CampaingID`, `Campaingname`, `Advertiser`, `Impressions`, `Clicks`, `Ctr`, `Spend`, `AccountsID`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Advertiser=VALUES(Advertiser), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Spend=VALUES(Spend) "
+    sqlInsertCampaing = "INSERT INTO CampaingsAM (`CampaingID`, `Campaingname`, `ad`, `Impressions`, `Clicks`, `Ctr`, `Video_firstquartile`, `Video_midpoint`, `Video_thirdquartile`, `Video_completed`, `cost`, `CPM`, `AccountsID`, `StartDate`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),ad=VALUES(ad), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Video_firstquartile=VALUES(Video_firstquartile),Video_midpoint=VALUES(Video_midpoint),Video_thirdquartile=VALUES(Video_thirdquartile),cost=VALUES(cost),CPM=VALUES(CPM) "
     
     try:
         url='https://reportapi.adsmovil.com/api/campaign/details'
@@ -54,20 +54,19 @@ def pushAdsMovil(conn):
                                 'Authorization': "'" + Token["result"]["token"] + "'" ,
                                 },
                             params={
-                                'report':'pushads',
+                                'report':'adsmovil_dsp',
                                 'startDate': dayayer,
                                 'endDate':dayayer,
                             }
                         )
         r=Result2.json()
         for row  in r["result"]["queryResponseData"]["rows"]:
-            accountId = str(row[2]).strip() + '/AM'
-            cuenta=[accountId,row[2],'AM']
-            cuentas.append(cuenta)
-            campana=[row[0],accountId,row[2],row[1],row[4],row[5],row[6],row[7],accountId]
+            for n, i in enumerate(row):
+                if i =='NaN':
+                    row[n]=0  
+            campana=[row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],'AdsMovil',row[0]]    
             campanas.append(campana)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertAccount ,cuentas)
         cur.executemany(sqlInsertCampaing,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM Campanas')
