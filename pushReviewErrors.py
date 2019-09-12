@@ -23,8 +23,9 @@ def errors_fb_inv(conn):
     cur = conn.cursor()
     Comentario = ''
     Estatus = ''
+    hoy = datetime.now().strftime("%Y-%m-%d")
     try:
-        sqlConjuntosFB = "select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='FB' and c.status='ACTIVE' group by b.CampaingID  desc "
+        sqlConjuntosFB = "select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='FB' and c.status='ACTIVE' and b.EndDate > '{}' group by b.CampaingID  desc ".format(hoy)
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         cur.execute(sqlConjuntosFB,)
@@ -41,10 +42,10 @@ def errors_fb_inv(conn):
             else:
                 Estatus = StatusCampaing
 
-            Nomenclatura = result[3].encode('utf8')
+            Nomenclatura = result[3]
             CampaingID = result[2]
 
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', str(Nomenclatura), re.M | re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?$', str(Nomenclatura), re.M | re.I)
             if searchObj:
                 NomInversion = float(searchObj.group(11))
                 if result[4] == 0:
@@ -234,6 +235,73 @@ def errors_fb_pais(conn):
         cur.execute(sqlBitacora)
     finally:
         print('Success Errores FB Pais Comprobados')
+
+
+def errors_fb_adsets_pais(conn):
+    a = False
+    global cur
+    cur = conn.cursor()
+    hoy = datetime.now().strftime("%Y-%m-%d")
+    print (datetime.now())
+    Comentario = ''
+    Estatus = ''
+    try:
+        sqlCampaingsFB = " select distinct am.Country, a.AdSetID, c.Campaingname,c.CampaingID from AdSetMetrics am inner join Adsets a on a.AdSetID = am.AdSetID inner join Campaings c on c.CampaingID = a.CampaingID inner join  Accounts ac on ac.AccountsID = c.AccountsID where ac.Media = 'FB' and c.EndDate > '{}'; ".format(hoy)
+        sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        Errores = []
+        cur.execute(sqlCampaingsFB,)
+        results = cur.fetchall()
+        for result in results:
+            a = True
+            Nomenclatura = result[2]
+            Country = result[0]
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', Nomenclatura, re.M | re.I)
+            if searchObj:
+                NomPais = searchObj.group(1)
+                NomCliente = searchObj.group(2)
+                NomProducto = searchObj.group(4)
+                if NomPais != Country:
+                    if NomCliente == 'CCPRADERA' and NomProducto == 'HUE':
+                        if Country == 'MX' or Country=='GT' :
+                            a = False
+                        if a:
+                            Error = Country
+                            TipoErrorID = 6
+                            Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
+                            nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
+                            Errores.append(nuevoerror)
+                    elif NomCliente == 'CCPRADERA' and NomProducto == 'CHIQ':
+                        if Country == 'HN' or Country=='GT' :
+                            a = False
+                        if a:
+                            Error = Country
+                            TipoErrorID = 6
+                            Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
+                            nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
+                            Errores.append(nuevoerror)
+                    if NomCliente != 'CCR' and NomCliente != 'CCPRADERA'  :
+                        if (Country == 'PA' or Country == 'PN' and NomPais == 'PN' or NomPais =='PA') == False:
+                            if  (Country == 'PR' or Country == 'PE' and NomPais == 'PR' or NomPais =='PE') == False: 
+                                if  (Country == 'DO' or Country == 'RD' and NomPais == 'DO' or NomPais =='RD') == False: 
+                                    Error = Country
+                                    TipoErrorID = 6
+                                    Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
+                                    nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
+                                    Errores.append(nuevoerror)
+                      
+        cur.executemany(sqlInserErrors, Errores)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_adset_pais", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_adset_pais", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print(datetime.now())
 
 
 def errors_go(conn):
@@ -768,9 +836,11 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
+   errors_fb_inv(conn)
    errors_fb_pais(conn)
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
-   #reviewerrorsMTS(conn)
+   reviewerrorsMTS(conn)
+   errors_fb_adsets_pais(conn)
    conn.close()
