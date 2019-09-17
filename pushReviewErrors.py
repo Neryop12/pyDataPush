@@ -25,7 +25,7 @@ def errors_fb_inv(conn):
     Estatus = ''
     hoy = datetime.now().strftime("%Y-%m-%d")
     try:
-        sqlConjuntosFB = "select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='FB' and c.status='ACTIVE' and b.EndDate > '{}' group by b.CampaingID  desc ".format(hoy)
+        sqlConjuntosFB = "select a.AccountsID,a.Account, b.CampaingID,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status from Accounts a INNER JOIN Campaings b on a.AccountsID=b.AccountsID INNER JOIN  Adsets c on b.CampaingID=c.CampaingID where a.Media='FB' and c.status in ('ACTIVE','enabled') and b.EndDate > '{}' group by b.CampaingID  desc ".format(hoy)
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
         cur.execute(sqlConjuntosFB,)
@@ -78,7 +78,7 @@ def errors_fb_inv(conn):
                                             Error, Comentario, 'FB', 2, CampaingID, 0, Estatus)
                                         Errores.append(nuevoerror)
 
-                    elif float(result[10]) > NomInversion:
+                    if float(result[10]) > NomInversion:
                         Error = 'Planificado: ' + \
                             str(NomInversion) + '/ Plataforma: ' + \
                             str(float(result[10]))
@@ -836,8 +836,6 @@ def push_errors(conn):
 
 if __name__ == '__main__':
    openConnection()
-   errors_fb_inv(conn)
-   errors_fb_pais(conn)
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
