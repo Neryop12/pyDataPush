@@ -12,8 +12,8 @@ conn = None
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost', database='MediaPlatforms',
-                             user='root', password='1234', autocommit=True)
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
+                             user='omgdev', password='Sdev@2002!', autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -40,9 +40,7 @@ def pushAdsMovil(conn):
     dayayer = fechaayer.strftime("%Y-%m-%d")
     print (datetime.now())
     cur=conn.cursor(buffered=True)
-    cuentas=[]
     campanas=[]
-    sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
     sqlInsertCampaing = "INSERT INTO CampaingsAM (`CampaingID`, `Campaingname`, `ad`, `Impressions`, `Clicks`, `Ctr`, `Video_firstquartile`, `Video_midpoint`, `Video_thirdquartile`, `Video_completed`, `cost`, `CPM`, `AccountsID`, `StartDate`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),ad=VALUES(ad), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Video_firstquartile=VALUES(Video_firstquartile),Video_midpoint=VALUES(Video_midpoint),Video_thirdquartile=VALUES(Video_thirdquartile),cost=VALUES(cost),CPM=VALUES(CPM) "
     
     try:

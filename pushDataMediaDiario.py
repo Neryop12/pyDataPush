@@ -537,7 +537,6 @@ def push_ads(conn):
 
 if __name__ == '__main__':
    openConnection()
-   go_camp(conn)
    fb_ads(conn)
    fb_camp(conn)
    fb_adsets(conn)
