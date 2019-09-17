@@ -45,7 +45,7 @@ def errors_fb_inv(conn):
             Nomenclatura = result[3]
             CampaingID = result[2]
 
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?$', str(Nomenclatura), re.M | re.I)
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO|TRRRSS)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?$', str(Nomenclatura), re.M | re.I)
             if searchObj:
                 NomInversion = float(searchObj.group(11))
                 if result[4] == 0:
@@ -281,14 +281,14 @@ def errors_fb_adsets_pais(conn):
                             Errores.append(nuevoerror)
                     if NomCliente != 'CCR' and NomCliente != 'CCPRADERA'  :
                         if (Country == 'PA' or Country == 'PN' and NomPais == 'PN' or NomPais =='PA') == False:
-                            if  (Country == 'PR' or Country == 'PE' and NomPais == 'PR' or NomPais =='PE') == False: 
-                                if  (Country == 'DO' or Country == 'RD' and NomPais == 'DO' or NomPais =='RD') == False: 
+                            if  (Country == 'PR' or Country == 'PE' and NomPais == 'PR' or NomPais =='PE') == False:
+                                if  (Country == 'DO' or Country == 'RD' and NomPais == 'DO' or NomPais =='RD') == False:
                                     Error = Country
                                     TipoErrorID = 6
                                     Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
                                     nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
                                     Errores.append(nuevoerror)
-                      
+
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
