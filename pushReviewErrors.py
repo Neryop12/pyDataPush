@@ -787,7 +787,7 @@ def reviewerrorsMTS(conn):
         print(datetime.now())
         cur.execute(sqlCamping)
         camp = mp.array(cur.fetchall())
-        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/{}}/{}".format(str(dayayer),str(dayhoy)))
+        r=requests.get("http://10.10.2.99:10000/pbi/api_gt/public/api/v1/ordenes_fl/{}/{}".format(str(dayayer),str(dayhoy)))
         #Primero se convierte el request a JSON
         r=r.json()
         ap=mp.array(r)
