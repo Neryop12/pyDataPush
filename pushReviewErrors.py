@@ -440,26 +440,27 @@ def errors_mm_inv(conn):
         Errores = []
         for result in resultscon:
             Estatus = 'ACTIVE'
-            Nomenclatura = result[3].encode('utf-8')
+            Nomenclatura = result[3]
             CampaingID = result[2]
             searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?$', Nomenclatura, re.M | re.I)
-            if searchObj:
+            if searchObj is not None:
                 NomInversion = float(searchObj.group(11))
                 if not result[4] or result[4]==0:
-                    if float(result[6]) > NomInversion:
-                        Error = 'Planificado: ' + \
-                            str(NomInversion) + '/ Plataforma: ' + \
-                            str(float(result[6]))
-                        Comentario = "Cuidado error de inversion verifica la plataforma"
-                        cur.execute(sqlSelectErrors, (CampaingID, 2, 'MM'))
-                        rescampaing = cur.fetchone()
-                        if rescampaing[0] == 0:
-                            if CampaingID != '':
-                                nuevoerror = (Error, Comentario,
-                                              'MM', 2, CampaingID, 0, Estatus)
-                                Errores.append(nuevoerror)
-                    if searchObj.group(25) is not None:
-                        if searchObj.group(25) > 0:
+                    if result[6] is not None:
+                        if float(result[6]) > NomInversion:
+                            Error = 'Planificado: ' + \
+                                str(NomInversion) + '/ Plataforma: ' + \
+                                str(float(result[6]))
+                            Comentario = "Cuidado error de inversion verifica la plataforma"
+                            cur.execute(sqlSelectErrors, (CampaingID, 2, 'MM'))
+                            rescampaing = cur.fetchone()
+                            if rescampaing[0] == 0:
+                                if CampaingID != '':
+                                    nuevoerror = (Error, Comentario,
+                                                'MM', 2, CampaingID, 0, Estatus)
+                                    Errores.append(nuevoerror)
+                    if searchObj.group(25) is not None and result[5] is not None:
+                        if int(searchObj.group(25)) > 0:
                             Acumulado = float(searchObj.group(25))-float(result[5])
                             if Acumulado > NomInversion:
                                 Error = 'Planificado: ' + \
@@ -487,37 +488,37 @@ def errors_mm_inv(conn):
                                                 'MM', 4, CampaingID, 0, Estatus)
                                     Errores.append(nuevoerror)
                     elif result[10] is not None:
-                        if float(result[5]) > 0:
-                            Error = 'Inversiion Diaria: '+str(float(result[5]))
-                            Comentario = "Cuidado error de inversion diaria "
-                            cur.execute(sqlSelectErrors, (CampaingID, 3, 'MM'))
-                            rescampaing = cur.fetchone()
-                            if rescampaing[0] == 0:
-                                if CampaingID != '':
-                                    nuevoerror = (Error, Comentario,
-                                                'MM', 3, CampaingID, 0, Estatus)
-                                    Errores.append(nuevoerror)
+                        if result[5] is not None:
+                            if float(result[5]) > 0:
+                                Error = 'Inversiion Diaria: '+str(float(result[5]))
+                                Comentario = "Cuidado error de inversion diaria "
+                                cur.execute(sqlSelectErrors, (CampaingID, 3, 'MM'))
+                                rescampaing = cur.fetchone()
+                                if rescampaing[0] == 0:
+                                    if CampaingID != '':
+                                        nuevoerror = (Error, Comentario,
+                                                    'MM', 3, CampaingID, 0, Estatus)
+                                        Errores.append(nuevoerror)
                     elif result[10] is not None:
-                        if float(result[11]) > 0:
-                            Error = 'Inversiion Diaria Conjunto: ' + \
-                                str(float(result[11]))
-                            Comentario = "Error de inversion diaria del conjunto de anuncios no debe ser mayor a la planificada"
-                            cur.execute(sqlSelectErrors, (CampaingID, 5, 'MM'))
-                            rescampaing = cur.fetchone()
-                            if rescampaing[0] == 0:
-                                if CampaingID != '':
-                                    nuevoerror = (Error, Comentario,
-                                                'MM', 5, CampaingID, 0, Estatus)
-                                    Errores.append(nuevoerror)
+                        if result[11] is not None:
+                            if float(result[11]) > 0:
+                                Error = 'Inversiion Diaria Conjunto: ' + \
+                                    str(float(result[11]))
+                                Comentario = "Error de inversion diaria del conjunto de anuncios no debe ser mayor a la planificada"
+                                cur.execute(sqlSelectErrors, (CampaingID, 5, 'MM'))
+                                rescampaing = cur.fetchone()
+                                if rescampaing[0] == 0:
+                                    if CampaingID != '':
+                                        nuevoerror = (Error, Comentario,
+                                                    'MM', 5, CampaingID, 0, Estatus)
+                                        Errores.append(nuevoerror)
             else:
                 Comentario = "Error de nomenclatura verifica cada uno de sus elementos"
-                cur.execute(sqlSelectErrors, (CampaingID, 1, 'MM'))
-                rescampaing = cur.fetchone()
-                if rescampaing[0] < 1:
-                    if CampaingID != '':
-                        nuevoerror = (Nomenclatura, Comentario,
-                                      'MM', 1, CampaingID, 0, Estatus)
-                        Errores.append(nuevoerror)
+                #cur.execute(sqlSelectErrors, (CampaingID, 1, 'MM'))
+                if CampaingID != '':
+                    nuevoerror = (Nomenclatura, Comentario,
+                                    'MM', 1, CampaingID, 0, Estatus)
+                    Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
