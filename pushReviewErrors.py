@@ -246,8 +246,9 @@ def errors_fb_adsets_pais(conn):
     Comentario = ''
     Estatus = ''
     try:
-        sqlCampaingsFB = " select distinct am.Country, a.AdSetID, c.Campaingname,c.CampaingID from AdSetMetrics am inner join Adsets a on a.AdSetID = am.AdSetID inner join Campaings c on c.CampaingID = a.CampaingID inner join  Accounts ac on ac.AccountsID = c.AccountsID where ac.Media = 'FB' and c.EndDate > '{}'; ".format(hoy)
+        sqlCampaingsFB = " select distinct am.Country, a.AdSetID, c.Campaingname,c.CampaingID from AdSetMetrics am inner join Adsets a on a.AdSetID = am.AdSetID inner join Campaings c on c.CampaingID = a.CampaingID inner join  Accounts ac on ac.AccountsID = c.AccountsID where ac.Media = 'FB' and c.EndDate > '{}' and am.Impressions > 50; ".format(hoy)
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sqlSelectAdset = "select count(idErrorsCampaings) from  errorscampaings where CampaingID={} and TipoErrorID = 6; "
         Errores = []
         cur.execute(sqlCampaingsFB,)
         results = cur.fetchall()
@@ -265,29 +266,41 @@ def errors_fb_adsets_pais(conn):
                         if Country == 'MX' or Country=='GT' :
                             a = False
                         if a:
-                            Error = Country
-                            TipoErrorID = 6
-                            Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
-                            nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
-                            Errores.append(nuevoerror)
+                            sqlSelectAdset = sqlSelectAdset.format(result[1])
+                            cur.execute(sqlCampaingsFB,)
+                            count = cur.fetchall()
+                            if count[0][0] > 0:
+                                Error = Country
+                                TipoErrorID = 6
+                                Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
+                                nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[1], 0, Estatus)
+                                Errores.append(nuevoerror)
                     elif NomCliente == 'CCPRADERA' and NomProducto == 'CHIQ':
                         if Country == 'HN' or Country=='GT' :
                             a = False
                         if a:
-                            Error = Country
-                            TipoErrorID = 6
-                            Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
-                            nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
-                            Errores.append(nuevoerror)
+                            sqlSelectAdset = sqlSelectAdset.format(result[1])
+                            cur.execute(sqlCampaingsFB,)
+                            count = cur.fetchall()
+                            if count[0][0] > 0:
+                                Error = Country
+                                TipoErrorID = 6
+                                Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
+                                nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[1], 0, Estatus)
+                                Errores.append(nuevoerror)
                     if NomCliente != 'CCR' and NomCliente != 'CCPRADERA'  :
                         if (Country == 'PA' or Country == 'PN' and NomPais == 'PN' or NomPais =='PA') == False:
                             if  (Country == 'PR' or Country == 'PE' and NomPais == 'PR' or NomPais =='PE') == False:
                                 if  (Country == 'DO' or Country == 'RD' and NomPais == 'DO' or NomPais =='RD') == False:
-                                    Error = Country
-                                    TipoErrorID = 6
-                                    Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
-                                    nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[3], 0, Estatus)
-                                    Errores.append(nuevoerror)
+                                    sqlSelectAdset = sqlSelectAdset.format(result[1])
+                                    cur.execute(sqlCampaingsFB,)
+                                    count = cur.fetchall()
+                                    if count[0][0] > 0:
+                                        Error = Country
+                                        TipoErrorID = 6
+                                        Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
+                                        nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[1], 0, Estatus)
+                                        Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
