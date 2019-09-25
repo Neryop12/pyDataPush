@@ -609,6 +609,7 @@ def push_ads(conn):
     #go_ads(conn)
     #tw_ads(conn)
 
+#Funciones
 if __name__ == '__main__':
    openConnection()
    fb_ads(conn)
