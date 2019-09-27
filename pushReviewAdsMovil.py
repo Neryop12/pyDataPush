@@ -82,13 +82,13 @@ def ReviewCamp(conn):
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("CampAM", "Success", "pushReviewAdsMovil.py","{}");'.format(dayhoy)
-        #cur.execute(sqlBitacora)
+        cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("CampAM", "{}", "pushReviewAdsMovil.py","{}");'.format(e,dayhoy)
-        #cur.execute(sqlBitacora)
+        cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 
@@ -96,6 +96,6 @@ def ReviewCamp(conn):
 
 if __name__ == '__main__':
     openConnection()
-    #CampAM(conn)
+    CampAM(conn)
     ReviewCamp(conn)
     conn.close()
