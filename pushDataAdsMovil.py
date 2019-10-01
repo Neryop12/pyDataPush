@@ -2,6 +2,8 @@
 import json
 import requests
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
@@ -26,7 +28,7 @@ def GetToken():
     Token=requests.post(
                 url,
                 data={
-                   
+
                     "email": "rmarroquin@omg.com.gt",
                     "password": "#rm4rr0qu1n",
                     }
@@ -42,7 +44,7 @@ def pushAdsMovil(conn):
     cur=conn.cursor(buffered=True)
     campanas=[]
     sqlInsertCampaing = "INSERT INTO CampaingsAM (`CampaingID`, `Campaingname`, `ad`, `Impressions`, `Clicks`, `Ctr`, `Video_firstquartile`, `Video_midpoint`, `Video_thirdquartile`, `Video_completed`, `cost`, `CPM`, `AccountsID`, `StartDate`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),ad=VALUES(ad), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Video_firstquartile=VALUES(Video_firstquartile),Video_midpoint=VALUES(Video_midpoint),Video_thirdquartile=VALUES(Video_thirdquartile),cost=VALUES(cost),CPM=VALUES(CPM) "
-    
+
     try:
         url='https://reportapi.adsmovil.com/api/campaign/details'
         Result2 = requests.get(
@@ -61,8 +63,8 @@ def pushAdsMovil(conn):
         for row  in r["result"]["queryResponseData"]["rows"]:
             for n, i in enumerate(row):
                 if i =='NaN':
-                    row[n]=0  
-            campana=[row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],'AdsMovil',row[0]]    
+                    row[n]=0
+            campana=[row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],'AdsMovil',row[0]]
             campanas.append(campana)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertCampaing,campanas)

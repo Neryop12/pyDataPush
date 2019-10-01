@@ -2,6 +2,8 @@
 import json
 import requests
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import re
 import mysql.connector as mysql
 from datetime import datetime
@@ -118,7 +120,7 @@ def fb_camp(conn):
             enddate=atr['gsx$campaignenddate']['$t']
             placement=atr['gsx$placement']['$t']
             videowatch=atr['gsx$videowatchesat75']['$t']
-            postreaccion=atr['gsx$postreactions']['$t']        
+            postreaccion=atr['gsx$postreactions']['$t']
             result = 0
             #FIN VARIABLES
             if campaingid!='':

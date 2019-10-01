@@ -2,6 +2,8 @@
 import json
 import requests
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
@@ -122,7 +124,7 @@ def GetMediaMathADSets(conn):
     adsetmetrics=[]
     #Querys
     sqlInsertAdsSetsMetrics = "INSERT INTO dailyadset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
-    
+
     try:
          #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=campaign_id%2cstrategy_id%2cstrategy_name%2cstrategy_budget%2cstrategy_start_date%2cstrategy_end_date%2cstrategy_type&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'
