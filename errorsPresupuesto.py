@@ -36,7 +36,7 @@ def ComparacionErrores(conn):
         cur.execute(sqlSelectCompra)
         #Lo paso a numpy para que las busquedas sean mas rapidas, dado a que son arrays.
         #Obtencion de la fecha acutal y la fecha de un dia antes
-        fechaayer = datetime.now() - timedelta(days=1)
+        fechaayer = datetime.now() - timedelta(days=30)
         #Formato de las fechas para aceptar en el GET
         dayayer = fechaayer.strftime("%Y-%m-%d")
 
@@ -148,6 +148,21 @@ def ComparacionErrores(conn):
     finally:
         print(datetime.now())
 
+
+def reviewComparacion(conn):
+    cur=conn.cursor(buffered=True)
+    Errores=[]
+    fechahoy = datetime.now()
+    dayhoy = fechahoy.strftime("%Y-%m-%d")
+    #Query para insertar los datos, Media  -> OC
+    sqlInserErrors = "UPDATE `MediaPlatforms`.`ErrorsCampaings` SET `Estado` = '0' WHERE CampaingID=%s);"
+    sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID group by m.id desc limit 1  ),0) costo,a.Media from Campaings c inner join dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID inner join ErrorsCampaings ec on ec.CampaingID = c.CampaingID where ec.TipoErrorID = 15 and ec.Estado =1  group by c.CampaingID;"
+    try:
+        pass
+    except expression as identifier:
+        pass
+    finally:
+        pass
 
 if __name__ == '__main__':
     openConnection()
