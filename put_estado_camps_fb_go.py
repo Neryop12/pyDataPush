@@ -2,8 +2,6 @@
 import json
 import requests
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import re
 import mysql.connector as mysql
 from datetime import datetime
