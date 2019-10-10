@@ -2,8 +2,6 @@
 import json
 import requests
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import re
 import mysql.connector as mysql
 from datetime import datetime
@@ -96,7 +94,6 @@ def fb_ads(conn):
     finally:
         print(datetime.now())
 #FIN VISTA
-
 def fb_camp(conn):
     cur=conn.cursor(buffered=True)
     print (datetime.now())

@@ -2,8 +2,6 @@
 import json
 import requests
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
 import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
@@ -78,7 +76,7 @@ def pushAdsMovil(conn):
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertCampaing,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
-        print('Success MM Campanas')
+        print('Success AdsMovil Campanas')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "Success", "pushDataAdsMovil.py","{}");'.format(dayhoy)
