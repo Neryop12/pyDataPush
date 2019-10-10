@@ -12,18 +12,28 @@ import numpy as mp
 from xml.etree import ElementTree
 import io
 import math
+import configparser
 conn = None
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+host= config['TESTING']['HOST']
+name = config['TESTING']['NAME']
+user = config['TESTING']['USER']
+password = config['TESTING']['PASSWORD']
+autocommit= config['TESTING']['AUTOCOMMIT']
 
 ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 #Coneccion a la base de datos
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
-                             user='omgdev', password='Sdev@2002!', autocommit=True)
+        conn = mysql.connect(host=host, database=name,
+                             user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
+
 #API GET, obtiene el token de session para MediaMath
 def GetToken():
     global Token

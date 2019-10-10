@@ -12,18 +12,29 @@ import numpy as mp
 from xml.etree import ElementTree
 import io
 import math
+import configparser
+from importlib import reload
 conn = None
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+host= config['TESTING']['HOST']
+name = config['TESTING']['NAME']
+user = config['TESTING']['USER']
+password = config['TESTING']['PASSWORD']
+autocommit= config['TESTING']['AUTOCOMMIT']
 
 ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 #Coneccion a la base de datos
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
-                             user='omgdev', password='Sdev@2002!', autocommit=True)
+        conn = mysql.connect(host=host, database=name,
+                             user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
+
 #API GET, obtiene el token de session para MediaMath
 def GetToken():
     global Token
@@ -122,7 +133,7 @@ def GetMediaMathADSets(conn):
     adsetmetrics=[]
     #Querys
     sqlInsertAdsSetsMetrics = "INSERT INTO dailyadset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
-    
+
     try:
          #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=campaign_id%2cstrategy_id%2cstrategy_name%2cstrategy_budget%2cstrategy_start_date%2cstrategy_end_date%2cstrategy_type&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'

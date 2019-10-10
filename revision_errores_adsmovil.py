@@ -5,13 +5,23 @@ import sys
 import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
+import configparser
+conn = None
 
-#Coneccion a la base de datos de mfcgt
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+host= config['TESTING']['HOST']
+name = config['TESTING']['NAME']
+user = config['TESTING']['USER']
+password = config['TESTING']['PASSWORD']
+autocommit= config['TESTING']['AUTOCOMMIT']
+
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
-                             user='omgdev', password='Sdev@2002!', autocommit=True)
+        conn = mysql.connect(host=host, database=name,
+                             user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()

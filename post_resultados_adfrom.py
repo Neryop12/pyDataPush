@@ -15,13 +15,24 @@ conn = None
 #conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
 ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 #Coneccion a la base de datos
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+host= config['TESTING']['HOST']
+name = config['TESTING']['NAME']
+user = config['TESTING']['USER']
+password = config['TESTING']['PASSWORD']
+autocommit= config['TESTING']['AUTOCOMMIT']
+
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='localhost', database='MediaPlatforms',
-                             user='root', password='1234', autocommit=True)
+        conn = mysql.connect(host=host, database=name,
+                             user=user, password=password, autocommit=autocommit)
     except:
-        logger.error("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
+        print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
 def GetToken():

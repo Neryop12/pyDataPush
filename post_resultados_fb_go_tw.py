@@ -7,12 +7,21 @@ import mysql.connector as mysql
 from datetime import datetime
 import schedule
 import time
-#3.95.117.169
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+host= config['TESTING']['HOST']
+name = config['TESTING']['NAME']
+user = config['TESTING']['USER']
+password = config['TESTING']['PASSWORD']
+autocommit= config['TESTING']['AUTOCOMMIT']
+
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
-                             user='omgdev', password='Sdev@2002!', autocommit=True)
+        conn = mysql.connect(host=host, database=name,
+                             user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -169,10 +178,12 @@ def fb_camp(conn):
                 campmetric=(campaingid,reach,frequency,impressions,placement,clicks,cost,dayhoy)
                 campmetrics.append(campmetric)
             #FIN CICLOx
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarCuentas,cuentas)
         cur.executemany(GuardarCampaing,campanas)
         cur.executemany(GuardarCampMetrics,campmetrics)
         cur.executemany(GuardarCampDisplays,campdisplays)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "pushDataMedia.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
@@ -593,11 +604,7 @@ def push_ads(conn):
 
 if __name__ == '__main__':
    openConnection()
-   #tw_camps(conn)
    push_camps(conn)
    push_adsets(conn)
    push_ads(conn)
    conn.close()
-    #fb_ads()
-   #reviewerrors()
-   #reviewerrors()

@@ -8,11 +8,23 @@ from datetime import datetime, timedelta
 import time
 import numpy as mp
 from environs import Env
+import configparser
+conn = None
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+host= config['TESTING']['HOST']
+name = config['TESTING']['NAME']
+user = config['TESTING']['USER']
+password = config['TESTING']['PASSWORD']
+autocommit= config['TESTING']['AUTOCOMMIT']
 
 def openConnection():
     global conn
     try:
-         conn = mysql.connect(host='3.95.117.169',database='MediaPlatforms',user='omgdev',password='Sdev@2002!',autocommit=True)
+        conn = mysql.connect(host=host, database=name,
+                             user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
@@ -25,15 +37,15 @@ def errors_fb_inv(conn):
     Estatus = ''
     hoy = datetime.now().strftime("%Y-%m-%d")
     try:
-        sqlConjuntosFB = """ 
-    select b.CampaingID, a.AccountsID,a.Account,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status 
-    from Accounts a 
+        sqlConjuntosFB = """
+    select b.CampaingID, a.AccountsID,a.Account,b.Campaingname, b.Campaignspendinglimit,b.Campaigndailybudget,b.Campaignlifetimebudget,c.AdSetID,c.Adsetname,c.Adsetlifetimebudget,SUM(c.Adsetlifetimebudget) as tlotalconjungo,c.Adsetdailybudget,a.Media,b.Campaignstatus,b.Campaignstatus,c.Status
+    from Accounts a
     INNER JOIN Campaings b on a.AccountsID=b.AccountsID
-    INNER JOIN  Adsets c on b.CampaingID=c.CampaingID 
+    INNER JOIN  Adsets c on b.CampaingID=c.CampaingID
     where a.Media='FB' and c.status in ('ACTIVE','enabled') and b.EndDate > '{}' group by b.CampaingID  desc;
     """.format(hoy)
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s and Estado = 1"
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
         cur.execute(sqlConjuntosFB,)
         resultscon = cur.fetchall()
         Errores = []
