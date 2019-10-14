@@ -8,6 +8,7 @@ import sys
 import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
+import numpy as mp
 #uomg@omg.com.gt OMG2018u
 conn = None
 def openConnection():
@@ -20,59 +21,99 @@ def openConnection():
         sys.exit()
 
 
-def send(campanas):
-    port = 587  # For SSL
-    smtp_server = "'smtp.office365.com'"
-    sender_email = "uomg@omg.com.gt"  # Enter your address
-    receiver_email = "pancho_op12@hotmail.com"  # Enter receiver address
-    password = "OMG2018u"
-    msg = MIMEMultipart()
-    msg['From'] = 'uomg@omg.com.gt'
-    msg['To'] = 'pancho_op12@hotmail.com'
-    msg['Subject'] = 'preba1'
-    body = ''
-    for cam in campanas:
-        body = body + '<tr>'
-        body = body + '<td>{}</td>'.format(cam[0])
-        body = body + '<td>{}</td>'.format(cam[1])
-        body = body + '<td>{}</td>'.format(cam[2])
-        body = body + '<td>{}</td>'.format(cam[3])
-        body = body + '<td>{}</td>'.format(cam[4])
-        body = body + '<td>{}</td>'.format(cam[5])
-        body = body + '<td>{}</td>'.format(cam[6])
-        body = body + '<td>{}</td>'.format(cam[7])
-        body = body + '</tr>'
+def send(campanas,names):
+    cur=conn.cursor(buffered=True)
+    try:
+        body = ''
+        
+        sender_email = "adops-noreply@omg.com.gt"  # Enter your address
+        password = "OMGdev2019"
+        names =  names[1:-1]
+        sqlCamping = """
+                    select username, c.CampaingID from omgguate.usuario u 
+                    inner join SysAdOps.RolsUsers ru on ru.UserID = u.idusuario
+                    inner join SysAdOps.Rols r on r.RolID = ru.RolID
+                    inner join mfcgt.mfcasignacion asg on asg.idusuario = u.idusuario
+                    inner join accountxmarca am on am.marca = asg.idmarca
+                    inner join Accounts a on a.AccountsID = am.account
+                    inner join Campaings c on c.AccountsID = a.AccountsID 
+                    where c.CampaingID in ({})
+                    order by username;
+                    """.format(names)
+        cur.execute(sqlCamping,)
+        resultscon = cur.fetchall()
+        correo = resultscon[0][0]
+        for res in resultscon:
+            if res[0] != correo:
+                html = """\
+                    <html>
+                   
+                    <body>
+                    
+                        <p>Hola,<br>
+                        Listado de Camapañas<br>
+                        </p>
+                        <table style="width:100%; border-collapse: collapse;" >
+                        <tr>
+                            <th  style="border:1px solid black;padding: 10px;" >Cuenta</th>
+                            <th style="border:1px solid black;padding: 10px;">Marca</th>
+                            <th style="border:1px solid black;padding: 10px;">Medio</th>
+                            <th style="border:1px solid black;padding: 10px;">Nombre Camapaña</th>
+                            <th style="border:1px solid black;padding: 10px;">Resultado Presupuesto</th>
+                            <th style="border:1px solid black;padding: 10px;">Resutlado KPI</th>
+                            <th style="border:1px solid black;padding: 10px;">Presupuseto%</th>
+                            <th style="border:1px solid black;padding: 10px;">KPI%</th>
+                            <th style="border:1px solid black;padding: 10px;">Presupuseto</th>
+                            <th style="border:1px solid black;padding: 10px;">KPI</th>
+                        </tr>
+                        {}
+                        </table> 
+                    </body>
+                    </html>
+                    """.format(body)
+                body = MIMEText(html,'html') # convert the body to a MIME compatible string
+                receiver_email = correo
+                msg = MIMEMultipart()
+                msg['From'] = 'adops-noreply@omg.com.gt'
+                msg['To'] = correo
+                msg['Subject'] = 'Listado de Campañas ' + str(datetime.now())
+                msg.attach(body)
+                server = smtplib.SMTP('smtp.office365.com',587)
+                server.ehlo()
+                server.starttls()
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, msg.as_string())
+                body = ''
+                correo = res[0]
+            
+            for cam in campanas:
+                if cam[0] ==  res[1]:
+                    body = body + '<tr style="border:1px solid black;padding: 10px;"> '
+                    body = body + '<td>{}</td>'.format(cam[1])
+                    body = body + '<td>{}</td>'.format(cam[2])
+                    body = body + '<td>{}</td>'.format(cam[3])
+                    body = body + '<td>{}</td>'.format(cam[4])
+                    body = body + '<td>{}</td>'.format(cam[5])
+                    body = body + '<td>{}</td>'.format(cam[6])
+                    body = body + '<td>{}</td>'.format(cam[7])
+                    body = body + '<td>{}</td>'.format(cam[8])
+                    body = body + '<td>{}</td>'.format(cam[9])
+                    body = body + '<td>{}</td>'.format(cam[10])
+                    body = body + '</tr>'
+                    break
+        
+        
+    except Exception as e:
+        print(e)
+    else:
+        print(datetime.now())
+    
+    
 
-    html = """\
-    <html>
-    <body>
-        <p>Hola,<br>
-        Listado de Camapañas<br>
-        </p>
-         <table style="width:100%">
-        <tr>
-            <th>Marca</th>
-            <th>Medio</th>
-            <th>CampaingName</th>
-            <th>Resultado Presupuesto</th>
-            <th>Resultado KPI</th>
-            <th>Presupuesto%</th>
-            <th>KPI%</th>
-        </tr>
-        {}
-        </table> 
-    </body>
-    </html>
-    """.format(body)
+   
 
 
-    body = MIMEText(html,'html') # convert the body to a MIME compatible string
-    msg.attach(body)
-    server = smtplib.SMTP('smtp.office365.com',587)
-    server.ehlo()
-    server.starttls()
-    server.login(sender_email, password)
-    server.sendmail(sender_email, receiver_email, msg.as_string())
+    
 
 def CampaingsReview(conn):
     cur=conn.cursor(buffered=True)
@@ -95,6 +136,7 @@ def CampaingsReview(conn):
                     """
     try:
         campanas=[]
+        campananames = ''
         print(datetime.now())
         cur.execute(sqlCamping,)
         resultscon = cur.fetchall()
@@ -146,14 +188,17 @@ def CampaingsReview(conn):
                         if abs(int(PorcentajeKPI)) <= 0.01:
                             EstadoKPI =  1
                     if EstadoPresupuesto == 0 and EstadoKPI == 1:
-                        campana=(row[0],row[12],row[1],row[2],row[3],'Estado Presupuesto Malo','Estado KPI Bueno',PorcentajePresupuesto,PorcentajeKPI,row[4],row[8])
+                        campana=(row[1],row[0],row[12],row[2],row[3],'Estado Presupuesto Malo','Estado KPI Bueno',str(round(float(PorcentajePresupuesto))),str(round(float(PorcentajeKPI),2)),str(round(float(row[4]),2)),str(round(float(row[8]),2)))
+                        campananames= campananames + ',' + row[1]
                     elif EstadoPresupuesto == 1 and EstadoKPI == 0: 
-                        campana=(row[0],row[12],row[1],row[2],row[3],'Estado Presupuesto Bueno','Estado KPI Malo',PorcentajePresupuesto,PorcentajeKPI,row[4],row[8])
+                        campana=(row[1],row[0],row[12],row[2],row[3],'Estado Presupuesto Bueno','Estado KPI Malo',str(round(float(PorcentajePresupuesto))),str(round(float(PorcentajeKPI),2)),str(round(float(row[4]),2)),str(round(float(row[8]),2)))
+                        campananames= campananames + ',' + row[1]
                     elif EstadoPresupuesto == 0 and EstadoKPI == 0: 
-                        campana=(row[0],row[12],row[1],row[2],row[3],'Estado Presupuesto Malo','Estado KPI Malo',PorcentajePresupuesto,PorcentajeKPI,row[4],row[10])
+                        campana=(row[1],row[0],row[12],row[2],row[3],'Estado Presupuesto Malo','Estado KPI Malo',str(round(float(PorcentajePresupuesto))),str(round(float(PorcentajeKPI),2)),str(round(float(row[4]),2)),str(round(float(row[8]),2)))
+                        campananames= campananames + ',' + row[1]
                     campanas.append(campana)
         if campanas:
-            send(campanas)
+            send(campanas,campananames)
     except Exception as e:
         print(e)
     finally:
