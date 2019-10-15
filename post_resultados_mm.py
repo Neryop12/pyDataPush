@@ -228,15 +228,15 @@ def GetMediaMathADs(conn):
         #Libreria Numpy, para conventir el formato csv a array
         data = data.to_numpy()
         for row in data:
-            if row:
+            if row.any():
                 if row[3]!='':
                     ad=[row[3],row[4],row[2]]
                     ads.append(ad)
                     admetric=[row[3],row[4],row[5],row[6],row[7],row[8],row[11],row[12]]
                     adsmetrics.append(admetric)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        #cur.executemany(sqlInsertAd ,ads)
-        #cur.executemany(sqlInsertMetricsAds ,adsmetrics)
+        cur.executemany(sqlInsertAd ,ads)
+        cur.executemany(sqlInsertMetricsAds ,adsmetrics)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success MM AD')
         fechahoy = datetime.now()
@@ -257,6 +257,6 @@ if __name__ == '__main__':
     openConnection()
     GetToken()
     GetSession()
-    #GetMediaMathCampaing(conn)
-    #GetMediaMathADSets(conn)
+    GetMediaMathCampaing(conn)
+    GetMediaMathADSets(conn)
     GetMediaMathADs(conn)

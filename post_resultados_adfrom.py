@@ -243,7 +243,8 @@ def GetAdFormCreativeAds(conn):
     print (datetime.now())
     creativeAds=[]
     #Query
-    sqlInsertCreativeAds = 'INSERT INTO creativeads(adid,adname,size,adtype,weight,format,admessage,creativetype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)'
+    sqlInsertCreativeAds = """INSERT INTO CreativeAds(adid,adname,size,adtype,weight,format,admessage,creativetype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) 
+                              ON DUPLICATE KEY UPDATE adname=VALUES(adname),size=VALUES(size),adtype=VALUES(adtype),weight=VALUES(weight),format=VALUES(format),admessage=VALUES(admessage),creativetype=VALUES(creativetype)"""
     try:
         url='https://api.adform.com/v1/reportingstats/agency/reportdata'
         data=requests.post(
@@ -295,6 +296,6 @@ if __name__ == '__main__':
     openConnection()
     GetToken()
     GetAdformCampaign(conn)
-    #GetAdformAdsets(conn)
-    #GetAdformAds(conn)
-    #GetAdFormCreativeAds(conn)
+    GetAdformAdsets(conn)
+    GetAdformAds(conn)
+    GetAdFormCreativeAds(conn)

@@ -144,7 +144,7 @@ def ComparacionErrores(conn):
                             Comentario = 'Error el numero de orden Ingresado  no esta asigando al mismo presupuesto'
                             nuevo=[Error,Comentario,'OC','8',CampaingID,'0','ACTIVE','1','8',CampaingID]
                             Errores.append(nuevo)
-        #cur.executemany(sqlInserErrors,Errores)
+        cur.executemany(sqlInserErrors,Errores)
         print('Success')
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = "INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ('ComparacionErrores', 'Success', 'errosPresupuesto.py','{}');".format(dayhoy)
@@ -158,20 +158,7 @@ def ComparacionErrores(conn):
         print(datetime.now())
 
 
-def reviewComparacion(conn):
-    cur=conn.cursor(buffered=True)
-    Errores=[]
-    fechahoy = datetime.now()
-    dayhoy = fechahoy.strftime("%Y-%m-%d")
-    #Query para insertar los datos, Media  -> OC
-    sqlInserErrors = "UPDATE `MediaPlatforms`.`ErrorsCampaings` SET `Estado` = '0' WHERE CampaingID=%s);"
-    sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID group by m.id desc limit 1  ),0) costo,a.Media from Campaings c inner join dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID inner join ErrorsCampaings ec on ec.CampaingID = c.CampaingID where ec.TipoErrorID = 15 and ec.Estado =1  group by c.CampaingID;"
-    try:
-        pass
-    except expression as identifier:
-        pass
-    finally:
-        pass
+
 
 if __name__ == '__main__':
     openConnection()

@@ -35,7 +35,7 @@ def SaldosGO(conn):
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
     sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Error=Values(Error),Comentario=Values(Comentario), TipoErrorID = Values(TipoErrorID) "
-    sqlCamping = "select c.CampaingID,sum(dc.cost) spend,dc.Campaigndailybudget,dc.Campaignlifetimebudget,date_format(dc.Enddate,'%Y-%m-%d') FechaFin  from dailycampaing dc  inner join Campaings c on c.CampaingID = dc.CampaingID where Placement in ('Search','Display') and c.Campaignstatus='enabled' group by CampaingID;"
+    sqlCamping = "select c.CampaingID,sum(dc.cost) spend,dc.Campaigndailybudget,dc.Campaignlifetimebudget,date_format(dc.Enddate,'%Y-%m-%d') FechaFin  from Dailycampaing dc  inner join Campaings c on c.CampaingID = dc.CampaingID where Placement in ('Search','Display') and c.Campaignstatus='enabled' group by CampaingID;"
     try:
         print(datetime.now())
         cur.execute(sqlCamping)
@@ -87,3 +87,4 @@ def SaldosGO(conn):
 if __name__ == '__main__':
     openConnection()
     SaldosGO(conn)
+    conn.close()
