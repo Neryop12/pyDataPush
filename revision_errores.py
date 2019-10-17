@@ -14,11 +14,11 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['TESTING']['HOST']
-name = config['TESTING']['NAME']
-user = config['TESTING']['USER']
-password = config['TESTING']['PASSWORD']
-autocommit= config['TESTING']['AUTOCOMMIT']
+host= config['PRODUCTION']['HOST']
+name = config['PRODUCTION']['NAME']
+user = config['PRODUCTION']['USER']
+password = config['PRODUCTION']['PASSWORD']
+autocommit= config['PRODUCTION']['AUTOCOMMIT']
 
 def openConnection():
     global conn
@@ -683,45 +683,31 @@ def reviewerrorsNom(conn):
     cur = conn.cursor()
     print (datetime.now())
     try:
-        berror = "SELECT * FROM ErrorsCampaings"
-        bcampaings = 'SELECT CampaingID,Campaingname,Campaignstatus  FROM Campaings where CampaingID=%s'
-        btStatus = "select a.CampaingID,a.Campaingname,a.Campaignstatus,b.Status,c.Adstatus from Campaings  a INNER JOIN  Adsets b on a.CampaingID=b.CampaingID  INNER JOIN  Ads c on b.AdSetID=c.AdSetID where a.Campaignstatus='PAUSED' or a.Campaignstatus='enable' or b.Status='PAUSED' or b.Status='enable' or c.Adstatus='PAUSED' or c.Adstatus='enable'"
+        berror = "SELECT * FROM ErrorsCampaings where Estado >0 and TipoErrorID=1;"
+        bcampaings = 'SELECT c.CampaingID,Campaingname,Campaignstatus  FROM Campaings c inner join ErrorsCampaings e on e.CampaingID = c.CampaingID Where e.Estado>0 and e.TipoErrorID=1;'
+        btStatus = "select a.CampaingID,a.Campaingname,a.Campaignstatus from Campaings  a  where a.Campaignstatus in ('PAUSED','enable','ACTIVE') and a.EndDate >'2019-10-17'"
         bupdatestatus = "UPDATE ErrorsCampaings SET StatusCampaing=%s where CampaingID=%s"
         bupdate = "UPDATE ErrorsCampaings SET estado=0 where CampaingID=%s"
         cupdate = "UPDATE ErrorsCampaings SET error=%s where CampaingID=%s"
         cur.execute(btStatus,)
         rest = cur.fetchall()
+        EstatusCam =[]
         for res in rest:
             CampID = res[0]
-            if res[2] != 'PAUSED' or res[2] != 'paused':
-                if res[3] != 'PAUSED' or res[2] != 'paused':
-                    if res[4] != 'PAUSED' or res[2] != 'paused':
-                        Estatus = res[4]
-                    else:
-                        Estatus = res[4]
-                else:
-                    Estatus = res[3]
-            else:
-                Estatus = res[2]
-            cur.execute(bupdatestatus, (Estatus, CampID))
+            Estatus = res[2]
+            EstatusCam.append([Estatus,CampID])
+        cur.executemany(bupdatestatus, EstatusCam)
 
-        cur.execute(berror,)
-        resultscon = cur.fetchall()
-        #SELECIONAMOS TODOS LOS ERRORES ACTUALES
-        for res in resultscon:
-            ##SI EL ERROR ES TIPO NOMENCLATURA
-            if res[3] > 0 and res[5] == 1:
-                rs = res[6]
-                cur.execute(bcampaings, (rs,))
-                ncampanas = cur.fetchall()
-                for res in ncampanas:
-                    ID = res[0]
-                    Nomenclatura = res[1]
-                    searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO|TRRRSS)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?$', str(Nomenclatura), re.M | re.I)
-                    if searchObj:
-                        cur.execute(bupdate, (ID,))
-                    else:
-                            cur.execute(cupdate, (Nomenclatura, ID))
+        cur.execute(bcampaings, )
+        ncampanas = cur.fetchall()
+        for res in ncampanas:
+            ID = res[0]
+            Nomenclatura = res[1]
+            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO|TRRRSS)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?$', str(Nomenclatura), re.M | re.I)
+            if searchObj:
+                cur.execute(bupdate, (ID,))
+            else:
+                cur.execute(cupdate, (Nomenclatura, ID))
 
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
@@ -870,6 +856,6 @@ if __name__ == '__main__':
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
-   reviewerrorsMTS(conn)
+   #reviewerrorsMTS(conn)
    errors_fb_adsets_pais(conn)
    conn.close()

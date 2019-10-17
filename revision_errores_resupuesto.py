@@ -12,11 +12,11 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['TESTING']['HOST']
-name = config['TESTING']['NAME']
-user = config['TESTING']['USER']
-password = config['TESTING']['PASSWORD']
-autocommit= config['TESTING']['AUTOCOMMIT']
+host= config['PRODUCTION']['HOST']
+name = config['PRODUCTION']['NAME']
+user = config['PRODUCTION']['USER']
+password = config['PRODUCTION']['PASSWORD']
+autocommit= config['PRODUCTION']['AUTOCOMMIT']
 
 def openConnection():
     global conn

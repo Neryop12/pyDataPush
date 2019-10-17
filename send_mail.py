@@ -123,7 +123,7 @@ def CampaingsReview(conn):
                     md.Nombre KPI,ifnull(sum(d.result),0) 'KPIConsumido',c.Campaignstatus State,m.nombre Marca ,dc.nombre Cliente,date_format(now(),'%M') mes,  
                     '0' as 'TotalDias','0' as 'DiasEjecutados','0' as 'DiasPorservir', "0" as 'PresupuestoEsperado',"0" as 'PorcentajePresupuesto', 
                     "0" as 'PorcentajeEsperadoV',"0" as 'PorcentajeRealV',"0" as 'KPIEsperado',"0" as 'PorcentajeKPI', "0" as 'PorcentajeEsperadoK',"0" as 'PorcentajeRealK', "0" as 'EstadoKPI', "0" as 'EstadoPresupuesto'
-                    from Dailycampaing d
+                    from dailycampaing d
                     inner join Campaings c on c.CampaingID = d.CampaingID
                     inner join Accounts a on c.AccountsID = a.AccountsID
                     inner join accountxmarca am on am.account = a.AccountsID

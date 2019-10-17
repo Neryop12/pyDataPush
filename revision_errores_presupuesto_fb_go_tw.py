@@ -12,11 +12,11 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['TESTING']['HOST']
-name = config['TESTING']['NAME']
-user = config['TESTING']['USER']
-password = config['TESTING']['PASSWORD']
-autocommit= config['TESTING']['AUTOCOMMIT']
+host= config['PRODUCTION']['HOST']
+name = config['PRODUCTION']['NAME']
+user = config['PRODUCTION']['USER']
+password = config['PRODUCTION']['PASSWORD']
+autocommit= config['PRODUCTION']['AUTOCOMMIT']
 
 def openConnection():
     global conn
@@ -35,7 +35,7 @@ def PresupusetoCamp(conn):
     dayhoy = fechahoy.strftime("%Y-%m-%d")
     #Query para insertar los datos, Media  -> OC
     sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) Values( %s,%s,%s,%s,%s,%s,%s) ;"
-    sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID group by m.id desc limit 1  ),0) costo,a.Media from Campaings c inner join Dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID where c.EndDate > '{}'  group by c.CampaingID;".format(dayhoy)
+    sqlCamping = "select Distinct c.CampaingID , sum(d.cost), c.Campaingname, date_format(c.Enddate,'%Y-%m-%d'),ifnull((select m.cost from CampaingMetrics m where m.CampaingID = c.CampaingID group by m.id desc limit 1  ),0) costo,a.Media from Campaings c inner join dailycampaing d on d.CampaingID = c.CampaingID inner join Accounts a on a.AccountsID = c.AccountsID where c.EndDate > '{}'  group by c.CampaingID;".format(dayhoy)
     sqlError = "SELECT DISTINCT idErrorsCampaings FROM ErrorsCampaings where TipoErrorID=%s and CampaingID=%s;"
     sqlUpdateErrores = "UPDATE ErrorsCampaings SET Error = %s, Comentario = %s WHERE (idErrorsCampaings = %s) ;" 
     try:
