@@ -22,20 +22,21 @@ def openConnection():
     try:
         conn = mysql.connect(host=host, database=name,
                              user=user, password=password, autocommit=autocommit)
-    except:
+    except Exception as e:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
-        sys.exit()
+        print(e)
 
 def fb_ads(conn):
     cur=conn.cursor(buffered=True)
-    print (datetime.now())
     fechahoy = datetime.now()
+    print (datetime.now())
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1ZL49TIgJU9qJsqx_7qhghZ6XaGh_QEyzHkQXH6JagBI/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1WkJhD6-jmyCTqY5LfQOA__stGEh6Rgwph3X8q4tGiaI/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
+    
     try:
+        temp_k=data['feed']['entry']
         #SQLS
         #Verificar si existe
         #Guardar Datos
@@ -166,7 +167,12 @@ def fb_camp(conn):
             enddate=atr['gsx$campaignenddate']['$t']
             clicks=atr['gsx$outboundclicks']['$t']
             cost=atr['gsx$cost']['$t']
-
+            if campaignspendinglimit == '':
+                campaignspendinglimit = 0
+            if campaigndailybudget == '':
+                campaigndailybudget = 0
+            if campaignlifetimebudget == '':
+                campaignlifetimebudget = 0
             #FIN VARIABLES
             if accountid!='' or accountid!=0:
                 cuenta=[accountid,account,'FB']
@@ -429,14 +435,16 @@ def tw_camp(conn):
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
+    
     #CONEXION
-    cuentas=[]
-    campanas=[]
-    campmetrics=[]
-    campdisplays=[]
+    
     #QUERYS
     try:
+        cuentas=[]
+        campanas=[]
+        campmetrics=[]
+        campdisplays=[]
+        temp_k=data['feed']['entry']
         sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
         sqlInsertAccount = "INSERT INTO Accounts(AccountsID,Account,Media) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
         sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Impressions,Clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s)"

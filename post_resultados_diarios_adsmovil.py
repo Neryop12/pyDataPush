@@ -51,7 +51,7 @@ def pushAdsMovil(conn):
     cur=conn.cursor(buffered=True)
     campanas=[]
     sqlInsertCampaing = "INSERT INTO CampaingsAM (`CampaingID`, `Campaingname`, `ad`, `Impressions`, `Clicks`, `Ctr`, `Video_firstquartile`, `Video_midpoint`, `Video_thirdquartile`, `Video_completed`, `cost`, `CPM`, `AccountsID`, `StartDate`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),ad=VALUES(ad), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Video_firstquartile=VALUES(Video_firstquartile),Video_midpoint=VALUES(Video_midpoint),Video_thirdquartile=VALUES(Video_thirdquartile),cost=VALUES(cost),CPM=VALUES(CPM) "
-    
+    sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
     try:
         url='https://reportapi.adsmovil.com/api/campaign/details'
         Result2 = requests.get(
@@ -71,10 +71,10 @@ def pushAdsMovil(conn):
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
-            campana=[row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],'AdsMovil',row[0]]
+            campana=[row[1],row[11],row[4],row[5]]
             campanas.append(campana)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertCampaing,campanas)
+        cur.executemany(sqlInsertCampaingMetrics,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success AdsMovil Campanas')
         fechahoy = datetime.now()

@@ -35,6 +35,25 @@ def openConnection():
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
 
+def GetAouth():
+    global Token
+    url='https://id.adform.com/sts/connect/token'
+    Token=requests.post(
+                url,
+                 headers={
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                data={
+                    "client_id":"reporting.jdeleon.gt.es@clients.adform.com", 
+                    "client_secret":"vUkmHq-G6q6tBW_mDRaaf886hOyaYz3Ik1yfYg8u",
+                    "grant_type":"client_credentials",
+                    "scope": "https://api.adform.com/scope/buyer.campaigns.api",
+                     }
+               
+
+                )
+    Token = Token.json()
+
 def GetToken():
     global Token
     url='https://api.adform.com/Services/Security/Login'
@@ -43,15 +62,72 @@ def GetToken():
                  headers={
                             'Content-Type': 'application/json',
                             },
-                json={
+               json={
                         "UserName": "JDELEON",
                         "Password": "Joseandre2019"
                     }
+               
 
                 )
-    Token=Token.json()
+    Token = Token.json()
+
 #GET ReportStas, primero se debe generar el Token de session, solo se pueden obtener 8 dimensioines por Requests
 #Falta agregar el budget, aun no se sabe como obtenerlo,
+def PushCampaingAdform(conn):
+     global cur
+     cur=conn.cursor(buffered=True)
+     print (datetime.now())
+     cuentas=[]
+     campanas=[]
+     campmetrics=[]
+     #Querys a insertar a la base de datos
+     sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
+     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget), Campaignstatus=VALUES(Campaignstatus)"
+     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks,frequency) VALUES (%s,%s,%s,%s,%s)"
+     try:
+         url='https://api.adform.com/v1/buyer/campaigns?Return-Total-Count=True&status=Active'
+         data=requests.get(
+             url,
+             #Headers: se coloca el token de autorizacion
+             headers={
+                 'Authorization':'Bearer '+ Token['access_token'],
+                 'Content-Type':'application/json',
+                 'Accept':'application/json',
+             },
+             #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
+             #Para enviarlo se tiene que guardar en formato Json.
+             params={
+                      'Return-Total-Count':'True',
+                      'status':'Active'
+                    }
+         )
+         data=data.json()
+         for row in data['reportData']['rows']:
+             if(row[0]!=''):
+                 cuenta=[row[2],row[3],'AF']
+                 cuentas.append(cuenta)
+                 campana=[row[0],row[1],'0',row[9],row[2],row[4],row[5],'ACTIVE']
+                 campanas.append(campana)
+                 #Se verifica si Frequency es numerico
+                 if(row[6].isnumeric()):
+                    campanametrica=[row[0],row[9],row[8],row[7],row[6]]
+                 else:
+                    campanametrica=[row[0],row[9],row[8],row[7],'0']
+                 campmetrics.append(campanametrica)
+         cur.execute("SET FOREIGN_KEY_CHECKS=0")
+         cur.executemany(sqlInsertAccount ,cuentas)
+         cur.executemany(sqlInsertCampaing,campanas)
+         cur.executemany(sqlInsertCampaingMetrics,campmetrics)
+         cur.execute("SET FOREIGN_KEY_CHECKS=1")
+         print('Success AF Campanas')
+     except Exception as e:
+         print(e)
+     finally:
+         print (datetime.now())
+
+
+
+
 def GetAdformCampaign(conn):
      global cur
      cur=conn.cursor(buffered=True)
@@ -63,6 +139,7 @@ def GetAdformCampaign(conn):
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
      sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget), Campaignstatus=VALUES(Campaignstatus)"
      sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks,frequency) VALUES (%s,%s,%s,%s,%s)"
+     GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
      try:
          url='https://api.adform.com/v1/reportingstats/agency/reportdata'
          data=requests.post(
@@ -82,7 +159,8 @@ def GetAdformCampaign(conn):
                                     "client",
                                     "campaignStartDate",
                                     "campaignEndDate",
-                                    "frequencyCampaign"
+                                    "frequencyCampaign",
+                                    "campaignType"
                                 ],
                                 "metrics": [
                                     "clicks",
@@ -90,23 +168,26 @@ def GetAdformCampaign(conn):
                                     "cost"
                                 ],
                                 "filter": {
-                                    "date": {"from":"2019-01-01", "to": "{}".format(str(datetime.now()))}
+                                    "date": {"from":"2019-10-01", "to": "{}".format(str(datetime.now()))}
                                 }
                     }
          )
          data=data.json()
          for row in data['reportData']['rows']:
              if(row[0]!=''):
-                 cuenta=[row[2],row[3],'AF']
-                 cuentas.append(cuenta)
-                 campana=[row[0],row[1],'0',row[9],row[2],row[4],row[5],'ACTIVE']
-                 campanas.append(campana)
-                 #Se verifica si Frequency es numerico
-                 if(row[6].isnumeric()):
-                    campanametrica=[row[0],row[9],row[8],row[7],row[6]]
-                 else:
-                    campanametrica=[row[0],row[9],row[8],row[7],'0']
-                 campmetrics.append(campanametrica)
+                 if row[7] != 'Non-campaign':
+                    cuenta=[row[2],row[3],'AF']
+                    cuentas.append(cuenta)
+                    campana=[row[0],row[1],'0',row[9],row[2],row[4],row[5],'ACTIVE']
+                    campanas.append(campana)
+                    #Se verifica si Frequency es numerico
+                    if(row[6].isnumeric()):
+                        campanametrica=[row[0],row[9],row[8],row[7],row[6]]
+                        camapanadaily=[]
+                    else:
+                        campanametrica=[row[0],row[9],row[8],row[7],'0']
+                    campmetrics.append(campanametrica)
+
          cur.execute("SET FOREIGN_KEY_CHECKS=0")
          cur.executemany(sqlInsertAccount ,cuentas)
          cur.executemany(sqlInsertCampaing,campanas)
@@ -154,7 +235,7 @@ def GetAdformAdsets(conn):
                                     "cost"
                                 ],
                                 "filter": {
-                                    "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
+                                    "date": {"from":"2019-10-01", "to": '' + str(datetime.now())}
                                 }
                     }
          )
@@ -215,7 +296,7 @@ def GetAdformAds(conn):
                             "conversions"
                         ],
                         "filter": {
-                            "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
+                            "date": {"from":"2019-10-01", "to": '' + str(datetime.now())}
                         }
                     }
          )
@@ -272,7 +353,7 @@ def GetAdFormCreativeAds(conn):
                         "impressions"
                     ],
                     "filter": {
-                        "date": {"from":"2019-01-01", "to": '' + str(datetime.now())}
+                        "date": {"from":"2019-10-01", "to": '' + str(datetime.now())}
                     }
                     }
          )
@@ -295,6 +376,7 @@ def GetAdFormCreativeAds(conn):
 if __name__ == '__main__':
     openConnection()
     GetToken()
+    #PushCampaingAdform(conn)
     GetAdformCampaign(conn)
     GetAdformAdsets(conn)
     GetAdformAds(conn)

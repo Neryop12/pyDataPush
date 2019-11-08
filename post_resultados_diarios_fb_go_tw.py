@@ -12,11 +12,11 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['TESTING']['HOST']
-name = config['TESTING']['NAME']
-user = config['TESTING']['USER']
-password = config['TESTING']['PASSWORD']
-autocommit= config['TESTING']['AUTOCOMMIT']
+host= config['PRODUCTION']['HOST']
+name = config['PRODUCTION']['NAME']
+user = config['PRODUCTION']['USER']
+password = config['PRODUCTION']['PASSWORD']
+autocommit= config['PRODUCTION']['AUTOCOMMIT']
 
 def openConnection():
     global conn
@@ -38,7 +38,7 @@ def fb_ads(conn):
         #SQLS
         #Verificar si existe
         #Guardar Datos
-        sqlInsertDailyAd = "INSERT INTO DailyAds(AdID, Adname, Status, Impressions, Ctr, Cpm, Cro, Cost, Frequency, Reach, Pagelikes, Peopletakingaction, Postreactions, Postshares, Photoviews, Clickstoplayvideo, Leads, Eventresponses, Messagingreplies, Videowatchesat75, Videowatchesat100, Websiteleads, Desktopappinstalls, Mobileappinstalls, Clicks) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sqlInsertDailyAd = "INSERT INTO dailyads(AdID, Adname, Status, Impressions, Ctr, Cpm, Cro, Cost, Frequency, Reach, Pagelikes, Peopletakingaction, Postreactions, Postshares, Photoviews, Clickstoplayvideo, Leads, Eventresponses, Messagingreplies, Videowatchesat75, Videowatchesat100, Websiteleads, Desktopappinstalls, Mobileappinstalls, Clicks) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         #results = cur.fetchall()  Mostrar datos de una consulta
         Dailyads=[]
         for atr in temp_k:
@@ -105,7 +105,7 @@ def fb_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailycampaing="INSERT INTO Dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement,VideoWatches75,PostReaccion,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement,VideoWatches75,PostReaccion,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -128,6 +128,7 @@ def fb_camp(conn):
             placement=atr['gsx$placement']['$t']
             videowatch=atr['gsx$videowatchesat75']['$t']
             postreaccion=atr['gsx$postreactions']['$t']
+            leads=atr['gsx$websiteleads']['$t']
             result = 0
             #FIN VARIABLES
             if campaingid!='':
@@ -145,7 +146,16 @@ def fb_camp(conn):
                     elif str(Result).upper() == 'CPCO':
                         result = clicks
                     elif str(Result).upper() == 'CPI':
-                        result = postreaccion
+                        result = leads
+                    elif str(Result).upper() == 'CPMA':
+                        result = reach
+                    elif str(Result).upper() == 'CPC':
+                        result = clicks
+                    elif str(Result).upper() == 'CPMA':
+                        result = reach
+                    
+                if enddate == '':
+                    enddate = '2019-01-01'        
                 if budget!='':
                     campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,placement,videowatch,postreaccion,result)
                     campanas.append(campana)
@@ -182,7 +192,7 @@ def fb_adsets(conn):
     try:
             #QUERYS
         adsets=[]
-        sqlInsertDailyAdsets = "INSERT INTO DailyAdset(AdSetID,AdSetName,Country,Reach,Frequency,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s) "
+        sqlInsertDailyAdsets = "INSERT INTO dailyadset(AdSetID,AdSetName,Country,Reach,Frequency,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s) "
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$adsetid']['$t']
@@ -236,7 +246,7 @@ def go_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailycampaing="INSERT INTO Dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -263,6 +273,25 @@ def go_camp(conn):
                 enddate = None
             if searchObj:
                 NomInversion = float(searchObj.group(11))
+                Result = (searchObj.group(14))
+                if str(Result).upper() == 'CPVI':
+                    result = clicks
+                elif str(Result).upper() == 'CPMA':
+                    result = reach
+                elif str(Result).upper() == 'CPM':
+                    result = impressions
+                elif str(Result).upper() == 'CPV':
+                    result = videowatch
+                elif str(Result).upper() == 'CPCO':
+                    result = clicks
+                elif str(Result).upper() == 'CPI':
+                    result = leads
+                elif str(Result).upper() == 'CPMA':
+                    result = reach
+                elif str(Result).upper() == 'CPC':
+                    result = clicks
+                elif str(Result).upper() == 'CPMA':
+                    result = reach
             #FIN VARIABLES
             if campaingid!='':
                 if percentofbudgetused!='':
@@ -305,7 +334,7 @@ def go_adsets(conn):
     try:
         #QUERYS
         adsets=[]
-        sqlInsertDailyAdsets = "INSERT INTO DailyAdset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
+        sqlInsertDailyAdsets = "INSERT INTO dailyadset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
 
         for atr in temp_k:
             #ACCOUNT
@@ -350,7 +379,7 @@ def go_ads(conn):
     try:
         ads=[]
         #QUERYS
-        sqlInsertDailyAd = "INSERT INTO DailyAds(Cost,Ctr,Cpm,Convertions,Videowatchesat100,Videowatchesat75,AdID,Adname,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sqlInsertDailyAd = "INSERT INTO dailyads(Cost,Ctr,Cpm,Convertions,Videowatchesat100,Videowatchesat75,AdID,Adname,Impressions,Clicks) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$adgroupid']['$t']
@@ -396,13 +425,14 @@ def tw_camp(conn):
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
+    
     #CONEXION
 
     campanas=[]
     #QUERYS
     try:
-        GuardarDailycampaing="INSERT INTO Dailycampaing(CampaingID,Impressions,Clicks,cost,enddate) VALUES (%s,%s,%s,%s,%s)"
+        temp_k=data['feed']['entry']
+        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,enddate) VALUES (%s,%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t'].encode('utf-8')
@@ -457,7 +487,7 @@ def tw_adsets(conn):
 
         adsets=[]
         #QUERYS
-        sqlInsertDailyAdsets = "INSERT INTO DailyAdset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
+        sqlInsertDailyAdsets = "INSERT INTO dailyadset(AdSetID,AdSetName,Impressions,Clicks) VALUES (%s,%s,%s,%s) "
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$campaignid']['$t']+atr['gsx$fundinginstrumentid']['$t']
@@ -509,7 +539,7 @@ def tw_ads(conn):
         sqlInsertAds = "INSERT INTO Ads(AdID,AdSetID,Adname) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Adname=VALUES(Adname)"
         sqlInsertMetricsAds = "INSERT INTO MetricsAds(Impressions,Cost,Ctr,Cpm,AdID) VALUES (%s,%s,%s,%s,%s)"
         sqlSelectAds = "SELECT count(*) FROM Ads where AdID=%s and AdSetID=%s"
-        sqlInsertDailyAd = "INSERT INTO DailyAds(Impressions,Cost,Ctr,Cpm,AdID) VALUES (%s,%s,%s,%s,%s)"
+        sqlInsertDailyAd = "INSERT INTO dailyads(Impressions,Cost,Ctr,Cpm,AdID) VALUES (%s,%s,%s,%s,%s)"
         for atr in temp_k:
             #ACCOUNT
             adid=atr['gsx$campaignid']['$t']+atr['gsx$fundinginstrumentid']['$t']
@@ -558,9 +588,9 @@ def fb_reach(conn):
     #CONEXION
     try:
         #QUERYS
-        UpdateCampaing="UPDATE Dailycampaing SET Reach = %s, Frequency = %s WHERE (CampaingID = %s and id > 0);"
+        UpdateCampaing="UPDATE dailycampaing SET Reach = %s, Frequency = %s WHERE (CampaingID = %s and id > 0);"
         campanas=[]
-        UpdateCampaingReach="UPDATE Dailycampaing SET Reach = %s, Frequency = %s, Result = %s WHERE (CampaingID = %s and id > 0);"
+        UpdateCampaingReach="UPDATE dailycampaing SET Reach = %s, Frequency = %s, Result = %s WHERE (CampaingID = %s and id > 0);"
         reachs=[]
         for atr in temp_k:
 
@@ -598,6 +628,18 @@ def fb_reach(conn):
     finally:
         print(datetime.now())
 
+def truncateAllCamp(conn):
+    try:
+        cur=conn.cursor(buffered=True)
+        print (datetime.now())
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.execute('TRUNCATE dailycampaing;')
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+
+    except Exception as e:
+        print(e)
+    finally:
+        print(datetime.now())
 
 #FIN VISTA
 def push_camps(conn):
@@ -618,8 +660,9 @@ def push_ads(conn):
 #Funciones
 if __name__ == '__main__':
    openConnection()
-   fb_ads(conn)
+   truncateAllCamp(conn)
    fb_camp(conn)
+   fb_ads(conn)
    fb_reach(conn)
    fb_adsets(conn)
    go_camp(conn)
