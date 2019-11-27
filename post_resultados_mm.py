@@ -76,7 +76,7 @@ def GetMediaMathCampaing(conn):
      campmetrics=[]
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,Campaignstatus) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget), StartDate=VALUES(StartDate),EndDate=VALUES(EndDate),Campaignstatus=('ACTIVE')"
+     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
      sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
      try:
          #Direccion del API, las variable session se pasas com oun Cookie
@@ -91,9 +91,7 @@ def GetMediaMathCampaing(conn):
                                 },
                             params={
                                 'start_date': '2019-01-01',
-                                'end_date': '2019-11-30',
-                                'time_rollup':'by_month',
-                                
+                                'time_rollup':'by_day',
                             }
                         )
         #Variable para guardar el contenido del request.
@@ -153,8 +151,7 @@ def GetMediaMathADSets(conn):
                                 },
                             params={
                                 'start_date':'2019-07-31',
-                                'end_date': '2019-11-30',
-                                'time_rollup':'by_month',
+                                'time_rollup':'by_day',
                             }
                         )
         #Variable para guardar el contenido del request.
@@ -220,8 +217,7 @@ def GetMediaMathADs(conn):
                             params={
 
                                 'start_date': '2019-01-01',
-                                'end_date': '2019-11-30',
-                                'time_rollup':'by_month',
+                                'time_rollup':'by_day',
                             }
                         )
         #Variable para guardar el contenido del request.

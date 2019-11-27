@@ -7,12 +7,9 @@ import mysql.connector as mysql
 from datetime import datetime, timedelta
 import time
 import numpy as mp
-from environs import Env
-import configparser
+
 conn = None
 
-config = configparser.ConfigParser()
-config.read('config.ini')
 
 host= '3.95.117.169'
 name = 'MediaPlatforms'
@@ -43,12 +40,12 @@ def reviewErrores(conn):
         print (datetime.now())
         sqlConjuntosFB = """
         select distinct  cd.multiplestiposa 'InicioMfc', cd.multiplestiposb 'FinalMfc',ob.nombre objetivo, ifnull(cd.costo,ifnull(cd.multiplescostosb,bonificacion))   CostoMfc,
-		pl.abreviatura mediomf, date_format(ca.StartDate,'%m/%d/%Y') InicioAd, 
+		pl.abreviatura mediomf, date_format(ca.StartDate,'%m/%d/%Y') InicioAd,
         date_format(ca.EndDate,'%m/%d/%Y') FinAd,ca.Campaignobjective,ca.Campaignlifetimebudget CostoAd,a.Media,ca.CampaingID,ca.Campaingname, dp.codigo paismf, adm.Country piasad, er.idErrorsCampaings,er.TipoErrorID
         from ErrorsCampaings er
         inner join Campaings ca on ca.CampaingID = er.CampaingID
         inner join mfcgt.mfccompradiaria cd on ca.Campaingname = cd.multiplestiposg
-        inner join mfcgt.mfccampana fca on fca.id = cd.idcampana        
+        inner join mfcgt.mfccampana fca on fca.id = cd.idcampana
         inner join mfcgt.mfc mf on fca.idmfc = mf.id
         inner join mfcgt.dpais dp on dp.id = mf.paisimplementar
         inner join Accounts a on a.AccountsID = ca.AccountsID
@@ -62,7 +59,7 @@ def reviewErrores(conn):
         where  ca.Campaignstatus in ('ACTIVE','enabled') and ca.EndDate > '{}' ;
         """.format(hoy)
         slqUpdate = "UPDATE `ErrorsCampaings` SET `Estado` = %s WHERE (idErrorsCampaings =  %s ) ;"
-        
+
         cur.execute(sqlConjuntosFB,)
         resultscon = cur.fetchall()
         Errores = []
@@ -123,7 +120,7 @@ def reviewErrores(conn):
                         res=(0,result[14])
                         Errores.append(res)
 
-           
+
         cur.executemany(slqUpdate, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
@@ -153,13 +150,13 @@ def reviewErroresNomen(conn):
     try:
         print (datetime.now())
         sqlConjuntosFB = """
-        select err.idErrorsCampaings from ErrorsCampaings err 
+        select err.idErrorsCampaings from ErrorsCampaings err
         inner join Campaings ca on ca.CampaingID = err.CampaingID
         inner join mfcgt.mfccompradiaria cd on ca.Campaingname = cd.multiplestiposg
         where err.Estado = 1;
         """
         slqUpdate = "UPDATE `ErrorsCampaings` SET `Estado` = %s WHERE (idErrorsCampaings =  %s ) ;"
-        
+
         cur.execute(sqlConjuntosFB,)
         resultscon = cur.fetchall()
         Errores = []
@@ -167,7 +164,7 @@ def reviewErroresNomen(conn):
             res=(0,result[0])
             Errores.append(res)
 
-           
+
         cur.executemany(slqUpdate, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")

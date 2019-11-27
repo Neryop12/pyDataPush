@@ -91,7 +91,6 @@ def GetMediaMathCampaing(conn):
                             params={
                                 'start_date': '{}'.format(str(ayer)),
                                 'time_rollup':'by_day',
-                                'end_date': '2019-11-30',    
                             }
                         )
         #Variable para guardar el contenido del request.
@@ -148,7 +147,6 @@ def GetMediaMathADSets(conn):
                             params={
                                 'start_date': '{}'.format(str(ayer)),
                                 'time_rollup':'by_day',
-                                'end_date': '2019-11-30',
                             }
                         )
         #Variable para guardar el contenido del request.
@@ -202,7 +200,6 @@ def GetMediaMathADs(conn):
                             params={
 
                                 'start_date': '2019-01-01',
-                                'end_date': '2019-11-30',
                                 'time_rollup':'by_day',
                             }
                         )

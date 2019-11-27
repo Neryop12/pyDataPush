@@ -9,21 +9,21 @@ import time
 import numpy as mp
 conn = None
 
-# host= '3.95.117.169'
-# name = 'MediaPlatforms'
-# user = 'omgdev'
-# password = 'Sdev@2002!'
-# autocommit= 'True'
-
-host= 'localhost'
+host= '3.95.117.169'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
 autocommit= 'True'
+
+# host= 'localhost'
+# name = 'MediaPlatforms'
+# user = 'omgdev'
+# password = 'Sdev@2002!'
+# autocommit= 'True'
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host=host, database=name,port=8889,
+        conn = mysql.connect(host=host, database=name,
                              user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
