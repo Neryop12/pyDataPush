@@ -11,11 +11,11 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-host= config['PRODUCTION']['HOST']
-name = config['PRODUCTION']['NAME']
-user = config['PRODUCTION']['USER']
-password = config['PRODUCTION']['PASSWORD']
-autocommit= config['PRODUCTION']['AUTOCOMMIT']
+host= '3.95.117.169'
+name = 'MediaPlatforms'
+user = 'omgdev'
+password = 'Sdev@2002!'
+autocommit= 'True'
 
 def openConnection():
     global conn
@@ -138,7 +138,8 @@ def fb_camp(conn):
     try:
         #QUERYS
         GuardarCuentas="""INSERT INTO  Accounts (AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"""
-        GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus),EndDate=VALUES(EndDate)"""
+        GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate,Campaingbuyingtype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
+        ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate),Campaingbuyingtype=VALUES(Campaingbuyingtype) """
         GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
         GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         cuentas=[]
@@ -157,6 +158,7 @@ def fb_camp(conn):
             campaigndailybudget=atr['gsx$campaigndailybudget']['$t']
             campaignlifetimebudget=atr['gsx$campaignlifetimebudget']['$t']
             campaignobjective=atr['gsx$campaignobjective']['$t'].encode('utf-8')
+            campaingbuyingtypee=atr['gsx$campaignbuyingtype']['$t'].encode('utf-8')
             campaignstatus=atr['gsx$campaignstatus']['$t'].encode('utf-8')
             reach=atr['gsx$reach']['$t']
             impressions=atr['gsx$impressions']['$t']
@@ -173,12 +175,23 @@ def fb_camp(conn):
                 campaigndailybudget = 0
             if campaignlifetimebudget == '':
                 campaignlifetimebudget = 0
+            if clicks == '':
+                clicks = 0
+            if frequency == '':
+                frequency = 0
+            if reach == '':
+                reach = 0
+            if impressions == '':
+                impressions = 0
+            if cost == '':
+                cost = 0
             #FIN VARIABLES
             if accountid!='' or accountid!=0:
                 cuenta=[accountid,account,'FB']
                 cuentas.append(cuenta)
-                campana=[campaingid,campaingname,campaignspendinglimit,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate]
-                campanas.append(campana)
+                if enddate!='':
+                    campana=[campaingid,campaingname,campaignspendinglimit,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate,campaingbuyingtypee]
+                    campanas.append(campana)
                 campdisplay=(campaingid,publisherplatform,placement)
                 campdisplays.append(campdisplay)
                 campmetric=(campaingid,reach,frequency,impressions,placement,clicks,cost,dayhoy)
@@ -597,8 +610,8 @@ def tw_ads(conn):
 #FIN VISTA
 def push_camps(conn):
     fb_camp(conn)
-    go_camp(conn)
-    tw_camp(conn)
+    #go_camp(conn)
+    #tw_camp(conn)
 
 def push_adsets(conn):
     fb_adsets(conn)
@@ -613,6 +626,6 @@ def push_ads(conn):
 if __name__ == '__main__':
    openConnection()
    push_camps(conn)
-   push_adsets(conn)
-   push_ads(conn)
+   #push_adsets(conn)
+   #push_ads(conn)
    conn.close()

@@ -14,12 +14,11 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['PRODUCTION']['HOST']
-name = config['PRODUCTION']['NAME']
-user = config['PRODUCTION']['USER']
-password = config['PRODUCTION']['PASSWORD']
-autocommit= config['PRODUCTION']['AUTOCOMMIT']
-
+host= '3.95.117.169'
+name = 'MediaPlatforms'
+user = 'omgdev'
+password = 'Sdev@2002!'
+autocommit= 'True'
 def openConnection():
     global conn
     try:
@@ -272,7 +271,8 @@ def errors_fb_adsets_pais(conn):
         results = cur.fetchall()
         for result in results:
             a = True
-            Nomenclatura = result[2].encode('utf-8')
+            Nomenclatura = result[2]
+            CampaingID = result[3]
             Country = result[0]
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.]+)?(_S-)?(_)?([0-9.]+)?(\s)?(\(([0-9.)]+)\))?$', Nomenclatura, re.M | re.I)
             if searchObj:
@@ -291,7 +291,7 @@ def errors_fb_adsets_pais(conn):
                                 Error = Country
                                 TipoErrorID = 6
                                 Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
-                                nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[1], 0, Estatus)
+                                nuevoerror = (Error, Comentario, 'FB', TipoErrorID, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
                     elif NomCliente == 'CCPRADERA' and NomProducto == 'CHIQ':
                         if Country == 'HN' or Country=='GT' :
@@ -304,7 +304,7 @@ def errors_fb_adsets_pais(conn):
                                 Error = Country
                                 TipoErrorID = 6
                                 Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
-                                nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[1], 0, Estatus)
+                                nuevoerror = (Error, Comentario, 'FB', TipoErrorID, CampaingID, 0, Estatus)
                                 Errores.append(nuevoerror)
                     if NomCliente != 'CCR' and NomCliente != 'CCPRADERA'  :
                         if (Country == 'PA' or Country == 'PN' and NomPais == 'PN' or NomPais =='PA') == False:
@@ -317,7 +317,7 @@ def errors_fb_adsets_pais(conn):
                                         Error = Country
                                         TipoErrorID = 6
                                         Comentario = "Error de paises se estan imprimiendo anuncios en otros paises AdsetID:{}".format(result[1])
-                                        nuevoerror = (Error, Comentario, 'FB', TipoErrorID, result[1], 0, Estatus)
+                                        nuevoerror = (Error, Comentario, 'FB', TipoErrorID, CampaingID, 0, Estatus)
                                         Errores.append(nuevoerror)
 
         cur.executemany(sqlInserErrors, Errores)
@@ -856,6 +856,6 @@ if __name__ == '__main__':
    push_errors(conn)
    reviewerrorsInv(conn)
    reviewerrorsNom(conn)
-   #reviewerrorsMTS(conn)
+   reviewerrorsMTS(conn)
    errors_fb_adsets_pais(conn)
    conn.close()

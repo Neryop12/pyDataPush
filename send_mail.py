@@ -14,7 +14,7 @@ conn = None
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host='54.91.190.25', database='MediaPlatforms',
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
                              user='omgdev', password='Sdev@2002!', autocommit=True)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
@@ -30,7 +30,7 @@ def send(campanas,names):
         password = "OMGdev2019"
         names =  names[1:-1]
         sqlCamping = """
-                    select username, c.CampaingID from omgguate.usuario u 
+                    select distinct username, c.CampaingID from omgguate.usuario u 
                     inner join SysAdOps.RolsUsers ru on ru.UserID = u.idusuario
                     inner join SysAdOps.Rols r on r.RolID = ru.RolID
                     inner join mfcgt.mfcasignacion asg on asg.idusuario = u.idusuario
@@ -43,8 +43,9 @@ def send(campanas,names):
         cur.execute(sqlCamping,)
         resultscon = cur.fetchall()
         correo = resultscon[0][0]
+        last = resultscon[len(resultscon)-1][0]
         for res in resultscon:
-            if res[0] != correo:
+            if res[0] != correo or res[0] == last:
                 html = """\
                     <html>
                    
@@ -82,7 +83,7 @@ def send(campanas,names):
                 server.ehlo()
                 server.starttls()
                 server.login(sender_email, password)
-                server.sendmail(sender_email, receiver_email, msg.as_string())
+                #server.sendmail(sender_email, receiver_email, msg.as_string())
                 body = ''
                 correo = res[0]
             
@@ -118,9 +119,9 @@ def send(campanas,names):
 def CampaingsReview(conn):
     cur=conn.cursor(buffered=True)
     sqlCamping = """
-                    select  a.Account as Account ,c.CampaingID CampaingID,  a.Media Media,  c.Campaingname Campaingname,sum(d.Cost) as 'InversionConsumida', date_format(c.StartDate, '%d/%m/%Y') StartDate , 
+                    select  dc.nombre as Account, dc.id idcliente,m.id idmarca ,c.CampaingID CampaingID,  a.Media Media,  c.Campaingname Campaingname, round(sum(distinct d.Cost),2) as 'InversionConsumida', date_format(c.StartDate, '%d/%m/%Y') StartDate , m.nombre as Marca,
                     date_format(c.EndDate,'%d/%m/%Y') EndDate , SUBSTRING_INDEX(SUBSTRING_INDEX(c.Campaingname, '_', 11),'_',-1) as 'PresupuestoPlan',SUBSTRING_INDEX (SUBSTRING_INDEX(c.Campaingname, '_', 13),'_',-1) KPIPlanificado, 
-                    md.Nombre KPI,ifnull(sum(d.result),0) 'KPIConsumido',c.Campaignstatus State,m.nombre Marca ,dc.nombre Cliente,date_format(now(),'%M') mes,  
+                    md.Nombre KPI,ifnull(sum(distinct d.result),0) 'KPIConsumido',c.Campaignstatus State,m.nombre Marca ,dc.nombre Cliente,date_format(now(),'%M') mes,  
                     '0' as 'TotalDias','0' as 'DiasEjecutados','0' as 'DiasPorservir', "0" as 'PresupuestoEsperado',"0" as 'PorcentajePresupuesto', 
                     "0" as 'PorcentajeEsperadoV',"0" as 'PorcentajeRealV',"0" as 'KPIEsperado',"0" as 'PorcentajeKPI', "0" as 'PorcentajeEsperadoK',"0" as 'PorcentajeRealK', "0" as 'EstadoKPI', "0" as 'EstadoPresupuesto'
                     from dailycampaing d
@@ -131,7 +132,7 @@ def CampaingsReview(conn):
                     inner join mfcgt.dmarca m on am.marca = m.id
                     inner join mfcgt.dcliente dc on dc.id = m.idcliente
                     inner join modelocompra md on md.abr = SUBSTRING_INDEX (SUBSTRING_INDEX(c.Campaingname, '_', 14),'_',-1) 
-                    where c.Campaignstatus in ('ACTIVE','enabled')  
+                    where c.Campaignstatus in ('ACTIVE','enabled')  and asg.idusuario = {} and c.EndDate > '{}'
                     group by d.CampaingID;    
                     """
     try:
@@ -198,6 +199,7 @@ def CampaingsReview(conn):
                         campananames= campananames + ',' + row[1]
                     campanas.append(campana)
         if campanas:
+            
             send(campanas,campananames)
     except Exception as e:
         print(e)

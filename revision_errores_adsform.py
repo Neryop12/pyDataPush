@@ -11,12 +11,11 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['PRODUCTION']['HOST']
-name = config['PRODUCTION']['NAME']
-user = config['PRODUCTION']['USER']
-password = config['PRODUCTION']['PASSWORD']
-autocommit= config['PRODUCTION']['AUTOCOMMIT']
-
+host= '3.95.117.169'
+name = 'MediaPlatforms'
+user = 'omgdev'
+password = 'Sdev@2002!'
+autocommit= 'True'
 def openConnection():
     global conn
     try:

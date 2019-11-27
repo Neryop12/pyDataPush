@@ -12,12 +12,11 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= config['PRODUCTION']['HOST']
-name = config['PRODUCTION']['NAME']
-user = config['PRODUCTION']['USER']
-password = config['PRODUCTION']['PASSWORD']
-autocommit= config['PRODUCTION']['AUTOCOMMIT']
-
+host= '3.95.117.169'
+name = 'MediaPlatforms'
+user = 'omgdev'
+password = 'Sdev@2002!'
+autocommit= 'True'
 def openConnection():
     global conn
     try:
@@ -246,7 +245,7 @@ def go_camp(conn):
     #CONEXION
     try:
         #QUERYS
-        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
         for atr in temp_k:
             #ACCOUNT
@@ -268,6 +267,8 @@ def go_camp(conn):
             advertising=atr['gsx$advertisingchanneltype']['$t']
             subadvertising=atr['gsx$advertisingchannelsub-type']['$t']
             Nomenclatura=atr['gsx$campaignname']['$t']
+            videowatch=atr['gsx$watch75views']['$t']
+            conversion=atr['gsx$conversions']['$t']
             searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCo)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)(_B-)?([0-9]+)?(_S-)?([0-9]+)?(\(([0-9.)]+)\))?', (Nomenclatura), re.M | re.I)
             if enddate=='' or enddate ==' --':
                 enddate = None
@@ -275,30 +276,25 @@ def go_camp(conn):
                 NomInversion = float(searchObj.group(11))
                 Result = (searchObj.group(14))
                 if str(Result).upper() == 'CPVI':
-                    result = clicks
-                elif str(Result).upper() == 'CPMA':
-                    result = reach
+                    kpi = clicks
                 elif str(Result).upper() == 'CPM':
-                    result = impressions
+                    kpi = impressions
                 elif str(Result).upper() == 'CPV':
-                    result = videowatch
+                    kpi = videowatch
                 elif str(Result).upper() == 'CPCO':
-                    result = clicks
-                elif str(Result).upper() == 'CPI':
-                    result = leads
-                elif str(Result).upper() == 'CPMA':
-                    result = reach
+                    kpi = conversion
                 elif str(Result).upper() == 'CPC':
-                    result = clicks
-                elif str(Result).upper() == 'CPMA':
-                    result = reach
+                    kpi = clicks
+                elif str(Result).upper() == 'CPD':
+                    kpi = conversion
+                
             #FIN VARIABLES
             if campaingid!='':
                 if percentofbudgetused!='':
-                    campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising)
+                    campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
                     campanas.append(campana)
                 else:
-                    campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising)
+                    campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
                     campanas.append(campana)
 
 
@@ -662,9 +658,9 @@ if __name__ == '__main__':
    openConnection()
    truncateAllCamp(conn)
    fb_camp(conn)
-   fb_ads(conn)
-   fb_reach(conn)
    fb_adsets(conn)
+   fb_ads(conn)
+   #fb_reach(conn)
    go_camp(conn)
    go_adsets(conn)
    go_ads(conn)
