@@ -345,6 +345,73 @@ def go_camp(conn):
         print (datetime.now())
         print('Success GOOGLE Campanas')
 #FIN VISTA
+def go_camp_mosca(conn):
+    cur=conn.cursor(buffered=True)
+    fechahoy = datetime.now()
+    dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1tcET43KvjNYaSOpBpLtI-qJ8lqeOTsjfRrpw-yLri7k/od6/public/values?alt=json")
+    #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
+    data=r.json()
+    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
+    temp_k=data['feed']['entry']
+    #CONEXION
+    try:
+        cuentas=[]
+        campanas=[]
+        campmetrics=[]
+        campdisplays=[]
+        #QUERYS
+        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
+        sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
+        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
+        for atr in temp_k:
+            #ACCOUNT
+            accountid=atr['gsx$accountid']['$t']
+            account=atr['gsx$account']['$t'].encode('utf-8')
+            #CAMPAING
+            campaingid=atr['gsx$campaignid']['$t']
+            campaingname=atr['gsx$campaignname']['$t']
+            campaigndailybudget=atr['gsx$dailybudget']['$t']
+            campaignlifetimebudget=atr['gsx$budget']['$t']
+            percentofbudgetused=atr['gsx$percentofbudgetused']['$t']
+            startdate=atr['gsx$startdate']['$t']
+            enddate=atr['gsx$enddate']['$t']
+            campaignobjective=''
+            impressions=atr['gsx$impressions']['$t']
+            clicks=atr['gsx$clicks']['$t']
+            cost=atr['gsx$cost']['$t']
+            campaignstatus=atr['gsx$campaignstatus']['$t'].encode('utf-8')
+            placement=atr['gsx$advertisingchanneltype']['$t'].encode('utf-8')
+            publisherplatform=atr['gsx$advertisingchannelsub-type']['$t'].encode('utf-8')
+
+            if accountid!='':
+                cuenta=[accountid,account,'GO']
+                cuentas.append(cuenta)
+                campana=[campaingid,campaingname,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate]
+                campanas.append(campana)
+                campdisplay=(campaingid,publisherplatform,placement)
+                campdisplays.append(campdisplay)
+                campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks,cost,dayhoy)
+                campmetrics.append(campmetric)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertAccount ,cuentas)
+        cur.executemany(sqlInsertCampaing,campanas)
+        cur.executemany(sqlInsertCampaingMetrics,campmetrics)
+        cur.executemany(sqlInsertCampaingDisplay,campdisplays)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "pushDataMedia.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "Success", "pushDataMedia.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print (datetime.now())
+        print('Success GOOGLE Campanas')
+
 def go_adsets(conn):
     cur=conn.cursor(buffered=True)
     fechahoy = datetime.now()
@@ -621,6 +688,7 @@ def tw_ads(conn):
 def push_camps(conn):
     fb_camp(conn)
     go_camp(conn)
+    go_camp_mosca(conn)
     tw_camp(conn)
 
 def push_adsets(conn):
