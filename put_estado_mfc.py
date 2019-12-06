@@ -56,7 +56,7 @@ def reviewErrores(conn):
         inner join mfcgt.dmetrica me on me.id = a.idmetrica
         inner join mfcgt.dobjetivo ob on ob.id = me.idobjetivo
         inner join mfcgt.dplataforma pl on pl.id = ob.idplataforma
-        where  ca.Campaignstatus in ('ACTIVE','enabled') and ca.EndDate > '{}' ;
+        where  ca.Campaignstatus in ('ACTIVE','enabled') and ca.EndDate > '{}' and er.Estado >0 ;
         """.format(hoy)
         slqUpdate = "UPDATE `ErrorsCampaings` SET `Estado` = %s WHERE (idErrorsCampaings =  %s ) ;"
 
