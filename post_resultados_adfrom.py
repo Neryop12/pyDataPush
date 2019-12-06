@@ -62,8 +62,8 @@ def GetToken():
                             'Content-Type': 'application/json',
                             },
                json={
-                        "UserName": "JDELEON",
-                        "Password": "Joseandre2019"
+                        "UserName": "SFRANCO",
+                        "Password": "SFrancoomg2019"
                     }
                
 
@@ -151,25 +151,32 @@ def GetAdformCampaign(conn):
              #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
              #Para enviarlo se tiene que guardar en formato Json.
              json={
-                       "dimensions": [
+                      	"dimensions": [
                                     "campaignID",
                                     "campaign",
                                     "clientID",
                                     "client",
                                     "campaignStartDate",
                                     "campaignEndDate",
-                                    "frequencyCampaign",
-                                    "campaignType"
+                                    
+                                    "campaignType",
+                                    "bannerType"
+                                   
                                 ],
                                 "metrics": [
                                     "clicks",
                                     "impressions",
-                                    "cost"
+                                    "cost",
+                                    "conversions",
+                                    "sales"
                                 ],
-                                "filter": {
-                                    "date": {"from":"2019-10-01", "to": "{}".format(str(datetime.now()))}
-                                }
-                    }
+                               "filter":{ 
+                               				"date":{
+										    	"from": "2019-12-01T06:36:38.5181689Z",
+										    	"to":"2019-12-15T06:36:38.5181689Z"
+                               				}
+                                   }
+             }
          )
          data=data.json()
          for row in data['reportData']['rows']:

@@ -89,7 +89,10 @@ def GetAdformCampaign(conn):
                                     "cost"
                                 ],
                                 "filter": {
-                                    "date": {"from":"2019-10-01", "to": "{}".format(str(datetime.now()))}
+                                    "date":{
+										    	"from": "2019-12-01T06:36:38.5181689Z",
+										    	"to":"2019-12-15T06:36:38.5181689Z"
+                               				}
                                 }
                     }
          )
