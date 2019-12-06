@@ -89,7 +89,7 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date': '{}'.format(str(ayer)),
+                                'start_date': '2019-11-01',
                                 'time_rollup':'by_day',
                             }
                         )
