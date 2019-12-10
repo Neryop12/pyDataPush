@@ -12,8 +12,8 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-# host= '3.95.117.169'
-host= 'localhost'
+host= '3.95.117.169'
+# host= 'localhost'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
@@ -21,7 +21,7 @@ autocommit= 'True'
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host=host, database=name,port=8889,
+        conn = mysql.connect(host=host, database=name,
                              user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
