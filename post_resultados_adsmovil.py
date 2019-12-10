@@ -6,14 +6,9 @@ import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
 import numpy as mp
-import configparser
 conn = None
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-
 host= '3.95.117.169'
-# host= 'localhost'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
@@ -26,6 +21,7 @@ def openConnection():
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
+
 
 
 def GetToken():
@@ -73,7 +69,6 @@ def pushAdsMovil(conn):
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
-
             searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)', str(row[2]), re.M | re.I)
             if searchObj:
                 if searchObj.group(2)=='CLARO':
@@ -85,8 +80,11 @@ def pushAdsMovil(conn):
             accounts.append(account)
             campanas.append(campana)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertCampaing,campanas)
         cur.executemany(sqlInsertAccounts,accounts)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success AdsMovil Accouts')
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertCampaing,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success AdsMovil Campanas')
         fechahoy = datetime.now()
@@ -103,7 +101,9 @@ def pushAdsMovil(conn):
         print (datetime.now())
 
 if __name__ == '__main__':
-    openConnection()
     GetToken()
+    openConnection()
     pushAdsMovil(conn)
-    conn.close()
+    if cur and con:
+        cur.close()
+        con.close()
