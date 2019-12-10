@@ -6,11 +6,7 @@ import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
 import numpy as mp
-import configparser
 conn = None
-
-config = configparser.ConfigParser()
-config.read('config.ini')
 
 host= '3.95.117.169'
 name = 'MediaPlatforms'
@@ -25,6 +21,7 @@ def openConnection():
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
+
 
 
 def GetToken():
@@ -48,9 +45,11 @@ def pushAdsMovil(conn):
     dayayer = fechaayer.strftime("%Y-%m-%d")
     print (datetime.now())
     cur=conn.cursor(buffered=True)
+    accounts=[]
     campanas=[]
+
     sqlInsertCampaing = "INSERT INTO CampaingsAM (`CampaingID`, `Campaingname`, `ad`, `Impressions`, `Clicks`, `Ctr`, `Video_firstquartile`, `Video_midpoint`, `Video_thirdquartile`, `Video_completed`, `cost`, `CPM`, `AccountsID`, `StartDate`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),ad=VALUES(ad), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Video_firstquartile=VALUES(Video_firstquartile),Video_midpoint=VALUES(Video_midpoint),Video_thirdquartile=VALUES(Video_thirdquartile),cost=VALUES(cost),CPM=VALUES(CPM) "
-    
+    sqlInsertAccounts="INSERT INTO `MediaPlatforms`.`Accounts` (`AccountsID`, `Account`, `Media`, `State`) VALUES (%s, %s, %s, %s)ON DUPLICATE KEY UPDATE Account=VALUES(Account);"
     try:
         url='https://reportapi.adsmovil.com/api/campaign/details'
         Result2 = requests.get(
@@ -70,8 +69,20 @@ def pushAdsMovil(conn):
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
-            campana=[row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],'AdsMovil',row[0]]
+            searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)', str(row[2]), re.M | re.I)
+            if searchObj:
+                if searchObj.group(2)=='CLARO':
+                    AccountID=searchObj.group(0)+searchObj.group(1)+searchObj.group(2)
+                else:
+                    AccountID=searchObj.group(1)+searchObj.group(2)
+                account=[AccountID,AccountID,'AM',1]
+                campana=[row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],row[11],row[12],AccountID,row[0]]
+            accounts.append(account)
             campanas.append(campana)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertAccounts,accounts)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success AdsMovil Accouts')
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertCampaing,campanas)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
@@ -90,7 +101,9 @@ def pushAdsMovil(conn):
         print (datetime.now())
 
 if __name__ == '__main__':
-    openConnection()
     GetToken()
+    openConnection()
     pushAdsMovil(conn)
-    conn.close()
+    if cur and con:
+        cur.close()
+        con.close()
