@@ -104,6 +104,6 @@ if __name__ == '__main__':
     GetToken()
     openConnection()
     pushAdsMovil(conn)
-    if cur and con:
+    if cur and conn:
         cur.close()
-        con.close()
+        conn.close()

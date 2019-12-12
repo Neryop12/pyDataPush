@@ -4,7 +4,7 @@ import requests
 import sys
 import re
 import mysql.connector as mysql
-from datetime import datetime
+from datetime import datetime,timedelta
 import time
 import pandas as pd
 import numpy as mp
@@ -172,8 +172,8 @@ def GetAdformCampaign(conn):
                                 ],
                                "filter":{ 
                                				"date":{
-										    	"from": "2019-12-01T06:36:38.5181689Z",
-										    	"to":"2019-12-15T06:36:38.5181689Z"
+										    	"from": str(datetime.now() - timedelta(days=14)),
+										    	"to":str(datetime.now())
                                				}
                                    }
              }
@@ -181,7 +181,7 @@ def GetAdformCampaign(conn):
          data=data.json()
          for row in data['reportData']['rows']:
              if(row[0]!=''):
-                 if row[7] != 'Non-campaign':
+                 if row[6] != 'Non-campaign':
                     cuenta=[row[2],row[3],'AF']
                     cuentas.append(cuenta)
                     campana=[row[0],row[1],'0',row[9],row[2],row[4],row[5],'ACTIVE']
@@ -240,9 +240,12 @@ def GetAdformAdsets(conn):
                                     "impressions",
                                     "cost"
                                 ],
-                                "filter": {
-                                    "date": {"from":"2019-10-01", "to": '' + str(datetime.now())}
-                                }
+                                "filter":{ 
+                               				"date":{
+										    	"from": str(datetime.now() - timedelta(days=14)),
+										    	"to":str(datetime.now())
+                               				}
+                                   }
                     }
          )
          data=data.json()
@@ -301,9 +304,12 @@ def GetAdformAds(conn):
                             "ecpm",
                             "conversions"
                         ],
-                        "filter": {
-                            "date": {"from":"2019-10-01", "to": '' + str(datetime.now())}
-                        }
+                        "filter":{ 
+                               				"date":{
+										    	"from": str(datetime.now() - timedelta(days=14)),
+										    	"to":str(datetime.now())
+                               				}
+                                   }
                     }
          )
         data=data.json()
@@ -358,9 +364,12 @@ def GetAdFormCreativeAds(conn):
                         "clicks",
                         "impressions"
                     ],
-                    "filter": {
-                        "date": {"from":"2019-10-01", "to": '' + str(datetime.now())}
-                    }
+                   "filter":{ 
+                               				"date":{
+										    	"from": str(datetime.now() - timedelta(days=14)),
+										    	"to":str(datetime.now())
+                               				}
+                                   }
                     }
          )
         data=data.json()
@@ -380,6 +389,8 @@ def GetAdFormCreativeAds(conn):
 
 
 if __name__ == '__main__':
+    
+    
     openConnection()
     GetToken()
     #PushCampaingAdform(conn)
