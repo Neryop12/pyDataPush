@@ -60,7 +60,7 @@ def pushAdsMovil(conn):
 
     AdsMetrics = "INSERT INTO metricsads (`AdID`,`Adname`,`Impressions`, `Clicks`, `Videowatchesat75`,`Videowatchesat100`, `Ctr`, `Cpm`, `cost`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
-    sqlConjunto = "INSERT INTO adsets (`CampaingID`, `AdSetID`,`Adsetname`,`Status`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adsetname=(Adsetname)"
+    sqlConjunto = "INSERT INTO adsets (`CampaingID`, `AdSetID`,`Adsetname`,`Status`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adsetname=VALUES(Adsetname)"
 
     sqlAnuncio="INSERT INTO ads (`AdSetID`,`AdID`,`Adname`,`Status`,`Media`) VALUES(%s,%s,%s,'ACTIVE','AM') ON DUPLICATE KEY UPDATE Adname=(Adname)"
 
@@ -92,13 +92,13 @@ def pushAdsMovil(conn):
                     AccountID=searchObj.group(1)+searchObj.group(2)+searchObj.group(3)+searchObj.group(4)
                 else:
                     AccountID=searchObj.group(2)+searchObj.group(3)+searchObj.group(4)
-                adid=row[1]+row[3]
-                account=[AccountID,AccountID,'AM',1]
-                campana=[row[1],row[2],AccountID]
-                conjunto=[row[1],AccountID,row[2]]
-                anuncio=[AccountID, adid,row[3]]
-                ametric=[adid,row[3],row[4],row[5],row[9],row[10],row[6],row[12],row[11]]
-
+            adid=row[1]+row[3]
+            adsetid=row[1]+AccountID
+            account=[AccountID,AccountID,'AM',1]
+            campana=[row[1],row[2],AccountID]
+            conjunto=[row[1],adsetid,row[2]]
+            anuncio=[adsetid, adid,row[3]]
+            ametric=[adid,row[3],row[4],row[5],row[9],row[10],row[6],row[12],row[11]]
             accounts.append(account)
             campanas.append(campana)
 
@@ -132,17 +132,49 @@ def resultsCamps(conn):
     global cur
     print (datetime.now())
     cmetrics=[]
+    resultado=''
     cur=conn.cursor(buffered=True)
-    sqlMetricsAds="SELECT  a.AdID,SUM(b.Clicks) as Clicks, SUM(b.Impressions) as Impressions, SUM(b.cost) as cost FROM ads a INNER JOIN metricsads b on a.AdID=b.AdID GROUP BY a.AdID"
-    sqlInsertMetrics=""
-    cur.execute(sqlMetricsAds,)
-    resultscon = cur.fetchall()
-    for row in resultscon:
-        cmetric=[row[0],row[1],row[2],row[3]]
+    sqlMetricsAds="""select c.CampaingID,c.Campaingname,sum(m.Clicks),sum(m.Impressions),SUM(m.cost)  from metricsads m
+                    inner join ads a on a.AdID = m.AdID
+                    inner join adsets ad on ad.AdSetID = a.AdSetID
+                    INNER join campaings c on c.CampaingID = ad.CampaingID
+                    GROUP by c.CampaingID;
+                    """
+    sqlInsertMetrics="INSERT INTO campaingmetrics(CampaingID,Clicks,Impressions,Cost,Diario,Result)VALUE(%s,%s,%s,%s,1,%s)"
+    try:
+        cur.execute(sqlMetricsAds,)
+        resultscon = cur.fetchall()
+        for row in resultscon:
+            searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?', str(row[1]), re.M | re.I)
+            if searchObj:
+                if searchObj.group(14)=='CPM':
+                    resultado=row[3]
+                elif searchObj.group(14)=='CPC':
+                    resultado=row[2]
+                elif searchObj.group(14)=='CPVi':
+                    resultado=row[2]
+            cmetric=[row[0],row[2],row[3],row[4],resultado]
+            cmetrics.append(cmetric)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertMetrics,cmetrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success AdsMovil Resultador Diario Campanas')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovilCamps", "Success","pushDataAdsMovil.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}","pushDataAdsMovil.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print (datetime.now())
 
 if __name__ == '__main__':
     openConnection()
-    GetToken()
-    pushAdsMovil(conn)
-    # resultsCamps(conn)
+    # GetToken()
+    # pushAdsMovil(conn)
+    resultsCamps(conn)
     conn.close()
