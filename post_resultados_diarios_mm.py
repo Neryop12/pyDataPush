@@ -18,7 +18,7 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= '3.95.117.169'
+host= 'localhost'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
@@ -76,7 +76,7 @@ def GetMediaMathCampaing(conn):
      ayer = fechahoy.strftime("%Y-%m-%d")
      campmetrics=[]
      #Querys a insertar a la base de datos
-     sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
+     sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks,Result) VALUES (%s,%s,%s,%s,%s)"
      try:
          #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=advertiser_name%2cadvertiser_id%2ccampaign_id%2ccampaign_name%2ccampaign_budget&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'
@@ -89,8 +89,8 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date': '2019-11-01',
-                                'time_rollup':'by_day',
+                                'start_date': '2019-12-01',
+                                'time_rollup':'by_week',
                             }
                         )
         #Variable para guardar el contenido del request.
@@ -100,8 +100,20 @@ def GetMediaMathCampaing(conn):
         #Libreria Numpy, para conventir el formato csv a array
         data = data.to_numpy()
         for row in data:
+            result = 0
             if row[3]!='':
-                campanametrica=[row[4],row[9],row[8],row[7]]
+                searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?', row[5], re.M | re.I)
+                if searchObj:
+                    Result = (searchObj.group(14))
+                    if str(Result).upper() == 'CPVI':
+                        result = row[8]
+                    elif str(Result).upper() == 'CPM':
+                           result = row[7]
+                    elif str(Result).upper() == 'CPV':
+                        result = row[14]
+                    elif str(Result).upper() == 'CPC':
+                        result = row[8]
+                campanametrica=[row[4],row[9],row[8],row[7],result]
                 campmetrics.append(campanametrica)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertCampaingMetrics,campmetrics)
@@ -199,8 +211,8 @@ def GetMediaMathADs(conn):
                                 },
                             params={
 
-                                'start_date': '2019-01-01',
-                                'time_rollup':'by_day',
+                                'start_date': '2019-12-01',
+                                'time_rollup':'by_week',
                             }
                         )
         #Variable para guardar el contenido del request.
