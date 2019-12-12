@@ -12,8 +12,8 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-# host= '3.95.117.169'
-host= 'localhost'
+host= '3.95.117.169'
+# host= 'localhost'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
@@ -21,7 +21,7 @@ autocommit= 'True'
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host=host, database=name,port=8889,
+        conn = mysql.connect(host=host, database=name,
                              user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
@@ -58,11 +58,11 @@ def pushAdsMovil(conn):
 
     sqlInsertCampaing = "INSERT INTO Campaings (`CampaingID`, `Campaingname`, `AccountsID`,`Campaignstatus`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),StartDate=VALUES(StartDate)"
 
-    AdsMetrics = "INSERT INTO metricsads (`AdID`,`Adname`,`Impressions`, `Clicks`, `Videowatchesat75`,`Videowatchesat100`, `Ctr`, `Cpm`, `cost`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+    AdsMetrics = "INSERT INTO MetricsAds (`AdID`,`Adname`,`Impressions`, `Clicks`, `Videowatchesat75`,`Videowatchesat100`, `Ctr`, `Cpm`, `cost`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     sqlConjunto = "INSERT INTO adsets (`CampaingID`, `AdSetID`,`Adsetname`,`Status`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adsetname=VALUES(Adsetname)"
 
-    sqlAnuncio="INSERT INTO ads (`AdSetID`,`AdID`,`Adname`,`Status`,`Media`) VALUES(%s,%s,%s,'ACTIVE','AM') ON DUPLICATE KEY UPDATE Adname=(Adname)"
+    sqlAnuncio="INSERT INTO Ads (`AdSetID`,`AdID`,`Adname`,`Status`,`Media`) VALUES(%s,%s,%s,'ACTIVE','AM') ON DUPLICATE KEY UPDATE Adname=(Adname)"
 
     sqlInsertAccounts="INSERT INTO `MediaPlatforms`.`Accounts` (`AccountsID`, `Account`, `Media`, `State`) VALUES (%s, %s, %s, %s)ON DUPLICATE KEY UPDATE Account=VALUES(Account);"
 
@@ -134,13 +134,13 @@ def resultsCamps(conn):
     cmetrics=[]
     resultado=''
     cur=conn.cursor(buffered=True)
-    sqlMetricsAds="""select c.CampaingID,c.Campaingname,sum(m.Clicks),sum(m.Impressions),SUM(m.cost)  from metricsads m
-                    inner join ads a on a.AdID = m.AdID
-                    inner join adsets ad on ad.AdSetID = a.AdSetID
-                    INNER join campaings c on c.CampaingID = ad.CampaingID
+    sqlMetricsAds="""select c.CampaingID,c.Campaingname,sum(m.Clicks),sum(m.Impressions),SUM(m.cost)  from MetricsAds m
+                    inner join Ads a on a.AdID = m.AdID
+                    inner join Adsets ad on ad.AdSetID = a.AdSetID
+                    INNER join Campaings c on c.CampaingID = ad.CampaingID
                     GROUP by c.CampaingID;
                     """
-    sqlInsertMetrics="INSERT INTO campaingmetrics(CampaingID,Clicks,Impressions,Cost,Diario,Result)VALUE(%s,%s,%s,%s,1,%s)"
+    sqlInsertMetrics="INSERT INTO CampaingMetrics(CampaingID,Clicks,Impressions,Cost,Diario,Result)VALUE(%s,%s,%s,%s,1,%s)"
     try:
         cur.execute(sqlMetricsAds,)
         resultscon = cur.fetchall()
