@@ -57,7 +57,7 @@ def pushAdsMovil(conn):
 
     AdsMetrics = "INSERT INTO MetricsAds (`AdID`,`Adname`,`Impressions`, `Clicks`, `Videowatchesat75`,`Videowatchesat100`, `Ctr`, `Cpm`, `cost`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
-    sqlConjunto = "INSERT INTO adsets (`CampaingID`, `AdSetID`,`Adsetname`,`Status`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adsetname=VALUES(Adsetname)"
+    sqlConjunto = "INSERT INTO Adsets (`CampaingID`, `AdSetID`,`Adsetname`,`Status`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adsetname=VALUES(Adsetname)"
 
     sqlAnuncio="INSERT INTO Ads (`AdSetID`,`AdID`,`Adname`,`Status`,`Media`) VALUES(%s,%s,%s,'ACTIVE','AM') ON DUPLICATE KEY UPDATE Adname=(Adname)"
 
@@ -128,6 +128,94 @@ def pushAdsMovil(conn):
     finally:
         print (datetime.now())
 
+
+
+def pushAdsMovilPusads(conn):
+    global cur
+    fechaayer = datetime.now() - timedelta(days=1)
+    #Formato de las fechas para aceptar en el GET
+    dayayer = fechaayer.strftime("%Y-%m-%d")
+    print (datetime.now())
+    cur=conn.cursor(buffered=True)
+    accounts=[]
+    campanas=[]
+    conjuntos=[]
+    cmetrics=[]
+    ametrics=[]
+    anuncios=[]
+
+    sqlInsertCampaing = "INSERT INTO Campaings (`CampaingID`, `Campaingname`, `AccountsID`,`Campaignstatus`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),StartDate=VALUES(StartDate)"
+
+    AdsMetrics = "INSERT INTO MetricsAds (`AdID`,`Adname`,`Impressions`, `Clicks`, `Videowatchesat75`,`Videowatchesat100`, `Ctr`, `Cpm`, `cost`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+
+    sqlConjunto = "INSERT INTO adsets (`CampaingID`, `AdSetID`,`Adsetname`,`Status`)  VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adsetname=VALUES(Adsetname)"
+
+    sqlAnuncio="INSERT INTO Ads (`AdSetID`,`AdID`,`Adname`,`Status`,`Media`) VALUES(%s,%s,%s,'ACTIVE','AM') ON DUPLICATE KEY UPDATE Adname=(Adname)"
+
+    sqlInsertAccounts="INSERT INTO `MediaPlatforms`.`Accounts` (`AccountsID`, `Account`, `Media`, `State`) VALUES (%s, %s, %s, %s)ON DUPLICATE KEY UPDATE Account=VALUES(Account);"
+
+    try:
+        url='https://reportapi.adsmovil.com/api/campaign/details'
+        Result2 = requests.get(
+                            url,
+
+                            headers={
+                                'Authorization': "'" + Token["result"]["token"] + "'" ,
+                                },
+                            params={
+                                'report':'pushads',
+                                'startDate': dayayer,
+                                'endDate':dayayer,
+                            }
+                        )
+        r=Result2.json()
+        for row  in r["result"]["queryResponseData"]["rows"]:
+            for n, i in enumerate(row):
+                if i =='NaN':
+                    row[n]=0
+
+            searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)', str(row[2]), re.M | re.I)
+            if searchObj:
+                if searchObj.group(2)=='CLARO':
+                    AccountID=searchObj.group(1)+searchObj.group(2)+searchObj.group(3)+searchObj.group(4)
+                else:
+                    AccountID=searchObj.group(2)+searchObj.group(3)+searchObj.group(4)
+            adid=row[1]+row[3]
+            adsetid=row[1]+AccountID
+            account=[AccountID,AccountID,'AMP',1]
+            campana=[row[1],row[2],AccountID]
+            conjunto=[row[1],adsetid,row[2]]
+            anuncio=[adsetid, adid,row[3]]
+            ametric=[adid,row[3],row[4],row[5],row[9],row[10],row[6],row[12],row[11]]
+            accounts.append(account)
+            campanas.append(campana)
+
+
+            conjuntos.append(conjunto)
+            anuncios.append(anuncio)
+            ametrics.append(ametric)
+
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertAccounts,accounts)
+        cur.executemany(sqlInsertCampaing,campanas)
+        cur.executemany(sqlConjunto,conjuntos)
+        cur.executemany(sqlAnuncio,anuncios)
+        cur.executemany(AdsMetrics,ametrics)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success AdsMovil PushAds Campanas')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "Success", "pushDataAdsMovil.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}", "pushDataAdsMovil.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print (datetime.now())
+
 def resultsCamps(conn):
     global cur
     print (datetime.now())
@@ -174,7 +262,8 @@ def resultsCamps(conn):
 
 if __name__ == '__main__':
     openConnection()
-    # GetToken()
-    # pushAdsMovil(conn)
+    GetToken()
+    pushAdsMovil(conn)
+    # pushAdsMovilPusads(conn)
     resultsCamps(conn)
     conn.close()

@@ -11,7 +11,8 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= '3.95.117.169'
+# host= '3.95.117.169'
+host= 'localhost'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
@@ -19,12 +20,11 @@ autocommit= 'True'
 def openConnection():
     global conn
     try:
-        conn = mysql.connect(host=host, database=name,
+        conn = mysql.connect(host=host, database=name,port=8889,
                              user=user, password=password, autocommit=autocommit)
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
         sys.exit()
-
 
 def CampAM(conn):
     global cur

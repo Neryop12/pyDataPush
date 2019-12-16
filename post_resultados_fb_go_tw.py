@@ -597,7 +597,7 @@ def tw_adsets(conn):
         adsetmetrics=[]
         #QUERYS
         sqlInsertAdsSetsMetrics = "INSERT INTO AdSetMetrics(AdSetID,AdSetName,Impressions,Clicks,CreateDate) VALUES (%s,%s,%s,%s,%s) "
-        sqlInsertAdsSets = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,CampaingID) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName)"
+        sqlInsertAdsSets = "INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,CampaingID,Status) VALUES (%s,%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE AdSetName=VALUES(AdSetName), Status=VALUES(Status)"
         for atr in temp_k:
             #ACCOUNT
             adsetid=atr['gsx$campaignid']['$t']+atr['gsx$fundinginstrumentid']['$t']
@@ -648,7 +648,7 @@ def tw_ads(conn):
         adscreatives=[]
         adsmetrics=[]
         #QUERYS
-        sqlInsertAds = "INSERT INTO Ads(AdID,AdSetID,Adname) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Adname=VALUES(Adname)"
+        sqlInsertAds = "INSERT INTO Ads(AdID,AdSetID,Adname,Adstatus) VALUES (%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Adname=VALUES(Adname),Adstatus=VALUES(Adstatus)"
         sqlInsertMetricsAds = "INSERT INTO MetricsAds(Impressions,Cost,Ctr,Cpm,AdID) VALUES (%s,%s,%s,%s,%s)"
         sqlSelectAds = "SELECT count(*) FROM Ads where AdID=%s and AdSetID=%s"
         for atr in temp_k:
@@ -698,12 +698,12 @@ def push_adsets(conn):
 
 def push_ads(conn):
     fb_ads(conn)
-    #go_ads(conn)
-    #tw_ads(conn)
+    go_ads(conn)
+    tw_ads(conn)
 
 if __name__ == '__main__':
    openConnection()
-   #push_camps(conn)
-   #push_adsets(conn)
+   push_camps(conn)
+   push_adsets(conn)
    push_ads(conn)
    conn.close()
