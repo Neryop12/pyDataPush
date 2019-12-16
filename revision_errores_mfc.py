@@ -10,12 +10,13 @@ import numpy as mp
 conn = None
 
 host= '3.95.117.169'
+# host= 'localhost'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
 autocommit= 'True'
 
-# host= 'localhost'
+
 # name = 'MediaPlatforms'
 # user = 'omgdev'
 # password = 'Sdev@2002!'
@@ -86,7 +87,7 @@ def errors_am__inv(conn):
     try:
         print (datetime.now())
         sqlConjuntosFB = """
-        select SUBSTRING_INDEX(Campaingname,' ',1) Campaingname,ca.CampaingID from CampaingsAM ca
+        select SUBSTRING_INDEX(Campaingname,' ',1) Campaingname,ca.CampaingID from Campaings ca
         left outer join mfcgt.mfccompradiaria cd on SUBSTRING_INDEX(ca.Campaingname,' ',1) = cd.multiplestiposg
         where  isnull(cd.multiplestiposg) = true;
         """
@@ -106,7 +107,7 @@ def errors_am__inv(conn):
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_am_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -115,11 +116,60 @@ def errors_am__inv(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_am_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')
         print (datetime.now())
+
+
+
+def errors_mm__inv(conn):
+    global cur
+    cur = conn.cursor()
+    Comentario = ''
+    Estatus = ''
+    hoy = datetime.now().strftime("%Y-%m-%d")
+    try:
+        print (datetime.now())
+        sqlConjuntosFB = """
+        select SUBSTRING_INDEX(Campaingname,' ',1) Campaingname,ca.CampaingID from Campaings ca
+        left outer join mfcgt.mfccompradiaria cd on SUBSTRING_INDEX(ca.Campaingname,' ',1) = cd.multiplestiposg
+        where  isnull(cd.multiplestiposg) = true;
+        """
+        sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
+        sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        cur.execute(sqlConjuntosFB,)
+        resultscon = cur.fetchall()
+        Errores = []
+        for result in resultscon:
+            Comentario = "Error la nomenclatura implementada no se encuentra en el sistema de MFC"
+            cur.execute(sqlSelectErrors, (result[1], 1, 'MM'))
+            rescampaing = cur.fetchone()
+            if rescampaing[0] < 1:
+                nuevoerror = (result[0], Comentario,
+                                'MM', 1, result[1], 0, 'ACTIVE')
+                Errores.append(nuevoerror)
+        cur.executemany(sqlInserErrors, Errores)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+        cur.close()
+    #ANALISIS IMPRESIONES Y
+        #print(m.groups())
+    except Exception as e:
+        print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print('Success Nomenclatura')
+        print (datetime.now())
+
+
+
 
 def errors_plataforma(conn):
     global cur
@@ -145,7 +195,7 @@ def errors_plataforma(conn):
         inner join mfcgt.dmetrica me on me.id = a.idmetrica
         inner join mfcgt.dobjetivo ob on ob.id = me.idobjetivo
         inner join mfcgt.dplataforma pl on pl.id = ob.idplataforma
-        where  ca.Campaignstatus in ('ACTIVE','enabled') and ca.EndDate > '{}' ;
+        where  ca.Campaignstatus in ('ACTIVE','enabled') ;
         """.format(hoy)
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
@@ -319,6 +369,6 @@ def errors_plataforma(conn):
 if __name__ == '__main__':
    openConnection()
    errors_fb_inv(conn)
-   errors_am__inv(conn)
+   errors_mm__inv(conn)
    errors_plataforma(conn)
    conn.close()
