@@ -76,7 +76,7 @@ def GetMediaMathCampaing(conn):
      campmetrics=[]
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
+     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate)"
      sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
      try:
          #Direccion del API, las variable session se pasas com oun Cookie
@@ -90,8 +90,8 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date': '2019-11-01',
-                                'time_rollup':'by_day',
+                                'start_date': '2019-12-01',
+                                'time_rollup':'by_week',
                             }
                         )
         #Variable para guardar el contenido del request.
