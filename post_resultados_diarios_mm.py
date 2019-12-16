@@ -18,7 +18,7 @@ conn = None
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-host= 'localhost'
+host= '3.95.117.169'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
@@ -73,7 +73,10 @@ def GetMediaMathCampaing(conn):
      global cur
      cur=conn.cursor(buffered=True)
      fechahoy = datetime.now() - timedelta(1)
-     ayer = fechahoy.strftime("%Y-%m-%d")
+     
+     ayer =(datetime.now() - timedelta(days=29))
+     ayer = ayer.strftime("%Y-%m-%d")
+     print(ayer)
      campmetrics=[]
      #Querys a insertar a la base de datos
      sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks,Result) VALUES (%s,%s,%s,%s,%s)"
@@ -89,7 +92,7 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date': '2019-12-01',
+                                'start_date': ayer,
                                 'time_rollup':'by_week',
                             }
                         )
@@ -138,7 +141,8 @@ def GetMediaMathADSets(conn):
     global cur
     cur=conn.cursor(buffered=True)
     fechahoy = datetime.now() - timedelta(1)
-    ayer = fechahoy.strftime("%Y-%m-%d")
+    ayer =(datetime.now() - timedelta(days=29))
+    ayer = ayer.strftime("%Y-%m-%d")
     print (datetime.now())
     adsets=[]
     adsetmetrics=[]
@@ -157,7 +161,7 @@ def GetMediaMathADSets(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date': '{}'.format(str(ayer)),
+                                'start_date': ayer,
                                 'time_rollup':'by_day',
                             }
                         )
@@ -193,6 +197,8 @@ def GetMediaMathADs(conn):
     global cur
     cur=conn.cursor(buffered=True)
     print (datetime.now())
+    ayer =(datetime.now() - timedelta(days=29))
+    ayer = ayer.strftime("%Y-%m-%d")
     ads=[]
     adsmetrics=[]
     #Querys
@@ -211,7 +217,7 @@ def GetMediaMathADs(conn):
                                 },
                             params={
 
-                                'start_date': '2019-12-01',
+                                'start_date': ayer,
                                 'time_rollup':'by_week',
                             }
                         )

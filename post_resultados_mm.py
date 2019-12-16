@@ -4,7 +4,7 @@ import requests
 import sys
 import re
 import mysql.connector as mysql
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import logger
 import pandas as pd
@@ -74,6 +74,8 @@ def GetMediaMathCampaing(conn):
      cuentas=[]
      campanas=[]
      campmetrics=[]
+     ayer =(datetime.now() - timedelta(days=29))
+     ayer = ayer.strftime("%Y-%m-%d")
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
      sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate)"
@@ -90,7 +92,7 @@ def GetMediaMathCampaing(conn):
                                 'Cookie':'adama_session=' + session['sessionid']
                                 },
                             params={
-                                'start_date': '2019-12-01',
+                                'start_date': ayer,
                                 'time_rollup':'by_week',
                             }
                         )

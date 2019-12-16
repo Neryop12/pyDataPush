@@ -43,8 +43,8 @@ def GetToken():
                             'Content-Type': 'application/json',
                             },
                json={
-                        "UserName": "JDELEON",
-                        "Password": "Joseandre2019"
+                        "UserName": "SFRANCO",
+                        "Password": "SFrancoomg2019"
                     }
                
 
@@ -73,20 +73,24 @@ def GetAdformCampaign(conn):
              #Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
              #Para enviarlo se tiene que guardar en formato Json.
              json={
-                       "dimensions": [
+                      	"dimensions": [
                                     "campaignID",
                                     "campaign",
                                     "clientID",
                                     "client",
                                     "campaignStartDate",
                                     "campaignEndDate",
-                                    "frequencyCampaign",
-                                    "campaignType"
+                                    
+                                    "campaignType",
+                                    "bannerType"
+                                   
                                 ],
                                 "metrics": [
                                     "clicks",
                                     "impressions",
-                                    "cost"
+                                    "cost",
+                                    "conversions",
+                                    "sales"
                                 ],
                                "filter":{ 
                                				"date":{
@@ -94,7 +98,7 @@ def GetAdformCampaign(conn):
 										    	"to":str(datetime.now())
                                				}
                                    }
-                    }
+             }
          )
          data=data.json()
          for row in data['reportData']['rows']:
