@@ -172,8 +172,8 @@ def GetAdformCampaign(conn):
                                 ],
                                "filter":{ 
                                				"date":{
-										    	"from": str(datetime.now() - timedelta(days=14)),
-										    	"to":str(datetime.now())
+										    	"from": str(datetime.now() - timedelta(days=1)),
+										    	"to":str(datetime.now() - timedelta(days=1))
                                				}
                                    }
              }
@@ -242,8 +242,8 @@ def GetAdformAdsets(conn):
                                 ],
                                 "filter":{ 
                                				"date":{
-										    	"from": str(datetime.now() - timedelta(days=14)),
-										    	"to":str(datetime.now())
+										    	"from": str(datetime.now() - timedelta(days=1)),
+										    	"to":str(datetime.now() - timedelta(days=1))
                                				}
                                    }
                     }
@@ -306,8 +306,8 @@ def GetAdformAds(conn):
                         ],
                         "filter":{ 
                                				"date":{
-										    	"from": str(datetime.now() - timedelta(days=14)),
-										    	"to":str(datetime.now())
+										    	"from": str(datetime.now() - timedelta(days=1)),
+										    	"to":str(datetime.now() - timedelta(days=1))
                                				}
                                    }
                     }
@@ -366,8 +366,8 @@ def GetAdFormCreativeAds(conn):
                     ],
                    "filter":{ 
                                				"date":{
-										    	"from": str(datetime.now() - timedelta(days=14)),
-										    	"to":str(datetime.now())
+										    	"from": str(datetime.now() - timedelta(days=1)),
+										    	"to":str(datetime.now() - timedelta(days=1))
                                				}
                                    }
                     }

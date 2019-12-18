@@ -196,7 +196,7 @@ def errors_plataforma(conn):
         inner join mfcgt.dobjetivo ob on ob.id = me.idobjetivo
         inner join mfcgt.dplataforma pl on pl.id = ob.idplataforma
         where  ca.Campaignstatus in ('ACTIVE','enabled') ;
-        """.format(hoy)
+        """
         sqlSelectErrors = "SELECT COUNT(*) FROM ErrorsCampaings where CampaingID=%s and TipoErrorID=%s and Media=%s"
         sqlInserErrors = "INSERT INTO ErrorsCampaings(Error,Comentario,Media,TipoErrorID,CampaingID,Impressions,StatusCampaing) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         cur.execute(sqlConjuntosFB,)

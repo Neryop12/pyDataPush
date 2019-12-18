@@ -345,6 +345,7 @@ def go_camp(conn):
     temp_k=data['feed']['entry']
     #CONEXION
     try:
+        NomInversion = 0
         #QUERYS
         GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         campanas=[]
@@ -390,13 +391,13 @@ def go_camp(conn):
                     kpi = conversion
                 
             #FIN VARIABLES
-            if campaingid!='':
-                if percentofbudgetused!='':
-                    campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
-                    campanas.append(campana)
-                else:
-                    campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
-                    campanas.append(campana)
+                if campaingid!='':
+                    if percentofbudgetused!='':
+                        campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
+                        campanas.append(campana)
+                    else:
+                        campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
+                        campanas.append(campana)
 
 
             #FIN CICLOx
@@ -843,8 +844,8 @@ if __name__ == '__main__':
    fb_camp(conn)
    fb_camp_mosca(conn)
    fb_adsets(conn)
-   #fb_ads(conn)
-   #fb_reach(conn)
+   fb_ads(conn)
+   fb_reach(conn)
    go_camp(conn)
    go_camp_mosca(conn)
    go_adsets(conn)
