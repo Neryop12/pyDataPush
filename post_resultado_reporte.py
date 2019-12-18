@@ -39,7 +39,7 @@ def fb_camp(conn):
     #CONEXION
     try:
         #QUERYS
-      
+
         GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost,CreateDate,Diario,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
         GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         cuentas=[]
@@ -91,7 +91,7 @@ def fb_camp(conn):
                 cost = 0
             #FIN VARIABLES
             if accountid!='' or accountid!=0:
-                searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?', campaingname, re.M | re.I)
+                searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?(/[0-9]+)?', campaingname, re.M | re.I)
                 if searchObj:
                     Result = (searchObj.group(14))
                     objcon = (searchObj.group(8))
@@ -123,7 +123,7 @@ def fb_camp(conn):
             #FIN CICLOx
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarCampMetrics,campmetrics)
-        
+
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "pushDataMedia.py","{}");'.format(dayhoy)
