@@ -46,7 +46,7 @@ def GetToken():
                         "UserName": "SFRANCO",
                         "Password": "SFrancoomg2019"
                     }
-               
+
 
                 )
     Token = Token.json()
@@ -59,7 +59,7 @@ def GetAdformCampaign(conn):
      campanas=[]
      campmetrics=[]
      #Querys a insertar a la base de datos
-     
+
      sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks,frequency,result) VALUES (%s,%s,%s,%s,%s,%s)"
      try:
          url='https://api.adform.com/v1/reportingstats/agency/reportdata'
@@ -80,10 +80,10 @@ def GetAdformCampaign(conn):
                                     "client",
                                     "campaignStartDate",
                                     "campaignEndDate",
-                                    
+
                                     "campaignType",
                                     "bannerType"
-                                   
+
                                 ],
                                 "metrics": [
                                     "clicks",
@@ -92,7 +92,7 @@ def GetAdformCampaign(conn):
                                     "conversions",
                                     "sales"
                                 ],
-                               "filter":{ 
+                               "filter":{
                                				"date":{
 										    	"from": str(datetime.now() - timedelta(days=14)),
 										    	"to":str(datetime.now())
@@ -105,7 +105,7 @@ def GetAdformCampaign(conn):
              result = 0
              if(row[0]!=''):
                  if row[7] != 'Non-campaign':
-                     searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?', row[1], re.M | re.I)
+                     searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9]+)?(_S-)?(_)?([0-9]+)?(\(([0-9.)]+)\))?(/[0-9]+)?', row[1], re.M | re.I)
                  if searchObj:
                     Result = (searchObj.group(14))
                     objcon = (searchObj.group(12))
@@ -121,7 +121,7 @@ def GetAdformCampaign(conn):
                         result = row[8]
                     elif str(Result).upper() == 'CPMA':
                         result = row[9]
-                    
+
                     if(row[6].isnumeric()):
                         campanametrica=[row[0],row[10],row[9],row[8],row[6],result]
                     else:

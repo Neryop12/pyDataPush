@@ -77,7 +77,7 @@ def errors_fb_inv(conn):
         print (datetime.now())
 
 
-def errors_am__inv(conn):
+def errors_mm__inv(conn):
     global cur
     cur = conn.cursor()
     Comentario = ''
@@ -86,7 +86,7 @@ def errors_am__inv(conn):
     try:
         print (datetime.now())
         sqlConjuntosFB = """
-        select SUBSTRING_INDEX(Campaingname,' ',1) Campaingname,ca.CampaingID from CampaingsAM ca
+        select SUBSTRING_INDEX(Campaingname,' ',1) Campaingname,ca.CampaingID from Campaings ca
         left outer join mfcgt.mfccompradiaria cd on SUBSTRING_INDEX(ca.Campaingname,' ',1) = cd.multiplestiposg
         where  isnull(cd.multiplestiposg) = true;
         """
@@ -97,11 +97,11 @@ def errors_am__inv(conn):
         Errores = []
         for result in resultscon:
             Comentario = "Error la nomenclatura implementada no se encuentra en el sistema de MFC"
-            cur.execute(sqlSelectErrors, (result[1], 1, 'AM'))
+            cur.execute(sqlSelectErrors, (result[1], 1, 'MM'))
             rescampaing = cur.fetchone()
             if rescampaing[0] < 1:
                 nuevoerror = (result[0], Comentario,
-                                'AM', 1, result[1], 0, 'ACTIVE')
+                                'MM', 1, result[1], 0, 'ACTIVE')
                 Errores.append(nuevoerror)
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
@@ -319,6 +319,6 @@ def errors_plataforma(conn):
 if __name__ == '__main__':
    openConnection()
    errors_fb_inv(conn)
-   errors_am__inv(conn)
+   errors_mm__inv(conn)
    errors_plataforma(conn)
    conn.close()

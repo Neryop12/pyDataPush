@@ -533,7 +533,7 @@ def tw_camp(conn):
         campmetrics=[]
         campdisplays=[]
         temp_k=data['feed']['entry']
-        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget)"
+        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,AccountsID,StartDate,EndDate,Campaignstatus) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'ACTIVE') ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
         sqlInsertAccount = "INSERT INTO Accounts(AccountsID,Account,Media) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
         sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Impressions,Clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s)"
         sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,Placement) VALUES (%s,%s)ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
