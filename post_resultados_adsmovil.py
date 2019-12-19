@@ -90,8 +90,9 @@ def pushAdsMovil(conn):
                     AccountID=searchObj.group(2)+searchObj.group(3)+searchObj.group(4)
             adid=row[1]+row[3]
             adsetid=row[1]+AccountID
+            nomecla = row[2].split("(")
             account=[AccountID,AccountID,'AM',1]
-            campana=[row[1],row[2],AccountID]
+            campana=[row[1],nomecla[0].replace(' ',''),AccountID]
             conjunto=[row[1],adsetid,row[2]]
             anuncio=[adsetid, adid,row[3]]
             ametric=[adid,row[3],row[4],row[5],row[9],row[10],row[6],row[12],row[11]]
@@ -163,7 +164,7 @@ def pushAdsMovilPusads(conn):
                                 'Authorization': "'" + Token["result"]["token"] + "'" ,
                                 },
                             params={
-                                'report':'pushads',
+                                'report':'adsmovil_dsp',
                                 'startDate': dayayer,
                                 'endDate':dayayer,
                             }

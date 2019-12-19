@@ -12,7 +12,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 # host= '3.95.117.169'
-host= 'localhost'
+host= '3.95.117.169'
 name = 'MediaPlatforms'
 user = 'omgdev'
 password = 'Sdev@2002!'
