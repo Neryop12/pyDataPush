@@ -6,16 +6,11 @@ import re
 import mysql.connector as mysql
 from datetime import datetime, timedelta
 import time
-import logger
 import pandas as pd
 import numpy as mp
 from xml.etree import ElementTree
 import io
 import math
-import configparser
-conn = None
-config = configparser.ConfigParser()
-config.read('config.ini')
 
 host= '3.95.117.169'
 name = 'MediaPlatforms'
