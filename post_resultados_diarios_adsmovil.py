@@ -79,13 +79,13 @@ def pushAdsMovil(conn):
         print('Success AdsMovil Campanas')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "Success", "pushDataAdsMovil.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "Success", "post_resultados_diarios_adsmovil.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}", "pushDataAdsMovil.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}", "post_resultados_diarios_adsmovil.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
@@ -128,13 +128,13 @@ def pushAdsMovilPusgAds(conn):
         print('Success AdsMovil Campanas')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "Success", "pushDataAdsMovil.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "Success", "post_resultados_diarios_adsmovil.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}", "pushDataAdsMovil.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}", "post_resultados_diarios_adsmovil.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print (datetime.now())

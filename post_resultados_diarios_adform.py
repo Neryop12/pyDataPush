@@ -132,8 +132,16 @@ def GetAdformCampaign(conn):
          cur.executemany(sqlInsertCampaingMetrics,campmetrics)
          cur.execute("SET FOREIGN_KEY_CHECKS=1")
          print('Success AF Campanas')
+         fechahoy = datetime.now()
+         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovilCamps", "Success","post_resultados_diarios_adform.py","{}");'.format(dayhoy)
+         cur.execute(sqlBitacora)
      except Exception as e:
          print(e)
+         fechahoy = datetime.now()
+         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("pushAdsMovil", "{}","post_resultados_diarios_adform.py","{}");'.format(e,dayhoy)
+         cur.execute(sqlBitacora)
      finally:
          print (datetime.now())
 

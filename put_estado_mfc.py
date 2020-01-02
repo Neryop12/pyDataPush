@@ -124,7 +124,7 @@ def reviewErrores(conn):
         cur.executemany(slqUpdate, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("put_estado_mfc", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -133,7 +133,7 @@ def reviewErrores(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("put_estado_mfc", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')
@@ -168,7 +168,7 @@ def reviewErroresNomen(conn):
         cur.executemany(slqUpdate, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("put_estado_mfc", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -177,7 +177,7 @@ def reviewErroresNomen(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("put_estado_mfc", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')

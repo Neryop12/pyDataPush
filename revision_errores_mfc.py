@@ -62,7 +62,7 @@ def errors_fb_inv(conn):
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "revision_errores_mfc.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -71,7 +71,7 @@ def errors_fb_inv(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "revision_errores_mfc.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')
@@ -107,7 +107,7 @@ def errors_am__inv(conn):
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_am_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_am_inv", "Success", "revision_errores_mfc.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -116,7 +116,7 @@ def errors_am__inv(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_am_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_am_inv", "{}", "revision_errores_mfc.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')
@@ -153,7 +153,7 @@ def errors_mm__inv(conn):
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "Success", "revision_errores_mfc.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -162,7 +162,7 @@ def errors_mm__inv(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_mm_inv", "{}", "revision_errores_mfc.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')
@@ -347,7 +347,7 @@ def errors_plataforma(conn):
         cur.executemany(sqlInserErrors, Errores)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "pushReviewErrors.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "Success", "revision_errores_mfc.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
         cur.close()
     #ANALISIS IMPRESIONES Y
@@ -356,7 +356,7 @@ def errors_plataforma(conn):
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "pushReviewErrors.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("errors_fb_inv", "{}", "revision_errores_mfc.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Nomenclatura')

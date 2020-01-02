@@ -83,13 +83,13 @@ def fbPaused(conn):
         print('SUCCESS')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fbPaused", "Success", "updateInactiveCamps.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fbPaused", "Success", "put_estado_camps_fb_go.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except mysql.Error as error:
         print("Failed to update record to database: {}".format(error))
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fbPaused", "{}", "updateInactiveCamps.py","{}");'.format(error,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fbPaused", "{}", "put_estado_camps_fb_go.py","{}");'.format(error,dayhoy)
         cur.execute(sqlBitacora)
 
 def goPaused(conn):
@@ -135,13 +135,13 @@ def goPaused(conn):
         print('SUCCESS')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("goPaused", "Success", "updateInactiveCamps.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("goPaused", "Success", "put_estado_camps_fb_go.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except mysql.Error as error:
         print("Failed to update record to database: {}".format(error))
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("goPaused", "{}", "updateInactiveCamps.py","{}");'.format(error, dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("goPaused", "{}", "put_estado_camps_fb_go.py","{}");'.format(error, dayhoy)
         cur.execute(sqlBitacora)
 
 if __name__ == '__main__':

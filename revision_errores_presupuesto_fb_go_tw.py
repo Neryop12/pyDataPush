@@ -84,12 +84,12 @@ def PresupusetoCamp(conn):
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Camp')
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("PresupuestoCamp", "Success", "errosPresupuestoCamp.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("PresupuestoCamp", "Success", "revision_errores_presupuesto_fb.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("PresupuestoCamp", "{}", "errosPresupuestoCamp.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("PresupuestoCamp", "{}", "revision_errores_presupuesto_fb.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
