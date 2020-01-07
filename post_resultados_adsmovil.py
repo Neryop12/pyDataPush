@@ -82,6 +82,8 @@ def pushAdsMovil(conn):
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
+            campaingName = row[2].split('(')
+            campaingName = campaingName[0].replace(' ','')
             searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)', str(row[2]), re.M | re.I)
             if searchObj:
                 if searchObj.group(2)=='CLARO':
@@ -174,7 +176,8 @@ def pushAdsMovilPusads(conn):
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
-
+            
+            print(campaingName)  
             searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)', str(row[2]), re.M | re.I)
             if searchObj:
                 if searchObj.group(2)=='CLARO':
