@@ -25,18 +25,18 @@ def send(campanas,names):
     cur=conn.cursor(buffered=True)
     try:
         body = ''
-        
+
         sender_email = "adops-noreply@omg.com.gt"  # Enter your address
         password = "OMGdev2019"
         names =  names[1:-1]
         sqlCamping = """
-                    select distinct username, c.CampaingID from omgguate.usuario u 
+                    select distinct username, c.CampaingID from omgguate.usuario u
                     inner join SysAdOps.RolsUsers ru on ru.UserID = u.idusuario
                     inner join SysAdOps.Rols r on r.RolID = ru.RolID
                     inner join mfcgt.mfcasignacion asg on asg.idusuario = u.idusuario
                     inner join accountxmarca am on am.marca = asg.idmarca
                     inner join Accounts a on a.AccountsID = am.account
-                    inner join Campaings c on c.AccountsID = a.AccountsID 
+                    inner join Campaings c on c.AccountsID = a.AccountsID
                     where c.CampaingID in ({})
                     order by username;
                     """.format(names)
@@ -48,9 +48,9 @@ def send(campanas,names):
             if res[0] != correo or res[0] == last:
                 html = """\
                     <html>
-                   
+
                     <body>
-                    
+
                         <p>Hola,<br>
                         Listado de Camapañas<br>
                         </p>
@@ -68,7 +68,7 @@ def send(campanas,names):
                             <th style="border:1px solid black;padding: 10px;">KPI</th>
                         </tr>
                         {}
-                        </table> 
+                        </table>
                     </body>
                     </html>
                     """.format(body)
@@ -86,7 +86,7 @@ def send(campanas,names):
                 #server.sendmail(sender_email, receiver_email, msg.as_string())
                 body = ''
                 correo = res[0]
-            
+
             for cam in campanas:
                 if cam[0] ==  res[1]:
                     body = body + '<tr style="border:1px solid black;padding: 10px;"> '
@@ -102,27 +102,27 @@ def send(campanas,names):
                     body = body + '<td>{}</td>'.format(cam[10])
                     body = body + '</tr>'
                     break
-        
-        
+
+
     except Exception as e:
         print(e)
     else:
         print(datetime.now())
-    
-    
-
-   
 
 
-    
+
+
+
+
+
 
 def CampaingsReview(conn):
     cur=conn.cursor(buffered=True)
     sqlCamping = """
                     select  dc.nombre as Account, dc.id idcliente,m.id idmarca ,c.CampaingID CampaingID,  a.Media Media,  c.Campaingname Campaingname, round(sum(distinct d.Cost),2) as 'InversionConsumida', date_format(c.StartDate, '%d/%m/%Y') StartDate , m.nombre as Marca,
-                    date_format(c.EndDate,'%d/%m/%Y') EndDate , SUBSTRING_INDEX(SUBSTRING_INDEX(c.Campaingname, '_', 11),'_',-1) as 'PresupuestoPlan',SUBSTRING_INDEX (SUBSTRING_INDEX(c.Campaingname, '_', 13),'_',-1) KPIPlanificado, 
-                    md.Nombre KPI,ifnull(sum(distinct d.result),0) 'KPIConsumido',c.Campaignstatus State,m.nombre Marca ,dc.nombre Cliente,date_format(now(),'%M') mes,  
-                    '0' as 'TotalDias','0' as 'DiasEjecutados','0' as 'DiasPorservir', "0" as 'PresupuestoEsperado',"0" as 'PorcentajePresupuesto', 
+                    date_format(c.EndDate,'%d/%m/%Y') EndDate , SUBSTRING_INDEX(SUBSTRING_INDEX(c.Campaingname, '_', 11),'_',-1) as 'PresupuestoPlan',SUBSTRING_INDEX (SUBSTRING_INDEX(c.Campaingname, '_', 13),'_',-1) KPIPlanificado,
+                    md.Nombre KPI,ifnull(sum(distinct d.result),0) 'KPIConsumido',c.Campaignstatus State,m.nombre Marca ,dc.nombre Cliente,date_format(now(),'%M') mes,
+                    '0' as 'TotalDias','0' as 'DiasEjecutados','0' as 'DiasPorservir', "0" as 'PresupuestoEsperado',"0" as 'PorcentajePresupuesto',
                     "0" as 'PorcentajeEsperadoV',"0" as 'PorcentajeRealV',"0" as 'KPIEsperado',"0" as 'PorcentajeKPI', "0" as 'PorcentajeEsperadoK',"0" as 'PorcentajeRealK', "0" as 'EstadoKPI', "0" as 'EstadoPresupuesto'
                     from dailycampaing d
                     inner join Campaings c on c.CampaingID = d.CampaingID
@@ -131,9 +131,9 @@ def CampaingsReview(conn):
                     inner join mfcgt.mfcasignacion asg on asg.idmarca = am.marca
                     inner join mfcgt.dmarca m on am.marca = m.id
                     inner join mfcgt.dcliente dc on dc.id = m.idcliente
-                    inner join modelocompra md on md.abr = SUBSTRING_INDEX (SUBSTRING_INDEX(c.Campaingname, '_', 14),'_',-1) 
+                    inner join modelocompra md on md.abr = SUBSTRING_INDEX (SUBSTRING_INDEX(c.Campaingname, '_', 14),'_',-1)
                     where c.Campaignstatus in ('ACTIVE','enabled')  and asg.idusuario = {} and c.EndDate > '{}'
-                    group by d.CampaingID;    
+                    group by d.CampaingID;
                     """
     try:
         campanas=[]
@@ -143,14 +143,14 @@ def CampaingsReview(conn):
         resultscon = cur.fetchall()
         for row in resultscon:
             Nomenclatura = row[3]
-            searchObj = re.search(r'^(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ.+]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.]+)?(_S-)?(_)?([0-9.]+)?(\s)?(\(([0-9.)]+)\))?$', Nomenclatura, re.M | re.I)
+            searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', Nomenclatura, re.M | re.I)
             if searchObj:
                 if row[5] != '0000-00-00' and row[6] != '0000-00-00':
                     Start = datetime.strptime(row[5], "%d/%m/%Y")
                     End = datetime.strptime(row[6], "%d/%m/%Y")
                     TotalDias = End - Start
-                    DiasEjectuados = datetime.now() -  Start 
-                    DiasPorservir = End - datetime.now() 
+                    DiasEjectuados = datetime.now() -  Start
+                    DiasPorservir = End - datetime.now()
                     if TotalDias.days > 0:
                         porcentDay = DiasEjectuados.days / ((TotalDias.days) + 1 )
                     PresupuestoEsperado = round(float(row[7]) * porcentDay,2)
@@ -166,7 +166,7 @@ def CampaingsReview(conn):
                     TotalDias = TotalDias.days
                     DiasEjectuados = DiasEjectuados.days
                     DiasPorservir = DiasPorservir.days + 1
-                    EstadoPresupuesto = 0 
+                    EstadoPresupuesto = 0
                     EstadoKPI = 0
                     if porcentDay <= 0.25:
                         if abs(int(PorcentajePresupuesto)) <= 0.15:
@@ -191,21 +191,21 @@ def CampaingsReview(conn):
                     if EstadoPresupuesto == 0 and EstadoKPI == 1:
                         campana=(row[1],row[0],row[12],row[2],row[3],'Estado Presupuesto Malo','Estado KPI Bueno',str(round(float(PorcentajePresupuesto))),str(round(float(PorcentajeKPI),2)),str(round(float(row[4]),2)),str(round(float(row[8]),2)))
                         campananames= campananames + ',' + row[1]
-                    elif EstadoPresupuesto == 1 and EstadoKPI == 0: 
+                    elif EstadoPresupuesto == 1 and EstadoKPI == 0:
                         campana=(row[1],row[0],row[12],row[2],row[3],'Estado Presupuesto Bueno','Estado KPI Malo',str(round(float(PorcentajePresupuesto))),str(round(float(PorcentajeKPI),2)),str(round(float(row[4]),2)),str(round(float(row[8]),2)))
                         campananames= campananames + ',' + row[1]
-                    elif EstadoPresupuesto == 0 and EstadoKPI == 0: 
+                    elif EstadoPresupuesto == 0 and EstadoKPI == 0:
                         campana=(row[1],row[0],row[12],row[2],row[3],'Estado Presupuesto Malo','Estado KPI Malo',str(round(float(PorcentajePresupuesto))),str(round(float(PorcentajeKPI),2)),str(round(float(row[4]),2)),str(round(float(row[8]),2)))
                         campananames= campananames + ',' + row[1]
                     campanas.append(campana)
         if campanas:
-            
+
             send(campanas,campananames)
     except Exception as e:
         print(e)
     finally:
         print(datetime.now())
-    
+
 
 if __name__ == '__main__':
     openConnection()

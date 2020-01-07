@@ -43,12 +43,12 @@ def GetAouth():
                             'Content-Type': 'application/x-www-form-urlencoded',
                             },
                 data={
-                    "client_id":"reporting.jdeleon.gt.es@clients.adform.com", 
+                    "client_id":"reporting.jdeleon.gt.es@clients.adform.com",
                     "client_secret":"vUkmHq-G6q6tBW_mDRaaf886hOyaYz3Ik1yfYg8u",
                     "grant_type":"client_credentials",
                     "scope": "https://api.adform.com/scope/buyer.campaigns.api",
                      }
-               
+
 
                 )
     Token = Token.json()
@@ -65,7 +65,7 @@ def GetToken():
                         "UserName": "SFRANCO",
                         "Password": "SFrancoomg2019"
                     }
-               
+
 
                 )
     Token = Token.json()
@@ -158,10 +158,10 @@ def GetAdformCampaign(conn):
                                     "client",
                                     "campaignStartDate",
                                     "campaignEndDate",
-                                    
+
                                     "campaignType",
                                     "bannerType"
-                                   
+
                                 ],
                                 "metrics": [
                                     "clicks",
@@ -170,10 +170,10 @@ def GetAdformCampaign(conn):
                                     "conversions",
                                     "sales"
                                 ],
-                               "filter":{ 
+                               "filter":{
                                				"date":{
-										    	"from": str(datetime.now() - timedelta(days=1)),
-										    	"to":str(datetime.now() - timedelta(days=1))
+										    	"from": str(datetime.now() - timedelta(days=10)),
+										    	"to":str(datetime.now() + timedelta(days=20))
                                				}
                                    }
              }
@@ -240,7 +240,7 @@ def GetAdformAdsets(conn):
                                     "impressions",
                                     "cost"
                                 ],
-                                "filter":{ 
+                                "filter":{
                                				"date":{
 										    	"from": str(datetime.now() - timedelta(days=1)),
 										    	"to":str(datetime.now() - timedelta(days=1))
@@ -304,7 +304,7 @@ def GetAdformAds(conn):
                             "ecpm",
                             "conversions"
                         ],
-                        "filter":{ 
+                        "filter":{
                                				"date":{
 										    	"from": str(datetime.now() - timedelta(days=1)),
 										    	"to":str(datetime.now() - timedelta(days=1))
@@ -336,7 +336,7 @@ def GetAdFormCreativeAds(conn):
     print (datetime.now())
     creativeAds=[]
     #Query
-    sqlInsertCreativeAds = """INSERT INTO CreativeAds(adid,adname,size,adtype,weight,format,admessage,creativetype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) 
+    sqlInsertCreativeAds = """INSERT INTO CreativeAds(adid,adname,size,adtype,weight,format,admessage,creativetype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                               ON DUPLICATE KEY UPDATE adname=VALUES(adname),size=VALUES(size),adtype=VALUES(adtype),weight=VALUES(weight),format=VALUES(format),admessage=VALUES(admessage),creativetype=VALUES(creativetype)"""
     try:
         url='https://api.adform.com/v1/reportingstats/agency/reportdata'
@@ -364,7 +364,7 @@ def GetAdFormCreativeAds(conn):
                         "clicks",
                         "impressions"
                     ],
-                   "filter":{ 
+                   "filter":{
                                				"date":{
 										    	"from": str(datetime.now() - timedelta(days=1)),
 										    	"to":str(datetime.now() - timedelta(days=1))
@@ -389,8 +389,8 @@ def GetAdFormCreativeAds(conn):
 
 
 if __name__ == '__main__':
-    
-    
+
+
     openConnection()
     GetToken()
     #PushCampaingAdform(conn)
