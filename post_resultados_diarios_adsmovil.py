@@ -51,7 +51,7 @@ def pushAdsMovil(conn):
     cur=conn.cursor(buffered=True)
     campanas=[]
     sqlInsertCampaing = "INSERT INTO CampaingsAM (`CampaingID`, `Campaingname`, `ad`, `Impressions`, `Clicks`, `Ctr`, `Video_firstquartile`, `Video_midpoint`, `Video_thirdquartile`, `Video_completed`, `cost`, `CPM`, `AccountsID`, `StartDate`)  VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),ad=VALUES(ad), Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Ctr=VALUES(Ctr),Video_firstquartile=VALUES(Video_firstquartile),Video_midpoint=VALUES(Video_midpoint),Video_thirdquartile=VALUES(Video_thirdquartile),cost=VALUES(cost),CPM=VALUES(CPM) "
-    sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
+    sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks,result) VALUES (%s,%s,%s,%s,%s)"
     try:
         url='https://reportapi.adsmovil.com/api/campaign/details'
         Result2 = requests.get(
@@ -68,10 +68,26 @@ def pushAdsMovil(conn):
                         )
         r=Result2.json()
         for row  in r["result"]["queryResponseData"]["rows"]:
+            result = 0
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
-            campana=[row[1],row[11],row[4],row[5]]
+            if row[1]!='':
+                campaingName = row[2].split('(')
+                campaingName = campaingName[0].replace(' ','')
+                searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', campaingName, re.M | re.I)
+                if searchObj:
+                    Result = (searchObj.group(15))
+                    if str(Result).upper() == 'CPVI':
+                        result = row[5]
+                    elif str(Result).upper() == 'CPM':
+                           result = row[4]
+                    elif str(Result).upper() == 'CPV':
+                        result = row[9]
+                    elif str(Result).upper() == 'CPC':
+                        result = row[5]
+            
+            campana=[row[1],row[11],row[4],row[5],result]
             campanas.append(campana)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertCampaingMetrics,campanas)

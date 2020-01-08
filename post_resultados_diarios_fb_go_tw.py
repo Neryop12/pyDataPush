@@ -280,6 +280,99 @@ def fb_camp_mosca(conn):
     finally:
         print(datetime.now())
 
+def fb_camp_claro(conn):
+    cur=conn.cursor(buffered=True)
+    print (datetime.now())
+    r = requests.get(
+        "https://spreadsheets.google.com/feeds/list/1sJcYtuYMZvtD_MxIbwVkRIeBXBOAQXCRxsuc3_UHOYQ/od6/public/values?alt=json")
+    data=r.json()
+    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
+    temp_k=data['feed']['entry']
+    #CONEXION
+    try:
+        #QUERYS
+        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement,VideoWatches75,PostReaccion,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        campanas=[]
+        for atr in temp_k:
+            #ACCOUNT
+
+            #CAMPAING
+            campaingid=atr['gsx$campaignid']['$t']
+            campaingname=atr['gsx$campaignname']['$t']
+            campaignspendinglimit=atr['gsx$campaignspendinglimit']['$t']
+            campaigndailybudget=atr['gsx$campaigndailybudget']['$t']
+            campaignlifetimebudget=atr['gsx$campaignlifetimebudget']['$t']
+            reach=atr['gsx$reach']['$t']
+            impressions=atr['gsx$impressions']['$t']
+            frequency=atr['gsx$frequency']['$t']
+            startdate=atr['gsx$campaignstartdate']['$t']
+            enddate=atr['gsx$campaignenddate']['$t']
+            clicks=atr['gsx$outboundclicks']['$t']
+            cost=atr['gsx$cost']['$t']
+            budget=atr['gsx$campaignlifetimebudget']['$t']
+            enddate=atr['gsx$campaignenddate']['$t']
+            placement=atr['gsx$placement']['$t']
+            videowatch=atr['gsx$videowatchesat75']['$t']
+            postreaccion=atr['gsx$postreactions']['$t']
+            leads=atr['gsx$leadsform']['$t']
+            mess=atr['gsx$newmessagingconversations']['$t']
+            result = 0
+            #FIN VARIABLES
+            if campaingid!='':
+                searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', campaingname, re.M | re.I)
+                if searchObj:
+                    Result = (searchObj.group(15))
+                    objcon = (searchObj.group(13))
+                    if str(Result).upper() == 'CPVI':
+                        result = clicks
+                    elif str(Result).upper() == 'CPMA':
+                        result = reach
+                    elif str(Result).upper() == 'CPM':
+                       result = impressions
+                    elif str(Result).upper() == 'CPV':
+                        result = videowatch
+                    elif str(Result).upper() == 'CPCO':
+                        if str(objcon).upper() == 'MESAD':
+                            result = mess
+                        elif str(objcon).upper() == 'LE':
+                            result = leads
+                        else:
+                            result = clicks
+                    elif str(Result).upper() == 'CPI':
+                        result = leads
+                    elif str(Result).upper() == 'CPMA':
+                        result = reach
+                    elif str(Result).upper() == 'CPC':
+                        result = clicks
+                    elif str(Result).upper() == 'CPMA':
+                        result = reach
+
+                if enddate == '':
+                    enddate = '2019-01-01'
+                if budget!='':
+                    campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,placement,videowatch,postreaccion,result)
+                    campanas.append(campana)
+                else:
+                    campana=(campaingid,reach,frequency,impressions,clicks,cost,0,enddate,placement,videowatch,postreaccion,result)
+                    campanas.append(campana)
+            #FIN CICLOx
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(GuardarDailycampaing,campanas)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success Facebook Camp')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print(datetime.now())
+
 #FIN VISTA
 def fb_adsets(conn):
     cur=conn.cursor(buffered=True)
@@ -841,18 +934,18 @@ def push_ads(conn):
 #Funciones
 if __name__ == '__main__':
    openConnection()
-   #truncateAllCamp(conn)
-   #fb_camp(conn)
-   #fb_camp_mosca(conn)
-   #fb_adsets(conn)
-   #fb_ads(conn)
-   #fb_reach(conn)
-   #go_camp(conn)
-   #go_camp_mosca(conn)
-   #go_adsets(conn)
-   #go_ads(conn)
+   truncateAllCamp(conn)
+   fb_camp(conn)
+   fb_camp_mosca(conn)
+   fb_adsets(conn)
+   fb_ads(conn)
+   fb_reach(conn)
+   go_camp(conn)
+   go_camp_mosca(conn)
+   go_adsets(conn)
+   go_ads(conn)
    tw_camp(conn)
-   #tw_adsets(conn)
-   #tw_ads(conn)
+   tw_adsets(conn)
+   tw_ads(conn)
    conn.close()
 
