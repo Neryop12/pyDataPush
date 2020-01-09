@@ -36,7 +36,7 @@ def fb_ads(conn):
     fechahoy = datetime.now()
     print (datetime.now())
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1WkJhD6-jmyCTqY5LfQOA__stGEh6Rgwph3X8q4tGiaI/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1ve_eaEPUw58C5O_1wlO0I_fMZ7wlpiD1u5U_GWA-SLw/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
 
@@ -135,7 +135,7 @@ def fb_camp(conn):
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1Z7x3lVe8QZ0TbnFA3ygJeWDY5hY-neRxXx1EZnabfIM/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1_53DhlzLrEbSXlVM7FJHAEERjUbBJ5j8gYMj8EFyW5s/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
@@ -224,7 +224,7 @@ def fb_adsets(conn):
     #CONEXION
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1jtlJhQJVW0sPvLaFNYoNPwXMnbhdV5M30sX1jt3C1Rc/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1wEuq2uRwJl0Ay8ycqGvlXEjdHbWk-yehMAe3YGXO6L8/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
