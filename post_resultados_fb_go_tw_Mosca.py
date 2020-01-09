@@ -135,7 +135,7 @@ def fb_camp(conn):
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
     print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1u4ZDnXvKoiMGt5Af0eYN-tsiGpqbOVSVo4gbd3u9EB0/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1Z7x3lVe8QZ0TbnFA3ygJeWDY5hY-neRxXx1EZnabfIM/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
