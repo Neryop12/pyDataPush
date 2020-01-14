@@ -655,8 +655,7 @@ if __name__ == '__main__':
    truncateAllCamp(conn)
    fb_camp(conn)
    fb_camp_mosca(conn)
-   fb_adsets(conn)
-   fb_ads(conn)
+   
    go_camp(conn)
    go_camp_mosca(conn)
    tw_camp(conn)
