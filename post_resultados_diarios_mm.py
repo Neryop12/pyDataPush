@@ -73,7 +73,7 @@ def GetMediaMathCampaing(conn):
      print(ayer)
      campmetrics=[]
      #Querys a insertar a la base de datos
-     sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks,Result) VALUES (%s,%s,%s,%s,%s)"
+     sqlInsertCampaingMetrics = "INSERT INTO dailycampaing(CampaingID,Cost,impressions,clicks,Result,EndDate) VALUES (%s,%s,%s,%s,%s,%s)"
      try:
          #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=advertiser_name%2cadvertiser_id%2ccampaign_id%2ccampaign_name%2ccampaign_budget&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'
@@ -110,7 +110,7 @@ def GetMediaMathCampaing(conn):
                         result = row[14]
                     elif str(Result).upper() == 'CPC':
                         result = row[8]
-                campanametrica=[row[4],row[9],row[8],row[7],result]
+                campanametrica=[row[4],row[9],row[8],row[7],result,row[1]]
                 campmetrics.append(campanametrica)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(sqlInsertCampaingMetrics,campmetrics)

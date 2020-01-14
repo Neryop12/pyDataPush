@@ -172,10 +172,14 @@ def GetAdformCampaign(conn):
                                 ],
                                "filter":{
                                				"date":{
-										    	"from": str(datetime.now() - timedelta(days=10)),
-										    	"to":str(datetime.now() + timedelta(days=20))
+										    	"from": str(datetime.now() - timedelta(days=5)),
+										    	"to":str(datetime.now() + timedelta(days=15))
                                				}
-                                   }
+                                   },
+                                 "paging": {
+                                    "offset": 0,
+                                    "limit": 3000
+                                }
              }
          )
          data=data.json()
@@ -389,8 +393,6 @@ def GetAdFormCreativeAds(conn):
 
 
 if __name__ == '__main__':
-
-
     openConnection()
     GetToken()
     #PushCampaingAdform(conn)

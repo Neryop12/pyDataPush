@@ -73,7 +73,7 @@ def GetMediaMathCampaing(conn):
      ayer = ayer.strftime("%Y-%m-%d")
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`) VALUES (%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate)"
+     sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate)"
      sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
      try:
          #Direccion del API, las variable session se pasas com oun Cookie
@@ -101,7 +101,7 @@ def GetMediaMathCampaing(conn):
             if row[3]!='':
                 cuenta=[row[3],row[2],'MM']
                 cuentas.append(cuenta)
-                campana=[row[4],row[5],row[6],row[9],row[3],row[0],row[1]]
+                campana=[row[4],row[5],row[6],row[9],row[3],row[0],row[1],'ACTIVE']
                 campanas.append(campana)
                 campanametrica=[row[4],row[9],row[8],row[7]]
                 campmetrics.append(campanametrica)
