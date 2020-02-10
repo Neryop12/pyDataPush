@@ -4,7 +4,7 @@ import requests
 import sys
 import re
 import mysql.connector as mysql
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 
 host= '3.95.117.169'
@@ -91,7 +91,7 @@ def fb_camp(conn):
 
                     if enddate == '':
                         enddate = '2019-01-01'
-                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now():
+                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
     
                         if budget!='':
                             campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,'',videowatch,postreaccion,result)
@@ -193,7 +193,7 @@ def fb_camp_mosca(conn):
 
                 if enddate == '':
                     enddate = '2019-01-01'
-                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now():
+                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
     
                         if budget!='':
                             campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,'',videowatch,postreaccion,result)
@@ -293,7 +293,7 @@ def fb_camp_claro(conn):
 
                 if enddate == '':
                     enddate = '2019-01-01'
-                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now():
+                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
     
                         if budget!='':
                             campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,'',videowatch,postreaccion,result)
@@ -387,7 +387,7 @@ def go_camp(conn):
                 if campaingid!='':
                     if enddate is None:
                         enddate = '2019-01-01'
-                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now():
+                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
                         if percentofbudgetused!='':
                             campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
                             campanas.append(campana)
@@ -482,7 +482,7 @@ def go_camp_mosca(conn):
             if campaingid!='':
                 if enddate is None:
                     enddate = '2019-01-01'
-                if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now():
+                if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
                     if percentofbudgetused!='':
                         campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
                         campanas.append(campana)
@@ -553,7 +553,7 @@ def tw_camp(conn):
             if enddate=='':
                 enddate = '2019-01-01'
             if accountid!='':
-                if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now():
+                if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
                     campana=(campaingid,impressions,clicks,cost,enddate)
                     campanas.append(campana)
                 else:
@@ -563,6 +563,7 @@ def tw_camp(conn):
 
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarDailycampaing ,campanas)
+        cur.executemany(GuardarHistorico ,historico)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         print('Success Campanas Twitter')
         fechahoy = datetime.now()
@@ -630,7 +631,7 @@ def fb_reach(conn):
     finally:
         print(datetime.now())
 
-def truncateAllCamp(conn):
+def truncateAllCamp(conn):  
     try:
         cur=conn.cursor(buffered=True)
         print (datetime.now())

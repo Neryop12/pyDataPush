@@ -604,6 +604,6 @@ def errors_plataforma_AF(conn):
 if __name__ == '__main__':
    openConnection()
    errors_fb_inv(conn)
-   errors_mm__inv(conn)
+   errors_AF(conn)
    errors_plataforma(conn)
    conn.close()
