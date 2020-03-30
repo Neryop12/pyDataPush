@@ -219,95 +219,6 @@ def fb_camp(conn):
     finally:
         print('Success Facebook Camp')
 
-def fb_camp_claro(conn):
-    cur=conn.cursor(buffered=True)
-    fechahoy = datetime.now()
-    dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-    print (datetime.now())
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1Q5rK1Xf8Ca8eGPqnEv1oy4VMUO8NLqIF-34ftfpLJjk/od6/public/values?alt=json")
-    data=r.json()
-    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
-    #CONEXION
-    try:
-        #QUERYS
-        GuardarCuentas="""INSERT INTO  Accounts (AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"""
-        GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate,Campaingbuyingtype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate),Campaingbuyingtype=VALUES(Campaingbuyingtype) """
-        GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
-        cuentas=[]
-        campanas=[]
-        campmetrics=[]
-        campdisplays=[]
-        for atr in temp_k:
-            #ACCOUNT
-            accountid=atr['gsx$accountid']['$t'].encode('utf-8')
-            account=atr['gsx$account']['$t']
-            account2=atr['gsx$account']['$t'].encode('utf-8')
-            #CAMPAING
-            campaingid=atr['gsx$campaignid']['$t']
-            campaingname=atr['gsx$campaignname']['$t'].encode('utf-8')
-            campaignspendinglimit=atr['gsx$campaignspendinglimit']['$t']
-            campaigndailybudget=atr['gsx$campaigndailybudget']['$t']
-            campaignlifetimebudget=atr['gsx$campaignlifetimebudget']['$t']
-            campaignobjective=atr['gsx$campaignobjective']['$t'].encode('utf-8')
-            campaingbuyingtypee=atr['gsx$campaignbuyingtype']['$t'].encode('utf-8')
-            campaignstatus=atr['gsx$campaignstatus']['$t'].encode('utf-8')
-            reach=atr['gsx$reach']['$t']
-            impressions=atr['gsx$impressions']['$t']
-            frequency=atr['gsx$frequency']['$t']
-            placement='' #atr['gsx$placement']['$t'].encode('utf-8')
-            publisherplatform=atr['gsx$publisherplatform']['$t']
-            startdate=atr['gsx$campaignstartdate']['$t']
-            enddate=atr['gsx$campaignenddate']['$t']
-            clicks=atr['gsx$outboundclicks']['$t']
-            cost=atr['gsx$cost']['$t']
-            if campaignspendinglimit == '':
-                campaignspendinglimit = 0
-            if campaigndailybudget == '':
-                campaigndailybudget = 0
-            if campaignlifetimebudget == '':
-                campaignlifetimebudget = 0
-            if clicks == '':
-                clicks = 0
-            if frequency == '':
-                frequency = 0
-            if reach == '':
-                reach = 0
-            if impressions == '':
-                impressions = 0
-            if cost == '':
-                cost = 0
-            #FIN VARIABLES
-            if accountid!='' or accountid!=0:
-                cuenta=[accountid,account,'FB']
-                cuentas.append(cuenta)
-                if enddate!='':
-                    campana=[campaingid,campaingname,campaignspendinglimit,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate,campaingbuyingtypee]
-                    campanas.append(campana)
-                campdisplay=(campaingid,publisherplatform,placement)
-                campdisplays.append(campdisplay)
-                campmetric=(campaingid,reach,frequency,impressions,placement,clicks,cost,dayhoy)
-                campmetrics.append(campmetric)
-            #FIN CICLOx
-        cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(GuardarCuentas,cuentas)
-        cur.executemany(GuardarCampaing,campanas)
-        cur.executemany(GuardarCampMetrics,campmetrics)
-        cur.executemany(GuardarCampDisplays,campdisplays)
-        cur.execute("SET FOREIGN_KEY_CHECKS=1")
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
-        cur.execute(sqlBitacora)
-    except Exception as e:
-        print(e)
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "post_resultado_fb_go_tw.py","{}");'.format(e,dayhoy)
-        cur.execute(sqlBitacora)
-    finally:
-        print('Success Facebook Camp')
-#FIN VISTA
 def fb_adsets(conn):
     cur=conn.cursor(buffered=True)
     #CONEXION
@@ -434,7 +345,9 @@ def go_camp(conn):
         print (datetime.now())
         print('Success GOOGLE Campanas')
 #FIN VISTA
-def go_camp_mosca(conn):
+
+
+def go_camp_mos(conn):
     cur=conn.cursor(buffered=True)
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
@@ -445,15 +358,15 @@ def go_camp_mosca(conn):
     temp_k=data['feed']['entry']
     #CONEXION
     try:
-        GuardarCuentas="""INSERT INTO  Accounts (AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"""
-        GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate,Campaingbuyingtype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate),Campaingbuyingtype=VALUES(Campaingbuyingtype) """
-        GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         cuentas=[]
         campanas=[]
         campmetrics=[]
         campdisplays=[]
+        #QUERYS
+        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
+        sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
+        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t']
@@ -484,10 +397,10 @@ def go_camp_mosca(conn):
                 campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks,cost,dayhoy)
                 campmetrics.append(campmetric)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(GuardarCuentas ,cuentas)
-        cur.executemany(GuardarCampaing,campanas)
-        cur.executemany(GuardarCampMetrics,campmetrics)
-        cur.executemany(GuardarCampDisplays,campdisplays)
+        cur.executemany(sqlInsertAccount ,cuentas)
+        cur.executemany(sqlInsertCampaing,campanas)
+        cur.executemany(sqlInsertCampaingMetrics,campmetrics)
+        cur.executemany(sqlInsertCampaingDisplay,campdisplays)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
@@ -499,7 +412,77 @@ def go_camp_mosca(conn):
         cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
-        print('Success GOOGLE Campanas')
+        print('Success GOOGLE Campanas MOSCA')
+#FIN VISTA
+
+def go_camp_house(conn):
+    cur=conn.cursor(buffered=True)
+    fechahoy = datetime.now()
+    dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1fCfMi1hu5Ba4TNtWsx0h7Nx5szjLnhkkY2cLAucorr4/od6/public/values?alt=json")
+    #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
+    data=r.json()
+    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
+    temp_k=data['feed']['entry']
+    #CONEXION
+    try:
+        cuentas=[]
+        campanas=[]
+        campmetrics=[]
+        campdisplays=[]
+        #QUERYS
+        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
+        sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
+        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
+        for atr in temp_k:
+            #ACCOUNT
+            accountid=atr['gsx$accountid']['$t']
+            account=atr['gsx$account']['$t'].encode('utf-8')
+            #CAMPAING
+            campaingid=atr['gsx$campaignid']['$t']
+            campaingname=atr['gsx$campaignname']['$t']
+            campaigndailybudget=atr['gsx$dailybudget']['$t']
+            campaignlifetimebudget=atr['gsx$budget']['$t']
+            percentofbudgetused=atr['gsx$percentofbudgetused']['$t']
+            startdate=atr['gsx$startdate']['$t']
+            enddate=atr['gsx$enddate']['$t']
+            campaignobjective=''
+            impressions=atr['gsx$impressions']['$t']
+            clicks=atr['gsx$clicks']['$t']
+            cost=atr['gsx$cost']['$t']
+            campaignstatus=atr['gsx$campaignstatus']['$t'].encode('utf-8')
+            placement=atr['gsx$advertisingchanneltype']['$t'].encode('utf-8')
+            publisherplatform=atr['gsx$advertisingchannelsub-type']['$t'].encode('utf-8')
+
+            if accountid!='':
+                cuenta=[accountid,account,'GO']
+                cuentas.append(cuenta)
+                campana=[campaingid,campaingname,campaigndailybudget,campaignlifetimebudget,campaignobjective,campaignstatus,accountid,startdate,enddate]
+                campanas.append(campana)
+                campdisplay=(campaingid,publisherplatform,placement)
+                campdisplays.append(campdisplay)
+                campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks,cost,dayhoy)
+                campmetrics.append(campmetric)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(sqlInsertAccount ,cuentas)
+        cur.executemany(sqlInsertCampaing,campanas)
+        cur.executemany(sqlInsertCampaingMetrics,campmetrics)
+        cur.executemany(sqlInsertCampaingDisplay,campdisplays)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print (datetime.now())
+        print('Success GOOGLE Campanas HOUSE')
+#FIN VISTA
+
 
 def go_adsets(conn):
     cur=conn.cursor(buffered=True)
@@ -775,15 +758,17 @@ def tw_ads(conn):
         print('Success Ads Twittter')
 #FIN VISTA
 def push_camps(conn):
-    fb_camp(conn)
+    # fb_camp(conn)
     go_camp(conn)
-    go_camp_mosca(conn)
-    tw_camp(conn)
+    go_camp_mos(conn)
+    go_camp_house(conn)
+    # go_camp_mosca(conn)
+    # tw_camp(conn)
 
 def push_adsets(conn):
-    fb_adsets(conn)
+    # fb_adsets(conn)
     go_adsets(conn)
-    tw_adsets(conn)
+    # tw_adsets(conn)
 
 def push_ads(conn):
     fb_ads(conn)
@@ -791,8 +776,8 @@ def push_ads(conn):
     tw_ads(conn)
 
 if __name__ == '__main__':
-   openConnection()
-   push_camps(conn)
-   push_adsets(conn)
-   push_ads(conn)
-   conn.close()
+    openConnection()
+    push_camps(conn)
+    push_adsets(conn)
+    push_ads(conn)
+    conn.close()

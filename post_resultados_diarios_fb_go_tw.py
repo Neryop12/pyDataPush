@@ -33,7 +33,7 @@ def fb_camp(conn):
     try:
         #QUERYS
         GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement,VideoWatches75,PostReaccion,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result);"
+        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result,Impressions,Clicks,Campaigndailybudget,Campaignlifetimebudget,Campaignspendinglimit,EndDate,Leads,VideoWatches75,PostReaccion,Reach,Frequency) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result),Impressions=Values(Impressions),Clicks=Values(Clicks),Campaigndailybudget=Values(Campaigndailybudget),Campaignlifetimebudget=Values(Campaignlifetimebudget),Campaignspendinglimit=Values(Campaignspendinglimit),EndDate=Values(EndDate),Leads=Values(Leads),VideoWatches75=Values(VideoWatches75),PostReaccion=Values(PostReaccion),Reach=Values(Reach),Frequency=Values(Frequency);"
         campanas=[]
         historico=[]
         for atr in temp_k:
@@ -100,7 +100,7 @@ def fb_camp(conn):
                             campana=(campaingid,reach,frequency,impressions,clicks,cost,0,enddate,'',videowatch,postreaccion,result)
                             campanas.append(campana)
                     else:
-                        historia=(campaingid,campaingname,cost,result)
+                        historia=(campaingid,campaingname,cost,result,impressions,clicks,campaigndailybudget,campaignlifetimebudget,campaignspendinglimit,enddate,leads,videowatch,postreaccion,reach,frequency)
                         historico.append(historia)
             #FIN CICLOx
 
@@ -111,18 +111,16 @@ def fb_camp(conn):
         print('Success Facebook Camp')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado diario Facebook", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado diario Facebook", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
-
-
 #FIN VISTA
 def go_camp(conn):
     cur=conn.cursor(buffered=True)
@@ -138,7 +136,7 @@ def go_camp(conn):
         NomInversion = 0
         #QUERYS
         GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result);"
+        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result,Impressions,Clicks,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Leads) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result),Impressions=Values(Impressions),Clicks=Values(Clicks),Percentofbudgetused=Values(Percentofbudgetused),Campaigndailybudget=Values(Campaigndailybudget),Campaignlifetimebudget=Values(Campaignlifetimebudget),EndDate=Values(EndDate),Leads=Values(Leads);"
         campanas=[]
         historico=[]
 
@@ -195,10 +193,8 @@ def go_camp(conn):
                             campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
                             campanas.append(campana)
                     else:
-                        historia=(campaingid,campaingname,cost,kpi)
+                        historia=(campaingid,campaingname,cost,kpi,impressions,clicks,percentofbudgetused,dailybudget,budget,enddate,conversion)
                         historico.append(historia)
-
-
             #FIN CICLOx
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarDailycampaing,campanas)
@@ -207,35 +203,36 @@ def go_camp(conn):
         print('Success GOOGLE Campanas')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Google", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Google", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 
-def go_camp_mosca(conn):
+def go_camp_mo(conn):
     cur=conn.cursor(buffered=True)
     print (datetime.now())
     r = requests.get(
-        "https://spreadsheets.google.com/feeds/list/1ap-8fCviM1yeJPv60jAOxbJBJriNXz16AWi5VlGl4s4/od6/public/values?alt=json")
+        "https://spreadsheets.google.com/feeds/list/1SStEvt-n83Se2HWg3b2f4gJpFI7qUZy1VNKntqy36Bw/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
     #CONEXION
     try:
+        kpi=0
+        NomInversion = 0
         #QUERYS
         GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result);"
+        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result,Impressions,Clicks,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Leads) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result),Impressions=Values(Impressions),Clicks=Values(Clicks),Percentofbudgetused=Values(Percentofbudgetused),Campaigndailybudget=Values(Campaigndailybudget),Campaignlifetimebudget=Values(Campaignlifetimebudget),EndDate=Values(EndDate),Leads=Values(Leads);"
         campanas=[]
         historico=[]
+
         for atr in temp_k:
-            kpi=0
-            NomInversion =0
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t'].encode('utf-8')
             account=atr['gsx$account']['$t']
@@ -258,13 +255,11 @@ def go_camp_mosca(conn):
             videowatch=atr['gsx$watch75views']['$t']
             conversion=atr['gsx$conversions']['$t']
             searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', (Nomenclatura), re.M | re.I)
-            kpi=''
             if enddate=='' or enddate ==' --':
                 enddate = None
             if searchObj:
                 NomInversion = float(searchObj.group(12))
                 Result = (searchObj.group(15))
-
                 if str(Result).upper() == 'CPVI':
                     kpi = clicks
                 elif str(Result).upper() == 'CPM':
@@ -279,48 +274,137 @@ def go_camp_mosca(conn):
                     kpi = conversion
 
             #FIN VARIABLES
-            if campaingid!='':
-                if enddate is None:
-                    enddate = '2019-01-01'
-                if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
-                    if percentofbudgetused!='':
-                        campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
-                        campanas.append(campana)
+                if campaingid!='':
+                    if enddate is None:
+                        enddate = '2019-01-01'
+                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
+                        if percentofbudgetused!='':
+                            campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
+                            campanas.append(campana)
+                        else:
+                            campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
+                            campanas.append(campana)
                     else:
-                        campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
-                        campanas.append(campana)
-                else:
-                    historia=(campaingid,campaingname,cost,kpi)
-                    historico.append(historia)
-
-
+                        historia=(campaingid,campaingname,cost,kpi,impressions,clicks,percentofbudgetused,dailybudget,budget,enddate,conversion)
+                        historico.append(historia)
             #FIN CICLOx
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarDailycampaing,campanas)
         cur.executemany(GuardarHistorico,historico)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
-        print('Success GOOGLE Campanas')
+        print('Success GOOGLE Campanas Mosca')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Google Mosca", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Google Mosca", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 
+def go_camp_house(conn):
+    cur=conn.cursor(buffered=True)
+    print (datetime.now())
+    r = requests.get(
+        "https://spreadsheets.google.com/feeds/list/137bLgysmPORksk0ruErrcvvG_Y33RHGRkd7TRZXlE4E/od6/public/values?alt=json")
+    data=r.json()
+    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
+    temp_k=data['feed']['entry']
+    #CONEXION
+    try:
+        kpi=0
+        NomInversion = 0
+        #QUERYS
+        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Impressions,Clicks,cost,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Placement,SubPlacement,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result,Impressions,Clicks,Percentofbudgetused,Campaigndailybudget,Campaignlifetimebudget,EndDate,Leads) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result),Impressions=Values(Impressions),Clicks=Values(Clicks),Percentofbudgetused=Values(Percentofbudgetused),Campaigndailybudget=Values(Campaigndailybudget),Campaignlifetimebudget=Values(Campaignlifetimebudget),EndDate=Values(EndDate),Leads=Values(Leads);"
+        campanas=[]
+        historico=[]
+
+        for atr in temp_k:
+            #ACCOUNT
+            accountid=atr['gsx$accountid']['$t'].encode('utf-8')
+            account=atr['gsx$account']['$t']
+            account2=atr['gsx$account']['$t'].encode('utf-8')
+            #CAMPAING
+            campaingid=atr['gsx$campaignid']['$t']
+            campaingname=atr['gsx$campaignname']['$t'].encode('utf-8')
+
+            impressions=atr['gsx$impressions']['$t']
+            cost=atr['gsx$cost']['$t']
+            clicks=atr['gsx$clicks']['$t']
+            #Percent of budget used
+            percentofbudgetused=atr['gsx$percentofbudgetused']['$t']
+            dailybudget=atr['gsx$dailybudget']['$t']
+            budget=atr['gsx$budget']['$t']
+            enddate=atr['gsx$enddate']['$t']
+            advertising=atr['gsx$advertisingchanneltype']['$t']
+            subadvertising=atr['gsx$advertisingchannelsub-type']['$t']
+            Nomenclatura=atr['gsx$campaignname']['$t']
+            videowatch=atr['gsx$watch75views']['$t']
+            conversion=atr['gsx$conversions']['$t']
+            searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', (Nomenclatura), re.M | re.I)
+            if enddate=='' or enddate ==' --':
+                enddate = None
+            if searchObj:
+                NomInversion = float(searchObj.group(12))
+                Result = (searchObj.group(15))
+                if str(Result).upper() == 'CPVI':
+                    kpi = clicks
+                elif str(Result).upper() == 'CPM':
+                    kpi = impressions
+                elif str(Result).upper() == 'CPV':
+                    kpi = videowatch
+                elif str(Result).upper() == 'CPCO':
+                    kpi = conversion
+                elif str(Result).upper() == 'CPC':
+                    kpi = clicks
+                elif str(Result).upper() == 'CPD':
+                    kpi = conversion
+
+            #FIN VARIABLES
+                if campaingid!='':
+                    if enddate is None:
+                        enddate = '2019-01-01'
+                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
+                        if percentofbudgetused!='':
+                            campana=(campaingid,impressions,clicks,cost,percentofbudgetused,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
+                            campanas.append(campana)
+                        else:
+                            campana=(campaingid,impressions,clicks,cost,0,dailybudget,NomInversion,enddate,advertising,subadvertising,kpi)
+                            campanas.append(campana)
+                    else:
+                        historia=(campaingid,campaingname,cost,kpi,impressions,clicks,percentofbudgetused,dailybudget,budget,enddate,conversion)
+                        historico.append(historia)
+            #FIN CICLOx
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(GuardarDailycampaing,campanas)
+        cur.executemany(GuardarHistorico,historico)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        print('Success GOOGLE Campanas House')
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Google House", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
+        cur.execute(sqlBitacora)
+    except Exception as e:
+        print(e)
+        fechahoy = datetime.now()
+        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Google House", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
+        cur.execute(sqlBitacora)
+    finally:
+        print(datetime.now())
 #FIN VISTA
 def tw_camp(conn):
-    #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
+
     cur=conn.cursor(buffered=True)
     startTime = datetime.now()
     print (datetime.now())
     r=requests.get("https://spreadsheets.google.com/feeds/list/10UMdRoZal--BLcZYtq63PSvv6AStQ9Dye-dMgtdPUs0/od6/public/values?alt=json")
-    #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
+
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
 
@@ -368,18 +452,17 @@ def tw_camp(conn):
         print('Success Campanas Twitter')
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Twitter", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         fechahoy = datetime.now()
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("tw_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("Resultado Diario Twitter", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print(datetime.now())
 #FIN VISTA
-
 def truncateAllCamp(conn):
     try:
         cur=conn.cursor(buffered=True)
@@ -392,23 +475,14 @@ def truncateAllCamp(conn):
         print(e)
     finally:
         print(datetime.now())
-
-#FIN VISTA
-def push_camps(conn):
-    fb_camp(conn)
-    go_camp(conn)
-    tw_camp(conn)
-
 #Funciones
 if __name__ == '__main__':
    openConnection()
    truncateAllCamp(conn)
    fb_camp(conn)
-#    fb_camp_mosca(conn)
-
    go_camp(conn)
-   go_camp_mosca(conn)
+   go_camp_mo(conn)
+   go_camp_house(conn)
    tw_camp(conn)
-
    conn.close()
 

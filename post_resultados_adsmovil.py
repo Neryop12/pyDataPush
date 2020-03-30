@@ -135,6 +135,7 @@ def pushAdsMovil(conn):
 def pushAdsMovilPusads(conn):
     global cur
     fechaayer = datetime.now() - timedelta(days=1)
+     anteayer = datetime.now() - timedelta(days=2)
     #Formato de las fechas para aceptar en el GET
     dayayer = fechaayer.strftime("%Y-%m-%d")
     print (datetime.now())
@@ -166,7 +167,7 @@ def pushAdsMovilPusads(conn):
                                 },
                             params={
                                 'report':'adsmovil_dsp',
-                                'startDate': dayayer,
+                                'startDate': anteayayer,
                                 'endDate':dayayer,
                             }
                         )
@@ -175,8 +176,8 @@ def pushAdsMovilPusads(conn):
             for n, i in enumerate(row):
                 if i =='NaN':
                     row[n]=0
-            
-            
+
+
             searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)]+)\))?(/[0-9]+)?', str(row[2]), re.M | re.I)
             if searchObj:
                 if searchObj.group(3)=='CLARO':
