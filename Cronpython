@@ -1,0 +1,10 @@
+* 01 * * * python3.6 /home/centos/apps/put_estado_camps_fb_go.py
+25 01 * * * python3.6 /home/centos/apps/post_resultados_diarios_fb_go_tw.py
+45 01 * * * python3.6 /home/centos/apps/post_resultados_diarios_mm.py
+50 01 * * * python3.6 /home/centos/apps/post_resultados_diarios_adform.py
+55 01 * * * python3.6 /home/centos/apps/post_resultados_diarios_adsmovil.py
+* 02 * * * python3.6 /home/centos/apps/post_resultados_adsmovil.py
+* 03 * * * python3.6 /home/centos/apps/post_resultados_mm.py
+15 * * * * python3.6 /home/centos/apps/post_resultados_fb_go_tw.py
+40 * * * * python3.6 /home/centos/apps/revision_errores_mfc.py
+45 * * * * python3.6 /home/centos/apps/put_estado_mfc.py

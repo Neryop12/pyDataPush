@@ -445,15 +445,15 @@ def go_camp_mosca(conn):
     temp_k=data['feed']['entry']
     #CONEXION
     try:
+        GuardarCuentas="""INSERT INTO  Accounts (AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"""
+        GuardarCampaing="""INSERT INTO Campaings(CampaingID,Campaingname,Campaignspendinglimit,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate,Campaingbuyingtype) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignspendinglimit=VALUES(Campaignspendinglimit),Campaignstatus=VALUES(Campaignstatus),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate),Campaingbuyingtype=VALUES(Campaingbuyingtype) """
+        GuardarCampMetrics="INSERT  INTO CampaingMetrics(CampaingID,Reach,Frequency,Impressions,Placement,Clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+        GuardarCampDisplays="INSERT  INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         cuentas=[]
         campanas=[]
         campmetrics=[]
         campdisplays=[]
-        #QUERYS
-        sqlInsertCampaing = "INSERT INTO Campaings(CampaingID,Campaingname,Campaigndailybudget,Campaignlifetimebudget,Campaignobjective,Campaignstatus,AccountsID,StartDate,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname),Campaigndailybudget=VALUES(Campaigndailybudget), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),Campaignstatus=VALUES(Campaignstatus)"
-        sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
-        sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Percentofbudgetused,impressions,placement,clicks,cost,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sqlInsertCampaingDisplay = "INSERT INTO CampaingDisplay(CampaingID,publisherplatform,placement) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE CampaingID=VALUES(CampaingID),publisherplatform=VALUES(publisherplatform),placement=VALUES(placement)"
         for atr in temp_k:
             #ACCOUNT
             accountid=atr['gsx$accountid']['$t']
@@ -484,10 +484,10 @@ def go_camp_mosca(conn):
                 campmetric=(campaingid,percentofbudgetused,impressions,placement,clicks,cost,dayhoy)
                 campmetrics.append(campmetric)
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(sqlInsertAccount ,cuentas)
-        cur.executemany(sqlInsertCampaing,campanas)
-        cur.executemany(sqlInsertCampaingMetrics,campmetrics)
-        cur.executemany(sqlInsertCampaingDisplay,campdisplays)
+        cur.executemany(GuardarCuentas ,cuentas)
+        cur.executemany(GuardarCampaing,campanas)
+        cur.executemany(GuardarCampMetrics,campmetrics)
+        cur.executemany(GuardarCampDisplays,campdisplays)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
         sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
@@ -776,7 +776,6 @@ def tw_ads(conn):
 #FIN VISTA
 def push_camps(conn):
     fb_camp(conn)
-    fb_camp_claro(conn)
     go_camp(conn)
     go_camp_mosca(conn)
     tw_camp(conn)

@@ -92,7 +92,7 @@ def fb_camp(conn):
                     if enddate == '':
                         enddate = '2019-01-01'
                     if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
-    
+
                         if budget!='':
                             campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,'',videowatch,postreaccion,result)
                             campanas.append(campana)
@@ -103,7 +103,7 @@ def fb_camp(conn):
                         historia=(campaingid,campaingname,cost,result)
                         historico.append(historia)
             #FIN CICLOx
-        
+
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
         cur.executemany(GuardarDailycampaing,campanas)
         cur.executemany(GuardarHistorico,historico)
@@ -122,206 +122,6 @@ def fb_camp(conn):
     finally:
         print(datetime.now())
 
-def fb_camp_mosca(conn):
-    cur=conn.cursor(buffered=True)
-    print (datetime.now())
-    r = requests.get(
-        "https://spreadsheets.google.com/feeds/list/1QWuoHAkHKSsblJNHTPtp-zmyohb0DYLyZw4EWM5i5AQ/od6/public/values?alt=json")
-    data=r.json()
-    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
-    #CONEXION
-    try:
-        #QUERYS
-        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement,VideoWatches75,PostReaccion,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result);"
-        campanas=[]
-        historico=[]
-        for atr in temp_k:
-            #ACCOUNT
-
-            #CAMPAING
-            campaingid=atr['gsx$campaignid']['$t']
-            campaingname=atr['gsx$campaignname']['$t']
-            campaignspendinglimit=atr['gsx$campaignspendinglimit']['$t']
-            campaigndailybudget=atr['gsx$campaigndailybudget']['$t']
-            campaignlifetimebudget=atr['gsx$campaignlifetimebudget']['$t']
-            reach=atr['gsx$reach']['$t']
-            impressions=atr['gsx$impressions']['$t']
-            frequency=atr['gsx$frequency']['$t']
-            startdate=atr['gsx$campaignstartdate']['$t']
-            enddate=atr['gsx$campaignenddate']['$t']
-            clicks=atr['gsx$outboundclicks']['$t']
-            cost=atr['gsx$cost']['$t']
-            budget=atr['gsx$campaignlifetimebudget']['$t']
-            enddate=atr['gsx$campaignenddate']['$t']
-            
-            videowatch=atr['gsx$videowatchesat75']['$t']
-            postreaccion=atr['gsx$postreactions']['$t']
-            leads=atr['gsx$leadsform']['$t']
-            mess=atr['gsx$newmessagingconversations']['$t']
-            result = 0
-            #FIN VARIABLES
-            if campaingid!='':
-                searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', campaingname, re.M | re.I)
-                if searchObj:
-                    Result = (searchObj.group(15))
-                    objcon = (searchObj.group(13))
-                    if str(Result).upper() == 'CPVI':
-                        result = clicks
-                    elif str(Result).upper() == 'CPMA':
-                        result = reach
-                    elif str(Result).upper() == 'CPM':
-                       result = impressions
-                    elif str(Result).upper() == 'CPV':
-                        result = videowatch
-                    elif str(Result).upper() == 'CPCO':
-                        if str(objcon).upper() == 'MESAD':
-                            result = mess
-                        elif str(objcon).upper() == 'LE':
-                            result = leads
-                        else:
-                            result = clicks
-                    elif str(Result).upper() == 'CPI':
-                        result = leads
-                    elif str(Result).upper() == 'CPMA':
-                        result = reach
-                    elif str(Result).upper() == 'CPC':
-                        result = clicks
-                    elif str(Result).upper() == 'CPMA':
-                        result = reach
-
-                if enddate == '':
-                    enddate = '2019-01-01'
-                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
-    
-                        if budget!='':
-                            campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,'',videowatch,postreaccion,result)
-                            campanas.append(campana)
-                        else:
-                            campana=(campaingid,reach,frequency,impressions,clicks,cost,0,enddate,'',videowatch,postreaccion,result)
-                            campanas.append(campana)
-                    else:
-                        historia=(campaingid,campaingname,cost,result)
-                        historico.append(historia)
-            #FIN CICLOx
-        cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(GuardarDailycampaing,campanas)
-        cur.executemany(GuardarHistorico,historico)
-        cur.execute("SET FOREIGN_KEY_CHECKS=1")
-        print('Success Facebook Camp')
-        fechahoy = datetime.now()
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
-        cur.execute(sqlBitacora)
-    except Exception as e:
-        print(e)
-        fechahoy = datetime.now()
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
-        cur.execute(sqlBitacora)
-    finally:
-        print(datetime.now())
-
-def fb_camp_claro(conn):
-    cur=conn.cursor(buffered=True)
-    print (datetime.now())
-    r = requests.get(
-        "https://spreadsheets.google.com/feeds/list/1p35NGVy8wbQuPkA_pjGSB0Rw0t08jQuhCGGCUQHQ-rA/od6/public/values?alt=json")
-    data=r.json()
-    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
-    #CONEXION
-    try:
-        #QUERYS
-        GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate,Placement,VideoWatches75,PostReaccion,Result) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result);"
-        campanas=[]
-        historico=[]
-        for atr in temp_k:
-            #ACCOUNT
-
-            #CAMPAING
-            campaingid=atr['gsx$campaignid']['$t']
-            campaingname=atr['gsx$campaignname']['$t']
-            campaignspendinglimit=atr['gsx$campaignspendinglimit']['$t']
-            campaigndailybudget=atr['gsx$campaigndailybudget']['$t']
-            campaignlifetimebudget=atr['gsx$campaignlifetimebudget']['$t']
-            reach=atr['gsx$reach']['$t']
-            impressions=atr['gsx$impressions']['$t']
-            frequency=atr['gsx$frequency']['$t']
-            startdate=atr['gsx$campaignstartdate']['$t']
-            enddate=atr['gsx$campaignenddate']['$t']
-            clicks=atr['gsx$outboundclicks']['$t']
-            cost=atr['gsx$cost']['$t']
-            budget=atr['gsx$campaignlifetimebudget']['$t']
-            enddate=atr['gsx$campaignenddate']['$t']
-            videowatch=atr['gsx$videowatchesat75']['$t']
-            postreaccion=atr['gsx$postreactions']['$t']
-            leads=atr['gsx$leadsform']['$t']
-            mess=atr['gsx$newmessagingconversations']['$t']
-            result = 0
-            #FIN VARIABLES
-            if campaingid!='':
-                searchObj = re.search(r'([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?', campaingname, re.M | re.I)
-                if searchObj:
-                    Result = (searchObj.group(15))
-                    objcon = (searchObj.group(13))
-                    if str(Result).upper() == 'CPVI':
-                        result = clicks
-                    elif str(Result).upper() == 'CPMA':
-                        result = reach
-                    elif str(Result).upper() == 'CPM':
-                       result = impressions
-                    elif str(Result).upper() == 'CPV':
-                        result = videowatch
-                    elif str(Result).upper() == 'CPCO':
-                        if str(objcon).upper() == 'MESAD':
-                            result = mess
-                        elif str(objcon).upper() == 'LE':
-                            result = leads
-                        else:
-                            result = clicks
-                    elif str(Result).upper() == 'CPI':
-                        result = leads
-                    elif str(Result).upper() == 'CPMA':
-                        result = reach
-                    elif str(Result).upper() == 'CPC':
-                        result = clicks
-                    elif str(Result).upper() == 'CPMA':
-                        result = reach
-
-                if enddate == '':
-                    enddate = '2019-01-01'
-                    if datetime.strptime(enddate,'%Y-%m-%d') > datetime.now() - timedelta(days=1):
-    
-                        if budget!='':
-                            campana=(campaingid,reach,frequency,impressions,clicks,cost,budget,enddate,'',videowatch,postreaccion,result)
-                            campanas.append(campana)
-                        else:
-                            campana=(campaingid,reach,frequency,impressions,clicks,cost,0,enddate,'',videowatch,postreaccion,result)
-                            campanas.append(campana)
-                    else:
-                        historia=(campaingid,campaingname,cost,result)
-                        historico.append(historia)
-            #FIN CICLOx
-        cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(GuardarDailycampaing,campanas)
-        cur.executemany(GuardarHistorico,historico)
-        cur.execute("SET FOREIGN_KEY_CHECKS=1")
-        print('Success Facebook Camp')
-        fechahoy = datetime.now()
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
-        cur.execute(sqlBitacora)
-    except Exception as e:
-        print(e)
-        fechahoy = datetime.now()
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
-        cur.execute(sqlBitacora)
-    finally:
-        print(datetime.now())
 
 #FIN VISTA
 def go_camp(conn):
@@ -397,7 +197,7 @@ def go_camp(conn):
                     else:
                         historia=(campaingid,campaingname,cost,kpi)
                         historico.append(historia)
-                        
+
 
             #FIN CICLOx
         cur.execute("SET FOREIGN_KEY_CHECKS=0")
@@ -422,7 +222,7 @@ def go_camp_mosca(conn):
     cur=conn.cursor(buffered=True)
     print (datetime.now())
     r = requests.get(
-        "https://spreadsheets.google.com/feeds/list/1fAXYYUE4hFt_mGCZkVfT7v1L724ksomvjVXZkIJrfD0/od6/public/values?alt=json")
+        "https://spreadsheets.google.com/feeds/list/1ap-8fCviM1yeJPv60jAOxbJBJriNXz16AWi5VlGl4s4/od6/public/values?alt=json")
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
     temp_k=data['feed']['entry']
@@ -464,7 +264,7 @@ def go_camp_mosca(conn):
             if searchObj:
                 NomInversion = float(searchObj.group(12))
                 Result = (searchObj.group(15))
-                
+
                 if str(Result).upper() == 'CPVI':
                     kpi = clicks
                 elif str(Result).upper() == 'CPM':
@@ -580,58 +380,7 @@ def tw_camp(conn):
         print(datetime.now())
 #FIN VISTA
 
-def fb_reach(conn):
-    cur=conn.cursor(buffered=True)
-    print (datetime.now())
-    r = requests.get(
-        "https://spreadsheets.google.com/feeds/list/1Lt2XJgxQQyi5iylaQjGScZcqeefVObJ2mljlXHZLteg/od6/public/values?alt=json")
-    data=r.json()
-    #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
-    temp_k=data['feed']['entry']
-    #CONEXION
-    try:
-        #QUERYS
-        UpdateCampaing="UPDATE dailycampaing SET Reach = %s, Frequency = %s WHERE (CampaingID = %s and id > 0);"
-        campanas=[]
-        UpdateCampaingReach="UPDATE dailycampaing SET Reach = %s, Frequency = %s, Result = %s WHERE (CampaingID = %s and id > 0);"
-        reachs=[]
-        for atr in temp_k:
-
-            #CAMPAING
-            campaingid=atr['gsx$campaignid']['$t']
-            campaingname=atr['gsx$campaignname']['$t']
-            reach=atr['gsx$reach']['$t']
-            frequency=atr['gsx$frequency']['$t']
-            if campaingid!='':
-                searchObj = re.search(r'(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.+&]+)_([a-zA-Z0-9-/.+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(19|2019)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVi|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9,.]+)?(_S-)?(_)?([0-9,.]+)?(\(([0-9.)]+)\))?(/[0-9]+)?', campaingname, re.M | re.I)
-                if searchObj:
-                    Metrica = (searchObj.group(14))
-                    if str(Metrica).upper() == 'CPMA':
-                        res=(reach,frequency,reach,campaingid)
-                        reachs.append(res)
-                    else:
-                        campana=(reach,frequency,campaingid)
-                        campanas.append(campana)
-                        #FIN CICLOx
-        cur.execute("SET FOREIGN_KEY_CHECKS=0")
-        cur.executemany(UpdateCampaing,campanas)
-        cur.executemany(UpdateCampaingReach,reachs)
-        cur.execute("SET FOREIGN_KEY_CHECKS=1")
-        print('Success Facebook Camp')
-        fechahoy = datetime.now()
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "Success", "post_resultados_diarios_fb_go_tw.py","{}");'.format(dayhoy)
-        cur.execute(sqlBitacora)
-    except Exception as e:
-        print(e)
-        fechahoy = datetime.now()
-        dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_camp", "{}", "post_resultados_diarios_fb_go_tw.py","{}");'.format(e,dayhoy)
-        cur.execute(sqlBitacora)
-    finally:
-        print(datetime.now())
-
-def truncateAllCamp(conn):  
+def truncateAllCamp(conn):
     try:
         cur=conn.cursor(buffered=True)
         print (datetime.now())
@@ -655,8 +404,8 @@ if __name__ == '__main__':
    openConnection()
    truncateAllCamp(conn)
    fb_camp(conn)
-   fb_camp_mosca(conn)
-   
+#    fb_camp_mosca(conn)
+
    go_camp(conn)
    go_camp_mosca(conn)
    tw_camp(conn)
