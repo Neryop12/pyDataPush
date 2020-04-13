@@ -169,7 +169,7 @@ def fb_camp(conn):
             impressions=atr['gsx$impressions']['$t']
             frequency=atr['gsx$frequency']['$t']
             placement='' #atr['gsx$placement']['$t'].encode('utf-8')
-            publisherplatform=atr['gsx$publisherplatform']['$t']
+            publisherplatform=''#atr['gsx$publisherplatform']['$t']
             startdate=atr['gsx$campaignstartdate']['$t']
             enddate=atr['gsx$campaignenddate']['$t']
             clicks=atr['gsx$outboundclicks']['$t']
@@ -273,7 +273,7 @@ def fb_adsets(conn):
     except Exception as e:
         print(e)
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_ads", {}, "post_resultado_fb_go_tw.py","{}");'.format(e,dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("fb_adsets", {}, "post_resultado_fb_go_tw.py","{}");'.format(e,dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print('Success Facebook AdSets')
@@ -339,7 +339,7 @@ def go_camp(conn):
     except Exception as e:
         print(e)
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Error", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
@@ -403,12 +403,12 @@ def go_camp_mos(conn):
         cur.executemany(sqlInsertCampaingDisplay,campdisplays)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp_Mos", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp_Mos", "Error", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
@@ -471,12 +471,12 @@ def go_camp_house(conn):
         cur.executemany(sqlInsertCampaingDisplay,campdisplays)
         cur.execute("SET FOREIGN_KEY_CHECKS=1")
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camp_House", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     except Exception as e:
         print(e)
         dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_ads", "Success", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
+        sqlBitacora = 'INSERT INTO `MediaPlatforms`.`bitacora` (`Operacion`, `Resultado`, `Documento`, `CreateDate`) VALUES ("go_camo_House", "Error", "post_resultado_fb_go_tw.py","{}");'.format(dayhoy)
         cur.execute(sqlBitacora)
     finally:
         print (datetime.now())
@@ -758,17 +758,17 @@ def tw_ads(conn):
         print('Success Ads Twittter')
 #FIN VISTA
 def push_camps(conn):
-    # fb_camp(conn)
+    fb_camp(conn)
     go_camp(conn)
     go_camp_mos(conn)
     go_camp_house(conn)
     # go_camp_mosca(conn)
-    # tw_camp(conn)
+    tw_camp(conn)
 
 def push_adsets(conn):
-    # fb_adsets(conn)
+    fb_adsets(conn)
     go_adsets(conn)
-    # tw_adsets(conn)
+    tw_adsets(conn)
 
 def push_ads(conn):
     fb_ads(conn)

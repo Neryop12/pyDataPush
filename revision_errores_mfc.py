@@ -52,7 +52,7 @@ def errors_fb_inv(conn):
         resultscon = cur.fetchall()
         Errores = []
         for result in resultscon:
-            Comentario = "Error la nomenclatura implementada no se encuentra en el sistema de MFC"
+            Comentario = "Error la nomenclatura imple mentada no se encuentra en el sistema de MFC"
             cur.execute(sqlSelectErrors, (result[2], 1, result[1]))
             rescampaing = cur.fetchone()
             if rescampaing[0] < 1:

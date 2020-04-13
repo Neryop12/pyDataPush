@@ -135,7 +135,7 @@ def pushAdsMovil(conn):
 def pushAdsMovilPusads(conn):
     global cur
     fechaayer = datetime.now() - timedelta(days=1)
-     anteayer = datetime.now() - timedelta(days=2)
+    anteayer = datetime.now() - timedelta(days=2)
     #Formato de las fechas para aceptar en el GET
     dayayer = fechaayer.strftime("%Y-%m-%d")
     print (datetime.now())
