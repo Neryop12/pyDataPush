@@ -351,7 +351,7 @@ def go_camp_mos(conn):
     cur=conn.cursor(buffered=True)
     fechahoy = datetime.now()
     dayhoy = fechahoy.strftime("%Y-%m-%d %H:%M:%S")
-    r=requests.get("https://spreadsheets.google.com/feeds/list/1tcET43KvjNYaSOpBpLtI-qJ8lqeOTsjfRrpw-yLri7k/od6/public/values?alt=json")
+    r=requests.get("https://spreadsheets.google.com/feeds/list/1bAjIpGZkIhpMaCwWOtVFfFxpq3gn0LMTubczVbhQKlc/od6/public/values?alt=json")
     #FB CAMPAINGS   https://docs.google.com/spreadsheets/d/1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4/edit?usp=sharing
     data=r.json()
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
