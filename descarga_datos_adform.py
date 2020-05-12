@@ -82,7 +82,7 @@ def PushCampaingAdform(conn):
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
      sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget), Campaignstatus=VALUES(Campaignstatus)"
-     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks,frequency) VALUES (%s,%s,%s,%s,%s)"
+     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,Impressions,Clicks,Frequency) VALUES (%s,%s,%s,%s,%s)"
      try:
          url='https://api.adform.com/v1/buyer/campaigns?Return-Total-Count=True&status=Active'
          data=requests.get(
@@ -137,8 +137,8 @@ def GetAdformCampaign(conn):
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
      sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget), Campaignstatus=VALUES(Campaignstatus)"
-     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks,frequency) VALUES (%s,%s,%s,%s,%s)"
-     GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,cost,Campaignlifetimebudget,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,Impressions,clicks,Frequency) VALUES (%s,%s,%s,%s,%s)"
+     GuardarDailycampaing="INSERT INTO dailycampaing(CampaingID,Reach,Frequency,Impressions,Clicks,Cost,Campaignlifetimebudget,EndDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
      try:
          url='https://api.adform.com/v1/reportingstats/agency/reportdata'
          data=requests.post(

@@ -74,7 +74,7 @@ def GetMediaMathCampaing(conn):
      #Querys a insertar a la base de datos
      sqlInsertAccount = "INSERT INTO Accounts(AccountsID, Account,Media) values(%s,%s,%s) ON DUPLICATE KEY UPDATE Account=VALUES(Account)"
      sqlInsertCampaing = "INSERT INTO Campaings(`CampaingID`,`Campaingname`,`Campaignlifetimebudget`,`Cost`,`AccountsID`,`StartDate`,`EndDate`,`Campaignstatus`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), Campaignlifetimebudget=VALUES(Campaignlifetimebudget),StartDate=VALUES(StartDate),EndDate=VALUES(EndDate)"
-     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,impressions,clicks) VALUES (%s,%s,%s,%s)"
+     sqlInsertCampaingMetrics = "INSERT INTO CampaingMetrics(CampaingID,Cost,Impressions,clicks) VALUES (%s,%s,%s,%s)"
      try:
          #Direccion del API, las variable session se pasas com oun Cookie
         url=r'https://api.mediamath.com/reporting/v1/std/performance?filter=organization_id=101058&dimensions=advertiser_name%2cadvertiser_id%2ccampaign_id%2ccampaign_name%2ccampaign_budget&metrics=impressions%2cclicks%2ctotal_spend%2ctotal_spend_cpm%2ctotal_spend_cpa%2ctotal_spend_cpc%2cctr%2cvideo_third_quartile'

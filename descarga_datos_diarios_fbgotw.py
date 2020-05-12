@@ -23,7 +23,6 @@ def openConnection():
 
 def fb_camp(conn):
     cur=conn.cursor(buffered=True)
-    print (datetime.now())
     r = requests.get(
         "https://spreadsheets.google.com/feeds/list/1sJcYtuYMZvtD_MxIbwVkRIeBXBOAQXCRxsuc3_UHOYQ/od6/public/values?alt=json")
     data=r.json()
@@ -56,7 +55,7 @@ def fb_camp(conn):
             enddate=atr['gsx$campaignenddate']['$t']
             videowatch=atr['gsx$videowatchesat75']['$t']
             postreaccion=atr['gsx$postreactions']['$t']
-            leads=atr['gsx$leadsform']['$t']
+            leads=0
             mess=atr['gsx$newmessagingconversations']['$t']
             result = 0
             #FIN VARIABLES
@@ -409,7 +408,6 @@ def tw_camp(conn):
     #ACCEDER AL OBJETO ENTRY CON LOS DATOS DE LAS CAMPANAS
 
     #CONEXION
-
     campanas=[]
     GuardarHistorico="INSERT INTO HistoricCampaings(CampaingID,Campaingname,Cost,Result) VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Cost=VALUES(Cost), Result=Values(Result);"
     historico=[]
