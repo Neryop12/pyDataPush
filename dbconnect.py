@@ -60,7 +60,6 @@ class connect(object):
             print('Campanas almacenadas '+ media)
         except Exception as e:
             print(e)
-        
     #Metodo para almacenar Metricas de campanas
     def insertMetricasCampanas(metricas,media,conn):
         cur = conn.cursor()
@@ -203,9 +202,3 @@ class connect(object):
                 print('Historics '+ media)
             except Exception as e:
                 print(e)
-#cursor = connection.cursor()
-#cursor.execute("select database();")
-#record = cursor.fetchone()
-# 
-# #print("You're connected to database: ", record)
-#sqlConnect.close(sqlConnect.conect())

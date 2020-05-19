@@ -1,5 +1,15 @@
 #Localhost
-DATABASE_CONFIG_DEV = {
+
+DB={
+    'host': '127.0.0.1',
+    'dbname': 'mediaplatforms',
+    'user': 'omgdev',
+    'password': 'Sdev@2002!',
+    'port': 3306,
+    'autocommit': 'True'
+}
+
+DB_DEV = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatforms',
     'user': 'omgdev',
@@ -9,7 +19,7 @@ DATABASE_CONFIG_DEV = {
 }
 
 #Produccion
-DATABASE_CONFIG_PROD = {
+DB_PROD= {
     'host': '3.95.117.169',
     'dbname': 'MediaPlatforms',
     'user': 'omgdev',
@@ -22,7 +32,6 @@ DATABASE_CONFIG_PROD = {
 
 
 #Datos de Hojas Medios FB - GO - TW
-
 FB={
     'key':'1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',
 
@@ -52,3 +61,10 @@ TW={
     'ads':'410298309',
     'media':'TW'
 }
+
+MM={
+    "username": "sfranco@omg.com.gt",
+    "password": "SFomg2019",
+    "client_id": "7Geve1fUt8luTYXCuB1KiVNjIDAcsGxl",
+    "client_secret": "gKDRia_oS-ChUinxxFNXou09DKLOFSaPTeaxQFfWhnA105NwK6BOXnoGgBh4FTfx"
+    }

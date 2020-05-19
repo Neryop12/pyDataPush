@@ -568,7 +568,7 @@ def diario_campanas(df,media,conn):
 
 #INICIA OBTENCION DE DATOS
 conn = sql.connect.open(db.DATABASE_CONFIG_DEV['host'],db.DATABASE_CONFIG_DEV['user'],db.DATABASE_CONFIG_DEV['password'],
-                          db.DATABASE_CONFIG_DEV['dbname'], db.DATABASE_CONFIG_DEV['port'], db.DATABASE_CONFIG_DEV['autocommit'])
+                        db.DATABASE_CONFIG_DEV['dbname'], db.DATABASE_CONFIG_DEV['port'], db.DATABASE_CONFIG_DEV['autocommit'])
 
 
 #Facebook
