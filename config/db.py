@@ -1,13 +1,5 @@
 # Localhost
 
-DB = {
-    'host': '127.0.0.1',
-    'dbname': 'mediaplatforms',
-    'user': 'omgdev',
-    'password': 'Sdev@2002!',
-    'port': 3306,
-    'autocommit': 'True'
-}
 
 DB_DEV = {
     'host': '127.0.0.1',
@@ -19,7 +11,7 @@ DB_DEV = {
 }
 
 # Produccion
-DB_PROD = {
+DB = {
     'host': '3.95.117.169',
     'dbname': 'MediaPlatforms',
     'user': 'omgdev',

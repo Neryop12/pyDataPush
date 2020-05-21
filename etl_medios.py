@@ -5,8 +5,8 @@ import datos_fbgotw as medios
 if __name__ == '__main__':
 
     # Iniciamos la conexion
-    conn = sql.connect.open(db.DB_DEV['host'], db.DB_DEV['user'], db.DB_DEV['password'],
-                            db.DB_DEV['dbname'], db.DB_DEV['port'], db.DB_DEV['autocommit'])
+    conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
+                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
 
     # Facebook
     try:
