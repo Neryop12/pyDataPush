@@ -1,3 +1,4 @@
+import numpy as np
 import config.db as db
 import dbconnect as sql
 import sys
@@ -7,7 +8,6 @@ from datetime import datetime, timedelta
 import time
 import configparser
 import pandas as pd
-import numpy as np
 
 
 now = datetime.now()
@@ -19,9 +19,12 @@ def Spreadsheet(Spreadsheet, media, hoja):
     url = 'https://docs.google.com/spreadsheet/ccc?key=%s&output=csv&gid=%s' % (
         Spreadsheet, hoja)
     try:
+
         df = pd.read_csv(url)
+
         df = pd.DataFrame(df)
         df = df.fillna(0)
+
         return df
     except Exception as e:
         raise ValueError(
@@ -56,16 +59,21 @@ def campanas(df, media, conn):
         if media == 'FB':
             if int(row['Campaign ID']) < 1:
                 continue
+
             CampaingID = int(row['Campaign ID'])
+
+            print(CampaingID)
             Campaingname = row['Campaign name']
             Campaignspendinglimit = row['Campaign spending limit']
             Campaigndailybudget = row['Campaign daily budget']
             Campaignlifetimebudget = row['Campaign lifetime budget']
             Campaignobjective = row['Campaign objective']
             Campaignstatus = row['Campaign status']
-            AccountsID = int(row['Account ID'])
+            AccountsID = str(row['Account ID'])
             StartDate = row['Campaign start date']
             EndDate = row['Campaign end date']
+            if EndDate == 0:
+                EndDate = None
             Campaingbuyingtype = row['Campaign buying type']
             Campaignbudgetremaining = row['Campaign budget remaining']
             Percentofbudgetused = 0

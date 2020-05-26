@@ -1,64 +1,28 @@
-# diario_campanas(dfcampanas,db.FB['media'],conn)
-dfcampanas = Spreadsheet(db.FB['key'], db.FB['media'], db.FB['campanas'])
-dfadsets = Spreadsheet(db.FB['key'], db.FB['media'], db.FB['adsets'])
-dfads = Spreadsheet(db.FB['key'], db.FB['media'], db.FB['ads'])
+import config.db as db
+import dbconnect as sql
+import datos_fbgotw as medios
 
+if __name__ == '__main__':
 
-cuentas(dfcampanas, db.FB['media'], conn)
-metricas_campanas(dfcampanas, db.FB['media'], conn)
-campanas(dfcampanas, db.FB['media'], conn)
-metricas_adsets(dfadsets, db.FB['media'], conn)
-adsets(dfadsets, db.FB['media'], conn)
-ads(dfads, db.FB['media'], conn)
-metricas_ads(dfads, db.FB['media'], conn)
-creative_ads(dfads, db.FB['media'], conn)
+    # Iniciamos la conexion
+    conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
+                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
 
-# Google
+    # Facebook
+    try:
+        dfcampanas = medios.Spreadsheet(
+            db.FB['key'], db.FB['media'], db.FB['campanas'])
+        dfadsets = medios.Spreadsheet(
+            db.FB['key'], db.FB['media'], db.FB['adsets'])
+        dfads = medios.Spreadsheet(db.FB['key'], db.FB['media'], db.FB['ads'])
 
-dfcampanas = Spreadsheet(db.GO['key'], db.GO['media'], db.GO['campanas'])
-dfadsets = Spreadsheet(db.GO['key'], db.GO['media'], db.GO['adsets'])
-dfads = Spreadsheet(db.GO['key'], db.GO['media'], db.GO['ads'])
+        #medios.cuentas(dfcampanas, db.FB['media'], conn)
+        medios.campanas(dfcampanas, db.FB['media'], conn)
+        #medios.adsets(dfadsets, db.FB['media'], conn)
+        #medios.ads(dfads, db.FB['media'], conn)
+        #medios.creative_ads(dfads, db.FB['media'], conn)
+    except Exception as e:
+        print(e)
 
-# diario_campanas(dfcampanas,db.GO['media'],conn)
-
-cuentas(dfcampanas, db.GO['media'], conn)
-metricas_campanas(dfcampanas, db.GO['media'], conn)
-campanas(dfcampanas, db.GO['media'], conn)
-metricas_adsets(dfadsets, db.GO['media'], conn)
-adsets(dfadsets, db.GO['media'], conn)
-ads(dfads, db.GO['media'], conn)
-metricas_ads(dfads, db.GO['media'], conn)
-
-
-# Twitter
-
-dfcampanas = Spreadsheet(db.TW['key'], db.TW['media'], db.TW['campanas'])
-dfadsets = Spreadsheet(db.TW['key'], db.TW['media'], db.TW['adsets'])
-dfads = Spreadsheet(db.TW['key'], db.TW['media'], db.TW['ads'])
-
-# diario_campanas(dfcampanas,db.TW['media'],conn)
-
-cuentas(dfcampanas, db.TW['media'], conn)
-metricas_campanas(dfcampanas, db.TW['media'], conn)
-campanas(dfcampanas, db.TW['media'], conn)
-metricas_adsets(dfadsets, db.TW['media'], conn)
-adsets(dfadsets, db.TW['media'], conn)
-ads(dfads, db.TW['media'], conn)
-metricas_ads(dfads, db.TW['media'], conn)
-
-
-# Twitter
-
-dfcampanas = Spreadsheet(db.TW['key'], db.TW['media'], db.TW['campanas'])
-dfadsets = Spreadsheet(db.TW['key'], db.TW['media'], db.TW['adsets'])
-dfads = Spreadsheet(db.TW['key'], db.TW['media'], db.TW['ads'])
-
-# diario_campanas(dfcampanas,db.TW['media'],conn)
-
-cuentas(dfcampanas, db.TW['media'], conn)
-metricas_campanas(dfcampanas, db.TW['media'], conn)
-campanas(dfcampanas, db.TW['media'], conn)
-metricas_adsets(dfadsets, db.TW['media'], conn)
-adsets(dfadsets, db.TW['media'], conn)
-ads(dfads, db.TW['media'], conn)
-metricas_ads(dfads, db.TW['media'], conn)
+    # Cerramos la conexion
+    sql.connect.close(conn)

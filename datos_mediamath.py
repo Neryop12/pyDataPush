@@ -85,7 +85,7 @@ def CuentasCampanas(conn):
                                 'Cookie': 'adama_session=' + session['sessionid']
             },
             params={
-                'start_date': ayer,
+                'start_date': '2019-12-31',
                 'time_rollup': 'by_week',
             }
         )
