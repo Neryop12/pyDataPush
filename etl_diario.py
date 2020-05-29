@@ -25,6 +25,13 @@ if __name__ == '__main__':
         medios.actualizarestado(dfdiarios, 'FB', conn)
         medios.diario_campanas(dfdiarios, 'FB', conn)
 
+        dextras = medios.Spreadsheet(db.EXTRA['key'], 'FB', 0)
+        medios.extrametrics(dextras, 'FB', conn)
+
+        # dconversion = medios.Spreadsheet(
+        # db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
+        #medios.extrametrics(dconversion, 'FB', conn)
+
     except Exception as e:
         print(e)
 

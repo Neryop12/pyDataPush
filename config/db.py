@@ -1,7 +1,7 @@
 # Localhost
 
 
-DB_DEV = {
+DB = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatforms',
     'user': 'omgdev',
@@ -11,7 +11,7 @@ DB_DEV = {
 }
 
 # Produccion
-DB = {
+DB_DEV = {
     'host': '3.95.117.169',
     'dbname': 'MediaPlatforms',
     'user': 'omgdev',
@@ -53,14 +53,26 @@ MM = {
     "client_secret": "gKDRia_oS-ChUinxxFNXou09DKLOFSaPTeaxQFfWhnA105NwK6BOXnoGgBh4FTfx"
 }
 
+AM = {
+    "username": "rmarroquin@omg.com.gt",
+    "password": "#rm4rr0qu1n"
+}
+
 ADF = {
     "username": "SFRANCO",
     "password": "SFrancoomg2019"
 }
+
 
 DAY = {
     "key": "1fSy8zFdLUBP1yEFRtT4wZiV80cWQT1IVkn_2po8ixkQ",
     "FB": 0,
     "GO": 1405513202,
     "TW": 357381607
+}
+
+EXTRA = {
+    "key": "1wgjMxIvPfbOYOKAV-fqAaVRhymLnbgjV8tLSTznvnsY",
+    "EXTRA": 0,
+    "CONV": 1033795353,
 }

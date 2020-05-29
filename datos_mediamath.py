@@ -119,7 +119,6 @@ def CuentasCampanas(conn):
             Postengagements = 0
             Impressions = row['impressions']
             Clicks = row['clicks']
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = row['video_third_quartile']
             ThruPlay = 0
@@ -174,7 +173,7 @@ def CuentasCampanas(conn):
                             StartDate, EndDate, result, Objetive, CampaignIDMFC,
                             Cost, Frequency,
                             Reach, Postengagements, Impressions,
-                            Clicks, Estimatedadrecalllift, Landingpageviews,
+                            Clicks,  Landingpageviews,
                             Videowachesat75, ThruPlay, Conversions, CreateDate]
 
                 historico.append(historia)
@@ -186,13 +185,13 @@ def CuentasCampanas(conn):
                        Percentofbudgetused, Cost, CampaingIDMFC, CreateDate]
             cuenta = [AccountID, Account, media, CreateDate]
             metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
-                       Estimatedadrecalllift, Landingpageviews, Videowachesat75, ThruPlay, Conversions, CreateDate]
+                       Landingpageviews, Videowachesat75, ThruPlay, Conversions, CreateDate]
             diario = [CampaingID, Campaingname, Campaigndailybudget,
                       Campaignlifetimebudget, Percentofbudgetused,
                       StartDate, EndDate, result, Objetive, CampaignIDMFC,
                       Cost, Frequency,
                       Reach, Postengagements, Impressions,
-                      Clicks, Estimatedadrecalllift, Landingpageviews,
+                      Clicks,  Landingpageviews,
                       Videowachesat75, ThruPlay, Conversions, CreateDate]
 
             diarios.append(diario)
@@ -205,7 +204,6 @@ def CuentasCampanas(conn):
         sql.connect.insertCampanas(campanas, 'MM', conn)
         sql.connect.insertMetricasCampanas(metricas, 'MM', conn)
         sql.connect.insertDiarioCampanas(diarios, 'MM', conn)
-        sql.connect.insertReportingDiarioCampanas(diarios, 'MM', conn)
         sql.connect.insertHistoric(historico, 'MM', conn)
 
     except Exception as e:
@@ -247,7 +245,6 @@ def Adsets(conn):
             Postengagements = 0
             Impressions = row['impressions']
             Clicks = row['clicks']
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = row['video_third_quartile']
             ThruPlay = 0
@@ -262,7 +259,7 @@ def Adsets(conn):
             adset = [AdSetID, Adsetname, Adsetlifetimebudget, Adsetdailybudget, Adsettargeting,
                      Adsetend, Adsetstart, CampaingID, Status, CreateDate, Referer, Media]
             metrica = [AdSetID, Cost, Frequency,
-                       Reach, Postengagements, Impressions, Clicks, Estimatedadrecalllift, Landingpageviews,
+                       Reach, Postengagements, Impressions, Clicks, Landingpageviews,
                        Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
             metricasadsets.append(metrica)
@@ -310,7 +307,6 @@ def Ads(conn):
             Postengagements = 0
             Impressions = row['impressions']
             Clicks = row['clicks']
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = row['video_third_quartile']
             ThruPlay = 0
@@ -325,7 +321,7 @@ def Ads(conn):
             ad = [AdID, Adname, Country, Adstatus,
                   AdSetID, CreateDate, Referer, Media]
             metrica = [AdID, Cost, Frequency,
-                       Reach, Postengagements, Impressions, Clicks, Estimatedadrecalllift, Landingpageviews,
+                       Reach, Postengagements, Impressions, Clicks, Landingpageviews,
                        Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
             ads.append(ad)

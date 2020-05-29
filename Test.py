@@ -10,17 +10,12 @@ if __name__ == '__main__':
 
     # Facebook
     try:
-        dfcampanas = medios.Spreadsheet(
-            db.FB['key'], db.FB['media'], db.FB['campanas'])
-        dfadsets = medios.Spreadsheet(
-            db.FB['key'], db.FB['media'], db.FB['adsets'])
-        dfads = medios.Spreadsheet(db.FB['key'], db.FB['media'], db.FB['ads'])
-
-        #medios.cuentas(dfcampanas, db.FB['media'], conn)
-        medios.campanas(dfcampanas, db.FB['media'], conn)
-        #medios.adsets(dfadsets, db.FB['media'], conn)
-        #medios.ads(dfads, db.FB['media'], conn)
-        #medios.creative_ads(dfads, db.FB['media'], conn)
+        dextras = medios.Spreadsheet(db.EXTRA['key'], 'FB', 0)
+        medios.extrametrics(dextras, 'FB', conn)
+        # medios.cuentas(dfcampanas, db.FB['media'], conn)
+        # medios.adsets(dfadsets, db.FB['media'], conn)
+        # medios.ads(dfads, db.FB['media'], conn)
+        # medios.creative_ads(dfads, db.FB['media'], conn)
     except Exception as e:
         print(e)
 

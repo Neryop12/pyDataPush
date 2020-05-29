@@ -61,8 +61,6 @@ def campanas(df, media, conn):
                 continue
 
             CampaingID = int(row['Campaign ID'])
-
-            print(CampaingID)
             Campaingname = row['Campaign name']
             Campaignspendinglimit = row['Campaign spending limit']
             Campaigndailybudget = row['Campaign daily budget']
@@ -161,7 +159,6 @@ def metricas_campanas(df, media, conn):
             Postengagements = row['Post engagements']
             Impressions = int(row['Impressions'])
             Clicks = int(row['Link clicks'])
-            Estimatedadrecalllift = row['Estimated ad recall lift (people)']
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = row['ThruPlay actions']
@@ -177,7 +174,6 @@ def metricas_campanas(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
@@ -192,14 +188,13 @@ def metricas_campanas(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
 
-        metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
-                   Estimatedadrecalllift, Landingpageviews, Videowachesat75, ThruPlay, Conversions, CreateDate]
+        metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, CreateDate]
 
         metricas.append(metrica)
 
@@ -317,7 +312,6 @@ def metricas_adsets(df, media, conn):
             Postengagements = row['Post engagements']
             Impressions = int(row['Impressions'])
             Clicks = int(row['Link clicks'])
-            Estimatedadrecalllift = row['Estimated ad recall lift (people)']
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = row['ThruPlay actions']
@@ -333,7 +327,6 @@ def metricas_adsets(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
@@ -349,7 +342,6 @@ def metricas_adsets(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
@@ -357,7 +349,7 @@ def metricas_adsets(df, media, conn):
             Country = ''
 
         metrica = [AdSetID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
-                   Estimatedadrecalllift, Landingpageviews, Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
+                   Landingpageviews, Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
         metricas.append(metrica)
 
@@ -378,7 +370,6 @@ def metricas_ads(df, media, conn):
             Postengagements = row['Post engagements']
             Impressions = int(row['Impressions'])
             Clicks = int(row['Link clicks'])
-            Estimatedadrecalllift = row['Estimated ad recall lift (people)']
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = row['ThruPlay actions']
@@ -394,7 +385,6 @@ def metricas_ads(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
@@ -410,14 +400,13 @@ def metricas_ads(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
             Country = ''
 
-        metrica = [AdID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks, Estimatedadrecalllift,
+        metrica = [AdID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
                    Landingpageviews, Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
         metricas.append(metrica)
@@ -485,7 +474,6 @@ def diario_campanas(df, media, conn):
             Postengagements = row['Post engagements']
             Impressions = int(row['Impressions'])
             Clicks = int(row['Link clicks'])
-            Estimatedadrecalllift = row['Estimated ad recall lift (people)']
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = row['ThruPlay actions']
@@ -510,7 +498,6 @@ def diario_campanas(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
@@ -533,7 +520,6 @@ def diario_campanas(df, media, conn):
             Postengagements = 0
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
-            Estimatedadrecalllift = 0
             Landingpageviews = 0
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
@@ -589,7 +575,7 @@ def diario_campanas(df, media, conn):
                             StartDate, EndDate, result, Objetive, CampaignIDMFC,
                             Cost, Frequency,
                             Reach, Postengagements, Impressions,
-                            Clicks, Estimatedadrecalllift, Landingpageviews,
+                            Clicks,  Landingpageviews,
                             Videowachesat75, ThruPlay, Conversions, CreateDate]
 
                 historico.append(historia)
@@ -599,13 +585,12 @@ def diario_campanas(df, media, conn):
                    StartDate, EndDate, result, Objetive, CampaignIDMFC,
                    Cost, Frequency,
                    Reach, Postengagements, Impressions,
-                   Clicks, Estimatedadrecalllift, Landingpageviews,
+                   Clicks,  Landingpageviews,
                    Videowachesat75, ThruPlay, Conversions, CreateDate]
 
         metricas.append(metrica)
 
     sql.connect.insertDiarioCampanas(metricas, media, conn)
-    sql.connect.insertReportingDiarioCampanas(metricas, media, conn)
     sql.connect.insertHistoric(historico, media, conn)
 
 
@@ -641,3 +626,19 @@ def actualizarestado(df, media, conn):
         campana = [CampaingID, Campaignstatus]
         campanas.append(campana)
     sql.connect.ActualizarEstado(campanas, media, conn)
+
+
+def extrametrics(df, media, conn):
+    campanas = []
+    # Obtener los datos del Spreasheet
+    df = df
+    for index, row in df.iterrows():
+        # Metricas y dimenciones FB
+        if int(row['Campaign ID']) < 1:
+            continue
+        CampaingID = int(row['Campaign ID'])
+        Estimatedadrecalllift = int(row['Estimated ad recall lift (people)'])
+        # Metricas y dimenciones GO
+        campana = [CampaingID, Estimatedadrecalllift, CreateDate]
+        campanas.append(campana)
+    sql.connect.insertExtraMetrics(campanas, media, conn)

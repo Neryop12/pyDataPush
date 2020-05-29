@@ -68,8 +68,8 @@ class connect(object):
         query = """INSERT INTO CampaingMetrics
         (CampaingID,Cost,Frequency,
         Reach,Postengagements,Impressions
-        ,Clicks,Estimatedadrecalllift,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        ,Clicks,Landingpageviews,
+        Videowachesat75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.executemany(query, metricas)
@@ -109,8 +109,8 @@ class connect(object):
         query = """INSERT INTO AdSetMetrics
         (AdSetID,Cost,Frequency,
         Reach,Postengagements,Impressions
-        ,Clicks,Estimatedadrecalllift,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        ,Clicks,Landingpageviews,
+        Videowachesat75,ThruPlay,Conversions,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.executemany(query, metricas)
@@ -124,8 +124,8 @@ class connect(object):
         query = """INSERT INTO MetricsAds
         (AdID,Cost,Frequency,
         Reach,Postengagements,Impressions
-        ,Clicks,Estimatedadrecalllift,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        ,Clicks,Landingpageviews,
+        Videowachesat75,ThruPlay,Conversions,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.executemany(query, metricas)
@@ -158,8 +158,8 @@ class connect(object):
             StartDate,EndDate,Result,Objetive,CampaignIDMFC,
             Cost,Frequency,
             Reach,Postengagements,Impressions,
-            Clicks,Estimatedadrecalllift,Landingpageviews,
-            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            Clicks,Landingpageviews,
+            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0;")
@@ -171,21 +171,15 @@ class connect(object):
         except Exception as e:
             print(e)
 
-    def insertReportingDiarioCampanas(metricas, media, conn):
+    def insertExtraMetrics(metricas, media, conn):
         cur = conn.cursor()
-        query = """INSERT INTO ReportingCampaingDaily
-            (CampaingID,Campaingname,Campaigndailybudget,
-            Campaignlifetimebudget,Percentofbudgetused,
-            StartDate,EndDate,Result,Objetive,CampaignIDMFC,
-            Cost,Frequency,
-            Reach,Postengagements,Impressions,
-            Clicks,Estimatedadrecalllift,Landingpageviews,
-            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        query = """INSERT INTO CampaingsExtraMetrics
+            (CampaingID,Estimatedadrecalllift,CreateDate) VALUES (%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
-            print('Reporting Camps Diario ' + media)
+            print('Reporting Metricas extras ' + media)
         except Exception as e:
             print(e)
 
@@ -197,8 +191,8 @@ class connect(object):
             StartDate,EndDate,Result,Objetive,CampaignIDMFC,
             Cost,Frequency,
             Reach,Postengagements,Impressions,
-            Clicks,Estimatedadrecalllift,Landingpageviews,
-            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            Clicks,Landingpageviews,
+            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.executemany(query, metricas)
