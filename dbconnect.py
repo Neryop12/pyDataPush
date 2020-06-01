@@ -228,3 +228,18 @@ class connect(object):
             print('Estado actualizado' + media)
         except Exception as e:
             print(e)
+
+    def ActionsCamapanas(campanas, media, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO CampaignsActions(Campaingname, CampaingIDMFC, ActionType,
+                            ActionTargetID, CampaingID, Actions,ActionTypeID,PeopleAction ,CreateDate) VALUES 
+                            (%s,%s,%s,
+                            %s,%s,%s,%s,%s,%s)"""
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.executemany(query, campanas)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Actions ' + media)
+            cur.close()
+        except Exception as e:
+            print(e)

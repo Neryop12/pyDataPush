@@ -11,7 +11,7 @@ DB = {
 }
 
 # Produccion
-DB_DEV = {
+DB_PROD = {
     'host': '3.95.117.169',
     'dbname': 'MediaPlatforms',
     'user': 'omgdev',

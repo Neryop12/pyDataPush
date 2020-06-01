@@ -642,3 +642,35 @@ def extrametrics(df, media, conn):
         campana = [CampaingID, Estimatedadrecalllift, CreateDate]
         campanas.append(campana)
     sql.connect.insertExtraMetrics(campanas, media, conn)
+
+
+def actions(df, media, conn):
+
+    campanas = []
+    # Obtener los datos del Spreasheet
+    df = df
+
+    for index, row in df.iterrows():
+        # Metricas y dimenciones FB
+        if int(row['Campaign ID']) < 1:
+            continue
+        CampaingID = int(row['Campaign ID'])
+        Campaingname = row['Campaign name']
+        ActionType = row[1]
+        ActionTargetID = row['Action target ID']
+        ActionTypeID = row[4]
+        Actions = row['Actions']
+        PeopleAction = row['People taking action']
+
+        CampaingIDMFC = 0
+        if Campaingname != 0:
+            regex = '([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&]+)_([a-zA-Z0-9-/.%+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.%+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVI|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            match = re.search(regex, Campaingname)
+            if match != None:
+                CampaingIDMFC = match.group(1)
+
+        # Metricas y dimenciones GO
+        campana = [Campaingname, CampaingIDMFC, ActionType,
+                   ActionTargetID, CampaingID, Actions, ActionTypeID, PeopleAction, CreateDate]
+        campanas.append(campana)
+    sql.connect.ActionsCamapanas(campanas, media, conn)

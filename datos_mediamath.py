@@ -18,8 +18,9 @@ import math
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
 
-ayer = (datetime.now() - timedelta(1))
-ayer = ayer.strftime("%Y-%m-%d")
+#ayer = (datetime.now() - timedelta(1))
+#ayer = ayer.strftime("%Y-%m-%d")
+ayer = '2019-12-31'
 
 cuentas = []
 campanas = []

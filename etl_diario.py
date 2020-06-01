@@ -28,6 +28,9 @@ if __name__ == '__main__':
         dextras = medios.Spreadsheet(db.EXTRA['key'], 'FB', 0)
         medios.extrametrics(dextras, 'FB', conn)
 
+        dactions = medios.Spreadsheet(db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
+        medios.actions(dactions, 'FB', conn)
+
         # dconversion = medios.Spreadsheet(
         # db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
         #medios.extrametrics(dconversion, 'FB', conn)

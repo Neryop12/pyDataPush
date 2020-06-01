@@ -10,8 +10,8 @@ if __name__ == '__main__':
 
     # Facebook
     try:
-        dextras = medios.Spreadsheet(db.EXTRA['key'], 'FB', 0)
-        medios.extrametrics(dextras, 'FB', conn)
+        dactions = medios.Spreadsheet(db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
+        medios.actions(dactions, 'FB', conn)
         # medios.cuentas(dfcampanas, db.FB['media'], conn)
         # medios.adsets(dfadsets, db.FB['media'], conn)
         # medios.ads(dfads, db.FB['media'], conn)
