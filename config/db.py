@@ -1,7 +1,7 @@
 # Localhost
 
 
-DB = {
+DB_a = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatforms',
     'user': 'omgdev',
@@ -11,11 +11,12 @@ DB = {
 }
 
 # Produccion
-DB_PROD = {
+DB = {
     'host': '3.95.117.169',
+    # 'dbname': 'MediaPlatformsReports',
     'dbname': 'MediaPlatforms',
-    'user': 'omgdev',
-    'password': 'Sdev@2002!',
+    'user': 'root',
+    'password': 'AnnalectDB2019',
     'port': 3306,
     'autocommit': 'True'
 }
@@ -29,6 +30,14 @@ FB = {
     'ads': '357381607',
     'media': 'FB'
 }
+AF = {
+    'key': '1c4hfSNc_p9PdooU4Kdhem5g_WuNmDd0H75v2k8x4ITk',
+    'campanas': 0,
+    'adsets': '1799727573',
+    'ads': '838905704',
+    'media': 'AF'
+}
+
 
 GO = {
     'key': '13bmX2G2PX7MHd49bHMRJtkeJZXb0vHClzBJw4_GmvjA',
@@ -68,11 +77,38 @@ DAY = {
     "key": "1fSy8zFdLUBP1yEFRtT4wZiV80cWQT1IVkn_2po8ixkQ",
     "FB": 0,
     "GO": 1405513202,
-    "TW": 357381607
+    "TW": 357381607,
+    "AF": 1226210231
 }
 
 EXTRA = {
     "key": "1wgjMxIvPfbOYOKAV-fqAaVRhymLnbgjV8tLSTznvnsY",
     "EXTRA": 0,
     "CONV": 1033795353,
+}
+
+CLARO = {
+    "key": "1J-we4GQLriiuZe3ep2fi1uHgHkWQbcWL-Ngo5_F77og",
+    "NI": 484606815,
+    "GT": 24146144,
+    "CR": 574870486,
+    "HN": 1172314895,
+    "SV": 1300252618,
+    "PA": 1865537210
+}
+
+PHD = {
+    "key": "1fkjQjNbZtgr0yvZmjhjO-QSAuFW1efSR7aplwUIhccc",
+    "DATA": 0
+}
+
+
+ADS_CLARO = {
+    "key": "1J4dlmbJ6V3HFTppy071BTaVQ7rMB8q1n3rvoT_Njsro",
+    "NI": 484606815,
+    "GT": 1313367790,
+    "CR": 16176248,
+    "HN": 1928652091,
+    "SV": 1300252618,
+    "PA": 175918674
 }

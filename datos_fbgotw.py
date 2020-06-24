@@ -1,4 +1,3 @@
-import numpy as np
 import config.db as db
 import dbconnect as sql
 import sys
@@ -8,10 +7,11 @@ from datetime import datetime, timedelta
 import time
 import configparser
 import pandas as pd
-
+import numpy as np
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
+CreateDate = "2020-06-22"
 # CONEXION A SPREADSHEETS
 
 
@@ -39,10 +39,15 @@ def cuentas(df, media, conn):
     for index, row in df.iterrows():
         if media == 'FB' or media == 'GO':
             AccountID = int(row['Account ID'])
-        else:
+            Account = row['Account']
+        elif media == 'TW':
             AccountID = row['Account ID']
+            Account = row['Account']
+        elif media == 'AF':
+            AccountID = int(row['Client ID'])
+            Account = row['Client']
 
-        cuenta = [row['Account ID'], row['Account'], media, CreateDate]
+        cuenta = [AccountID, Account, media, CreateDate]
 
         if AccountID != '' or AccountID != 0:
             cuentas.append(cuenta)
@@ -82,7 +87,7 @@ def campanas(df, media, conn):
             if int(row['Campaign ID']) < 1:
                 continue
             EndDate = None
-            CampaingID = row['Campaign ID']
+            CampaingID = int(row['Campaign ID'])
             Campaingname = row['Campaign name']
             Campaignspendinglimit = 0
             Campaigndailybudget = row['Daily budget']
@@ -124,9 +129,29 @@ def campanas(df, media, conn):
             Campaignbudgetremaining = 0
             Percentofbudgetused = 0
             Cost = row['Cost']
+         # Metricas y dimenciones FB
+        elif media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            CampaingID = int(row['Campaign ID'])
+            Campaingname = row['Campaign']
+            Campaignspendinglimit = 0
+            Campaigndailybudget = 0
+            Campaignlifetimebudget = 0
+            Campaignobjective = ''
+            Campaignstatus = ''
+            AccountsID = int(row['Client ID'])
+            StartDate = row['Campaign start date']
+            EndDate = row['Campaign end date']
+            if EndDate == 0:
+                EndDate = None
+            Campaingbuyingtype = 0
+            Campaignbudgetremaining = 0
+            Percentofbudgetused = 0
+            Cost = row['Cost']
 
         if Campaingname != 0:
-            regex = '([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&]+)_([a-zA-Z0-9-/.%+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.%+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVI|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
             match = re.search(regex, Campaingname)
             if match != None:
                 CampaingIDMFC = match.group(1)
@@ -148,11 +173,15 @@ def metricas_campanas(df, media, conn):
     # Obtener los datos del Spreasheet
     df = df
     for index, row in df.iterrows():
-
+        result = 0
+        Objetive = ''
+        objcon = ''
+        CampaignIDMFC = 0
         if media == 'FB':
             if int(row['Campaign ID']) < 1:
                 continue
             CampaingID = int(row['Campaign ID'])
+            Campaingname = row['Campaign name']
             Cost = row['Cost']
             Frequency = row['Frequency']
             Reach = row['Reach']
@@ -161,13 +190,14 @@ def metricas_campanas(df, media, conn):
             Clicks = int(row['Link clicks'])
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
-            ThruPlay = row['ThruPlay actions']
+            ThruPlay = 0
             Conversions = 0
 
         elif media == 'GO':
             if int(row['Campaign ID']) < 1:
                 continue
             CampaingID = int(row['Campaign ID'])
+            Campaingname = row['Campaign name']
             Cost = row['Cost']
             Frequency = 0
             Reach = 0
@@ -179,9 +209,10 @@ def metricas_campanas(df, media, conn):
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
 
-        if media == 'TW':
+        elif media == 'TW':
 
             CampaingID = row['Campaign ID']
+            Campaingname = row['Campaign']
             Cost = row['Cost']
             Frequency = 0
             Reach = 0
@@ -193,8 +224,68 @@ def metricas_campanas(df, media, conn):
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
 
+        elif media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            CampaingID = row['Campaign ID']
+            Campaingname = row['Campaign']
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = 0
+            Impressions = row['Tracked ads']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = 0
+            ThruPlay = 0
+            Conversions = int(row['Conversions'])
+
+        if Campaingname != 0 or Campaingname != '':
+            regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            match = re.search(regex, Campaingname)
+            if match != None:
+                CampaignIDMFC = match.group(1)
+                Result = (match.group(15))
+                objcon = (match.group(13))
+                Objetive = ''
+                result = 0
+                if str(Result).upper() == 'CPVI':
+                    result = Clicks
+                    Objetive = 'CPVI'
+                elif str(Result).upper() == 'CPMA':
+                    result = Reach
+                    Objetive = 'CPMA'
+                elif str(Result).upper() == 'CPM':
+                    result = Impressions
+                    Objetive = 'CPM'
+                elif str(Result).upper() == 'CPV':
+                    result = Videowachesat75
+                    Objetive = 'CPV'
+                elif str(Result).upper() == 'CPCO':
+                    if str(objcon).upper() == 'MESAD':
+                        result = Conversions
+                        Objetive = 'MESAD'
+                    elif str(objcon).upper() == 'LE':
+                        result = Conversions
+                        Objetive = 'LE'
+                    else:
+                        result = Clicks
+                        Objetive = 'CPCO'
+                elif str(Result).upper() == 'CPI':
+                    result = Postengagements
+                    Objetive = 'CPI'
+                elif str(Result).upper() == 'CPMA':
+                    result = Reach
+                    Objetive = 'CPMA'
+                elif str(Result).upper() == 'CPC':
+                    result = Clicks
+                    Objetive = 'CPC'
+                elif str(Result).upper() == 'CPMA':
+                    result = Reach
+                    Objetive = 'CPMA'
+
         metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
-                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, CreateDate]
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate]
 
         metricas.append(metrica)
 
@@ -215,6 +306,8 @@ def adsets(df, media, conn):
             Adsetdailybudget = row['Ad set daily budget']
             Adsettargeting = row['Ad set targeting']
             Adsetend = row['Ad set end time']
+            if Adsetend == 0:
+                Adsetend = None
             Adsetstart = row['Ad set start time']
             CampaingID = int(row['Campaign ID'])
             Status = row['Ad set status']
@@ -247,6 +340,21 @@ def adsets(df, media, conn):
             CampaingID = row['Campaign ID']
             Status = 'ACTIVE'
             Referer = 'Twitter'
+            Media = media
+
+        elif media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            AdSetID = row['Line item ID']
+            Adsetname = row['Line item']
+            Adsetlifetimebudget = 0
+            Adsetdailybudget = 0
+            Adsettargeting = ''
+            Adsetend = None
+            Adsetstart = row['Line item start date']
+            CampaingID = row['Campaign ID']
+            Status = 'ACTIVE'
+            Referer = row['Media line item']
             Media = media
 
         adset = [AdSetID, Adsetname, Adsetlifetimebudget, Adsetdailybudget, Adsettargeting,
@@ -288,6 +396,16 @@ def ads(df, media, conn):
             Adstatus = 'ACTIVE'
             AdSetID = row['Campaign ID']+row['Funding instrument ID']
             Referer = 'Twitter'
+            Media = media
+        elif media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            AdID = row['Banner ID']
+            Adname = row['Banner ID']
+            Country = ''
+            Adstatus = 'ACTIVE'
+            AdSetID = row['Line item ID']
+            Referer = 'AF'
             Media = media
 
         ad = [AdID, Adname, Country, Adstatus,
@@ -348,6 +466,22 @@ def metricas_adsets(df, media, conn):
             Conversions = int(row['Conversions'])
             Country = ''
 
+        if media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            AdSetID = row['Line item ID']
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = 0
+            Impressions = row['Tracked ads']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = 0
+            ThruPlay = 0
+            Conversions = int(row['Conversions'])
+            Country = ''
+
         metrica = [AdSetID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
                    Landingpageviews, Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
@@ -403,6 +537,21 @@ def metricas_ads(df, media, conn):
             Landingpageviews = 0
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
+            Conversions = int(row['Conversions'])
+            Country = ''
+        if media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            AdID = row['Banner ID']
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = 0
+            Impressions = row['Tracked ads']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = 0
+            ThruPlay = 0
             Conversions = int(row['Conversions'])
             Country = ''
 
@@ -476,7 +625,7 @@ def diario_campanas(df, media, conn):
             Clicks = int(row['Link clicks'])
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
-            ThruPlay = row['ThruPlay actions']
+            ThruPlay = 0
             Conversions = 0
 
         elif media == 'GO':
@@ -525,8 +674,29 @@ def diario_campanas(df, media, conn):
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
 
+        if media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            CampaingID = row['Campaign ID']
+            Campaingname = row['Campaign']
+            Campaignspendinglimit = 0
+            Campaigndailybudget = 0
+            Campaignlifetimebudget = 0
+            StartDate = row['Campaign start date']
+            EndDate = row['Campaign end date']
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = 0
+            Impressions = row['Impressions campaign unique']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = 0
+            ThruPlay = 0
+            Conversions = int(row['Conversions'])
+
         if Campaingname != 0 or Campaingname != '':
-            regex = '([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&]+)_([a-zA-Z0-9-/.%+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.%+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVI|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?$'
             match = re.search(regex, Campaingname)
             if match != None:
                 CampaignIDMFC = match.group(1)
@@ -546,16 +716,16 @@ def diario_campanas(df, media, conn):
                     Objetive = 'CPV'
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
-                        result = 0
+                        result = Conversions
                         Objetive = 'MESAD'
                     elif str(objcon).upper() == 'LE':
-                        result = 0
+                        result = Conversions
                         Objetive = 'LE'
                     else:
                         result = Clicks
                         Objetive = 'CPCO'
                 elif str(Result).upper() == 'CPI':
-                    result = 0
+                    result = Postengagements
                     Objetive = 'CPI'
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
@@ -568,7 +738,7 @@ def diario_campanas(df, media, conn):
                     Objetive = 'CPMA'
 
             if EndDate == 0 or EndDate == '':
-                EndDate = '2019-01-01'
+                EndDate = '2020-12-31'
             if datetime.strptime(EndDate, '%Y-%m-%d') < datetime.now() - timedelta(days=1):
                 historia = [CampaingID, Campaingname, Campaigndailybudget,
                             Campaignlifetimebudget, Percentofbudgetused,
@@ -664,7 +834,7 @@ def actions(df, media, conn):
 
         CampaingIDMFC = 0
         if Campaingname != 0:
-            regex = '([0-9,.]+)_(GT|CAM|RD|US|SV|HN|NI|CR|PA|RD|PN|CHI|HUE|PR)_([a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&]+)_([a-zA-Z0-9-/.%+&]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.%+&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ0-9-/.+%&0-9]+)_([a-zA-Z-/.+]+)_([a-zA-ZáéíóúÁÉÍÓÚÑñ.+0-9]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([0-9,.]+)_(BA|AL|TR|TRRS|TRRRSS|IN|DES|RV|CO|MESAD|LE)_([0-9,.]+)_(CPM|CPMA|CPVI|CPC|CPI|CPD|CPV|CPCo|CPME|CPE|PF|RF|MC|CPCO|CPCO)_([0-9.,]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([a-zA-Z-/áéíóúÁÉÍÓÚÑñ+&0-9]+)_([0-9,.-]+)?(_B-)?(_)?([0-9.,]+)?(_S-)?(_)?([0-9.,]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?$'
             match = re.search(regex, Campaingname)
             if match != None:
                 CampaingIDMFC = match.group(1)

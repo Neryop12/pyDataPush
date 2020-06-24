@@ -40,19 +40,19 @@ class connect(object):
                 EndDate,Campaingbuyingtype,Campaignbudgetremaining,
                 Percentofbudgetused,Cost,CampaingIDMFC,CreateDate)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
-                ON DUPLICATE KEY UPDATE 
+                ON DUPLICATE KEY UPDATE
                 Campaingname=VALUES(Campaingname),
                 Campaignspendinglimit=VALUES(Campaignspendinglimit),
-                Campaigndailybudget=VALUES(Campaigndailybudget), 
+                Campaigndailybudget=VALUES(Campaigndailybudget),
                 Campaignlifetimebudget=VALUES(Campaignlifetimebudget),
                 Campaignobjective=VALUES(Campaignobjective),
                 Campaignstatus=VALUES(Campaignstatus),
                 StartDate=VALUES(StartDate),
                 EndDate=VALUES(EndDate),
-                Campaingbuyingtype=VALUES(Campaingbuyingtype), 
-                Campaignbudgetremaining=VALUES(Campaignbudgetremaining), 
+                Campaingbuyingtype=VALUES(Campaingbuyingtype),
+                Campaignbudgetremaining=VALUES(Campaignbudgetremaining),
                 Percentofbudgetused=VALUES(Percentofbudgetused),
-                Cost=VALUES(Cost), 
+                Cost=VALUES(Cost),
                 CampaingIDMFC=VALUES(CampaingIDMFC) """
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
@@ -69,9 +69,10 @@ class connect(object):
         (CampaingID,Cost,Frequency,
         Reach,Postengagements,Impressions
         ,Clicks,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Metricas Camp almacenadas ' + media)
@@ -80,13 +81,14 @@ class connect(object):
 
     def insertAdsets(adsets, media, conn):
         cur = conn.cursor()
-        query = """INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,Adsetdailybudget,Adsettargeting,Adsetend,Adsetstart,CampaingID,Status,CreateDate,Referer,Media) 
-                               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
-                               ON DUPLICATE KEY UPDATE 
+        query = """INSERT INTO Adsets(AdSetID,Adsetname,Adsetlifetimebudget,Adsetdailybudget,Adsettargeting,Adsetend,Adsetstart,CampaingID,Status,CreateDate,Referer,Media)
+                               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                               ON DUPLICATE KEY UPDATE
                                 AdSetName=VALUES(AdSetName),Adsetlifetimebudget=VALUES(Adsetlifetimebudget),Adsetdailybudget=VALUES(Adsetdailybudget),
                                 Status=VALUES(Status), Adsetend=VALUES(Adsetend), Adsetstart=VALUES(Adsetstart), Media=VALUES(Media)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=10667108864")
             cur.executemany(query, adsets)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Adsets almacenadas ' + media)
@@ -98,6 +100,7 @@ class connect(object):
         query = """INSERT INTO Ads(AdID,Adname,Country,Adstatus,AdSetID,CreateDate,Referer,Media) VALUES (%s,%s,%s,%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE Adname=VALUES(Adname),Adstatus=VALUES(Adstatus), Media=VALUES(Media);"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+
             cur.executemany(query, ads)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Ads almacenadas ' + media)
@@ -113,6 +116,7 @@ class connect(object):
         Videowachesat75,ThruPlay,Conversions,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Metricas Adsets almacenadas ' + media)
@@ -128,6 +132,7 @@ class connect(object):
         Videowachesat75,ThruPlay,Conversions,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Metricas Ads almacenadas ' + media)
@@ -137,12 +142,13 @@ class connect(object):
     def insertCreativesAd(creatives, media, conn):
         cur = conn.cursor()
         query = """INSERT INTO CreativeAds
-        (AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname, PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID,Adname,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) 
-        ON DUPLICATE KEY UPDATE 
+        (AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname, PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID,Adname,Country,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON DUPLICATE KEY UPDATE
         AdcreativeID=VALUES(AdcreativeID),
         Creativename=VALUES(Creativename);"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, creatives)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('creatives almacenadas ' + media)
@@ -163,8 +169,9 @@ class connect(object):
 
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0;")
+            cur.execute("set global max_allowed_packet=67108864")
             if media == 'FB':
-                cur.execute("TRUNCATE dailycampaing;")
+                cur.execute("TRUNCATE TABLE dailycampaing;")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1;")
             print('Camps Diario ' + media)
@@ -177,6 +184,7 @@ class connect(object):
             (CampaingID,Estimatedadrecalllift,CreateDate) VALUES (%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Reporting Metricas extras ' + media)
@@ -195,6 +203,7 @@ class connect(object):
             VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Historics ' + media)
@@ -205,7 +214,7 @@ class connect(object):
         cur = conn.cursor()
         query = """INSERT INTO CreativeAds(AdID, Adname, Size,
                             AdType, Weight, Format,
-                            AdMessage, CreativeType) VALUES 
+                            AdMessage, CreativeType) VALUES
                             (%s,%s,%s,
                             %s,%s,%s,
                             %s,%s)
@@ -223,6 +232,7 @@ class connect(object):
         query = """Update Campaings set Campaignstatus=%s where CampaingID=%s"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, campanas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Estado actualizado' + media)
@@ -232,11 +242,12 @@ class connect(object):
     def ActionsCamapanas(campanas, media, conn):
         cur = conn.cursor()
         query = """INSERT INTO CampaignsActions(Campaingname, CampaingIDMFC, ActionType,
-                            ActionTargetID, CampaingID, Actions,ActionTypeID,PeopleAction ,CreateDate) VALUES 
+                            ActionTargetID, CampaingID, Actions,ActionTypeID,PeopleAction ,CreateDate) VALUES
                             (%s,%s,%s,
                             %s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("TRUNCATE TABLE CampaignsActions;")
             cur.executemany(query, campanas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Actions ' + media)

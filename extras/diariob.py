@@ -21,6 +21,7 @@ if __name__ == '__main__':
 
         medios.metricas_campanas(dfcampanas, db.FB['media'], conn)
         medios.metricas_adsets(dfadsets, db.FB['media'], conn)
+        medios.metricas_ads(dfads, db.FB['media'], conn)
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'FB', db.DAY['FB'])
         medios.actualizarestado(dfdiarios, 'FB', conn)
@@ -31,6 +32,10 @@ if __name__ == '__main__':
 
         dactions = medios.Spreadsheet(db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
         medios.actions(dactions, 'FB', conn)
+
+        dconversion = medios.Spreadsheet(
+            db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
+        medios.extrametrics(dconversion, 'FB', conn)
 
     except Exception as e:
         print(e)
@@ -45,6 +50,7 @@ if __name__ == '__main__':
 
         medios.metricas_campanas(dfcampanas, db.GO['media'], conn)
         medios.metricas_adsets(dfadsets, db.GO['media'], conn)
+        medios.metricas_ads(dfads, db.GO['media'], conn)
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'GO', db.DAY['GO'])
         medios.actualizarestado(dfdiarios, 'GO', conn)
@@ -63,6 +69,7 @@ if __name__ == '__main__':
 
         medios.metricas_campanas(dfcampanas, db.TW['media'], conn)
         medios.metricas_adsets(dfadsets, db.TW['media'], conn)
+        medios.metricas_ads(dfads, db.TW['media'], conn)
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'TW', db.DAY['TW'])
         medios.actualizarestado(dfdiarios, 'TW', conn)
@@ -71,7 +78,7 @@ if __name__ == '__main__':
     except Exception as e:
         print(e)
     # Cerramos la conexion
-
+    sql.connect.close(conn)
 
 # MediaMath
     try:
@@ -80,6 +87,22 @@ if __name__ == '__main__':
         mm.CuentasCampanas(conn)
         mm.Adsets(conn)
         mm.Ads(conn)
+    except Exception as e:
+        print(e)
+
+    try:
+        adf.GetToken()
+        adf.CuentasCampanas(conn)
+        adf.Ads(conn)
+        adf.Adsets(conn)
+        adf.CreativesAds(conn)
+    except Exception as e:
+        print(e)
+
+    # Adsmovil
+    try:
+        am.GetToken()
+        am.Campanas(conn)
     except Exception as e:
         print(e)
 

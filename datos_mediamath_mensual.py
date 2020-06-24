@@ -17,7 +17,7 @@ import math
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-CreateDate = "2020-06-22"
+CreateDate = "2020-05-31"
 
 ayer = (datetime.now() - timedelta(1))
 ayer = ayer.strftime("%Y-%m-%d")
@@ -205,11 +205,11 @@ def CuentasCampanas(conn):
             cuentas.append(cuenta)
             metricas.append(metrica)
 
-        #sql.connect.insertCuentas(cuentas, 'MM', conn)
-        #sql.connect.insertCampanas(campanas, 'MM', conn)
-        sql.connect.insertMetricasCampanas(metricas, 'MM', conn)
-        sql.connect.insertDiarioCampanas(diarios, 'MM', conn)
-        sql.connect.insertHistoric(historico, 'MM', conn)
+        sql.connect.insertCuentas(cuentas, 'MM', conn)
+        sql.connect.insertCampanas(campanas, 'MM', conn)
+        # sql.connect.insertMetricasCampanas(metricas, 'MM', conn)
+        # sql.connect.insertDiarioCampanas(diarios, 'MM', conn)
+        # sql.connect.insertHistoric(historico, 'MM', conn)
 
     except Exception as e:
         print('Error on line {}'.format(
