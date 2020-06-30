@@ -1,7 +1,7 @@
 # Localhost
 
 
-DB_a = {
+DBA = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatforms',
     'user': 'omgdev',
@@ -13,8 +13,8 @@ DB_a = {
 # Produccion
 DB = {
     'host': '3.95.117.169',
-    # 'dbname': 'MediaPlatformsReports',
-    'dbname': 'MediaPlatforms',
+    'dbname': 'MediaPlatformsReports',
+    # 'dbname': 'MediaPlatforms',
     'user': 'root',
     'password': 'AnnalectDB2019',
     'port': 3306,
@@ -24,7 +24,7 @@ DB = {
 
 # Datos de Hojas Medios FB - GO - TW
 FB = {
-    'key': '1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',
+    'key': '1Fcvi9bxw5t1RJLU5ziZpX5seMrZZM88ba2YOYpOT1q0',
     'campanas': 0,
     'adsets': '1405513202',
     'ads': '357381607',

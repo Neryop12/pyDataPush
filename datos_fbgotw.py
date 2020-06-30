@@ -11,8 +11,10 @@ import numpy as np
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-CreateDate = "2020-06-22"
+CreateDate = "2020-06-29"
 # CONEXION A SPREADSHEETS
+
+Campaignobjective = ''
 
 
 def Spreadsheet(Spreadsheet, media, hoja):
@@ -70,11 +72,12 @@ def campanas(df, media, conn):
             Campaignspendinglimit = row['Campaign spending limit']
             Campaigndailybudget = row['Campaign daily budget']
             Campaignlifetimebudget = row['Campaign lifetime budget']
-            Campaignobjective = row['Campaign objective']
+            Campaignobjecftive = row['Campaign objective']
             Campaignstatus = row['Campaign status']
             AccountsID = str(row['Account ID'])
             StartDate = row['Campaign start date']
             EndDate = row['Campaign end date']
+            Campaignobjective = row['Campaign objective']
             if EndDate == 0:
                 EndDate = None
             Campaingbuyingtype = row['Campaign buying type']
