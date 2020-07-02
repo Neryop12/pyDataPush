@@ -17,7 +17,7 @@ import math
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-CreateDate = "2020-06-22"
+CreateDate = "2020-06-29"
 
 ayer = (datetime.now() - timedelta(1))
 ayer = ayer.strftime("%Y-%m-%d")
@@ -87,7 +87,7 @@ def CuentasCampanas(conn):
                                 'Cookie': 'adama_session=' + session['sessionid']
             },
             params={
-                'start_date': '2019-12-31',
+                'start_date': '2020-06-29',
                 'time_rollup': 'by_month',
             }
         )

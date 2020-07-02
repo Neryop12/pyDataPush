@@ -302,7 +302,7 @@ def adsets(df, media, conn):
     for index, row in df.iterrows():
 
         if media == 'FB':
-            CampaingID = int(row['Ad set ID'])
+            CampaingID = int(row['Campaign ID'])
             AdSetID = row['Ad set ID']
             Adsetname = row['Ad set name']
             Adsetlifetimebudget = row['Ad set lifetime budget']
