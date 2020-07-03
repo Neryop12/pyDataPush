@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
         medios.cuentas(dfcampanas, db.FB['media'], conn)
         medios.campanas(dfcampanas, db.FB['media'], conn)
-        medios.adsets(dfcampanas, db.FB['media'], conn)
+        medios.adsets(dfadsets, db.FB['media'], conn)
     except Exception as e:
         print(e)
 

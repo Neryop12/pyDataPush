@@ -1,1 +1,8 @@
 .vscode
+__pycache__/datos_adform.cpython-38.pyc
+__pycache__/datos_adsmovil.cpython-38.pyc
+__pycache__/datos_fbgotw.cpython-38.pyc
+__pycache__/datos_mediamath.cpython-38.pyc
+__pycache__/datos_mediosextras.cpython-38.pyc
+__pycache__/dbconnect.cpython-38.pyc
+config/__pycache__/db.cpython-38.pyc
