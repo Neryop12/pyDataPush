@@ -339,6 +339,48 @@ def update_cammetrics(df, conn):
     cur.execute("SET FOREIGN_KEY_CHECKS=1")
     cur.close()
 
+def update_cammetrics_kpi(conn):
+    cur = conn.cursor()
+    Metricas = []
+    #query = """Update Campaings set Campaignlifetimebudget=%s,Cost=%s where CampaingIDMFC= %s """
+    query = """select Campaingname,CAMP.Cost, METRICS.Id, METRICS.Result  from Campaings CAMP
+                INNER JOIN CampaingMetrics METRICS on METRICS.CampaignIDMFC = CAMP.CampaingIDMFC
+                where Result > 0
+                GROUP BY CAMP.CampaingID
+                ;"""
+    query2 = """Update CampaingMetrics set 
+                KPICost=%s
+                where Id = %s """
+
+    try:
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.execute(query, )
+        resultscon = cur.fetchall()
+        CampaingIDMFC = 0
+        for row in resultscon:
+            
+            regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            match = re.search(regex, str(row[0]))
+            if match != None:
+                CampaingIDMFC = int(row[2])
+                Result = (match.group(15))
+                objcon = (match.group(13))
+                costo_KPI = 0
+                if str(Result).upper() == 'CPMA' or str(Result).upper() == 'CPV' :
+                    costo_KPI = row[1] / (row[3] * 1000)
+                else:
+                    costo_KPI = row[1] / row[3]
+            Metrica = (costo_KPI,CampaingIDMFC)
+            Metricas.append(Metrica)
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.executemany(query2, Metricas)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        cur.close()
+    except Exception as e:
+        print(e)
+    
+    
+
 
 if __name__ == '__main__':
 
@@ -347,11 +389,12 @@ if __name__ == '__main__':
                             db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
 
     try:
-        dfni = Spreadsheet(db.CLARO['key'],  db.CLARO['SV'])
+        #dfni = Spreadsheet(db.CLARO['key'],  db.CLARO['SV'])
 
-        update_cammetrics(dfni, conn)
+        #update_cammetrics(dfni, conn)
         # mediosextras.diario_campanas(dfni, conn)
-
+        update_cammetrics_kpi(conn)
+        print('termino todo')
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)

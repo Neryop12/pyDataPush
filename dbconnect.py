@@ -165,7 +165,7 @@ class connect(object):
             Cost,Frequency,
             Reach,Postengagements,Impressions,
             Clicks,Landingpageviews,
-            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            VideoWatches75,ThruPlay,Conversions,CreateDate,KPICost) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
 
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0;")
@@ -200,7 +200,7 @@ class connect(object):
             Cost,Frequency,
             Reach,Postengagements,Impressions,
             Clicks,Landingpageviews,
-            VideoWatches75,ThruPlay,Conversions,CreateDate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+            VideoWatches75,ThruPlay,Conversions,CreateDate,KPICost) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.execute("set global max_allowed_packet=67108864")

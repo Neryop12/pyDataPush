@@ -708,40 +708,44 @@ def diario_campanas(df, media, conn):
                 CampaignIDMFC = match.group(1)
                 Result = (match.group(15))
                 objcon = (match.group(13))
+                costo_KPI = 0
                 if str(Result).upper() == 'CPVI':
                     result = Clicks
+                    costo_KPI = Cost / Clicks
                     Objetive = 'CPVI'
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
+                    costo_KPI = Cost / (Reach * 1000)
                     Objetive = 'CPMA'
                 elif str(Result).upper() == 'CPM':
                     result = Impressions
+                    costo_KPI = Cost / (Impressions * 1000)
                     Objetive = 'CPM'
                 elif str(Result).upper() == 'CPV':
                     result = Videowachesat75
+                    costo_KPI = Cost/Videowachesat75
                     Objetive = 'CPV'
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
                         result = Conversions
+                        costo_KPI = Cost/Conversions
                         Objetive = 'MESAD'
                     elif str(objcon).upper() == 'LE':
                         result = Conversions
+                        costo_KPI = Cost/Conversions
                         Objetive = 'LE'
                     else:
                         result = Clicks
+                        costo_KPI = Cost/Clicks
                         Objetive = 'CPCO'
                 elif str(Result).upper() == 'CPI':
                     result = Postengagements
+                    costo_KPI = Cost/Postengagements
                     Objetive = 'CPI'
-                elif str(Result).upper() == 'CPMA':
-                    result = Reach
-                    Objetive = 'CPMA'
                 elif str(Result).upper() == 'CPC':
                     result = Clicks
+                    costo_KPI = Cost/Clicks
                     Objetive = 'CPC'
-                elif str(Result).upper() == 'CPMA':
-                    result = Reach
-                    Objetive = 'CPMA'
 
             if EndDate == 0 or EndDate == '':
                 EndDate = '2020-12-31'
@@ -752,7 +756,7 @@ def diario_campanas(df, media, conn):
                             Cost, Frequency,
                             Reach, Postengagements, Impressions,
                             Clicks,  Landingpageviews,
-                            Videowachesat75, ThruPlay, Conversions, CreateDate]
+                            Videowachesat75, ThruPlay, Conversions, CreateDate,costo_KPI]
 
                 historico.append(historia)
 
@@ -762,7 +766,7 @@ def diario_campanas(df, media, conn):
                    Cost, Frequency,
                    Reach, Postengagements, Impressions,
                    Clicks,  Landingpageviews,
-                   Videowachesat75, ThruPlay, Conversions, CreateDate]
+                   Videowachesat75, ThruPlay, Conversions, CreateDate,costo_KPI]
 
         metricas.append(metrica)
 
