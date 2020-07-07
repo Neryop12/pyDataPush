@@ -18,6 +18,7 @@ if __name__ == '__main__':
 
         medios.cuentas(dfcampanas, db.FB['media'], conn)
         medios.campanas(dfcampanas, db.FB['media'], conn)
+        medios.metricas_campanas(dfcampanas, db.FB['media'], conn)
         medios.adsets(dfadsets, db.FB['media'], conn)
     except Exception as e:
         print(e)
@@ -34,6 +35,7 @@ if __name__ == '__main__':
 
         medios.cuentas(dfcampanas, db.GO['media'], conn)
         medios.campanas(dfcampanas, db.GO['media'], conn)
+        medios.metricas_campanas(dfcampanas, db.GO['media'], conn)
         medios.adsets(dfadsets, db.GO['media'], conn)
         medios.ads(dfads, db.GO['media'], conn)
     except Exception as e:
@@ -49,6 +51,7 @@ if __name__ == '__main__':
 
         medios.cuentas(dfcampanas, db.TW['media'], conn)
         medios.campanas(dfcampanas, db.TW['media'], conn)
+        medios.metricas_campanas(dfcampanas, db.TW['media'], conn)
         medios.adsets(dfadsets, db.TW['media'], conn)
         medios.ads(dfads, db.TW['media'], conn)
     except Exception as e:
