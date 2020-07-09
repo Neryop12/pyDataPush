@@ -1,5 +1,5 @@
 import config.db as db
-import dbconnect as sql
+import dbconnect as sql 
 import datos_fbgotw as medios
 
 if __name__ == '__main__':

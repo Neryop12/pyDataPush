@@ -255,41 +255,67 @@ def metricas_campanas(df, media, conn):
                 costo_KPI = 0
                 if str(Result).upper() == 'CPVI':
                     result = Clicks
-                    costo_KPI = Cost / Clicks
+                    if result > 0:
+                        costo_KPI = Cost / Clicks
                     Objetive = 'CPVI'
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
-                    costo_KPI = Cost / (Reach * 1000)
+                    if result > 0:
+                        costo_KPI = Cost / (Reach * 1000)
                     Objetive = 'CPMA'
                 elif str(Result).upper() == 'CPM':
                     result = Impressions
-                    costo_KPI = Cost / (Impressions * 1000)
+                    if result > 0:
+                        costo_KPI = Cost / (Impressions * 1000)
                     Objetive = 'CPM'
                 elif str(Result).upper() == 'CPV':
                     result = Videowachesat75
-                    costo_KPI = Cost/Videowachesat75
+                    if result > 0:
+                        costo_KPI = Cost/Videowachesat75
                     Objetive = 'CPV'
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
                         result = Conversions
-                        costo_KPI = Cost/Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
                         Objetive = 'MESAD'
                     elif str(objcon).upper() == 'LE':
                         result = Conversions
-                        costo_KPI = Cost/Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
                         Objetive = 'LE'
                     else:
                         result = Clicks
-                        costo_KPI = Cost/Clicks
+                        if result > 0:
+                            costo_KPI = Cost/Clicks
                         Objetive = 'CPCO'
                 elif str(Result).upper() == 'CPI':
-                    result = Postengagements
-                    costo_KPI = Cost/Postengagements
-                    Objetive = 'CPI'
+                    if str(objcon).upper() == 'IN':
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPI'
+                    else:
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    result = Clicks
-                    costo_KPI = Cost/Clicks
-                    Objetive = 'CPC'
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPC'
+                    else:
+                        result = Clicks
+                        if result > 0:
+                            costo_KPI = Cost/Clicks
+                        Objetive = 'CPC'
+                elif str(Result).upper() == 'CPD':
+                    result = Conversions
+                    if result > 0:
+                        costo_KPI = Cost / Conversions
+                    Objetive = 'CPD'
         metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
                    Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI]
 
@@ -711,41 +737,67 @@ def diario_campanas(df, media, conn):
                 costo_KPI = 0
                 if str(Result).upper() == 'CPVI':
                     result = Clicks
-                    costo_KPI = Cost / Clicks
+                    if result > 0:
+                        costo_KPI = Cost / Clicks
                     Objetive = 'CPVI'
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
-                    costo_KPI = Cost / (Reach * 1000)
+                    if result > 0:
+                        costo_KPI = Cost / (Reach * 1000)
                     Objetive = 'CPMA'
                 elif str(Result).upper() == 'CPM':
                     result = Impressions
-                    costo_KPI = Cost / (Impressions * 1000)
+                    if result > 0:
+                        costo_KPI = Cost / (Impressions * 1000)
                     Objetive = 'CPM'
                 elif str(Result).upper() == 'CPV':
                     result = Videowachesat75
-                    costo_KPI = Cost/Videowachesat75
+                    if result > 0:
+                        costo_KPI = Cost/Videowachesat75
                     Objetive = 'CPV'
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
                         result = Conversions
-                        costo_KPI = Cost/Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
                         Objetive = 'MESAD'
                     elif str(objcon).upper() == 'LE':
                         result = Conversions
-                        costo_KPI = Cost/Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
                         Objetive = 'LE'
                     else:
                         result = Clicks
-                        costo_KPI = Cost/Clicks
+                        if result > 0:
+                            costo_KPI = Cost/Clicks
                         Objetive = 'CPCO'
                 elif str(Result).upper() == 'CPI':
-                    result = Postengagements
-                    costo_KPI = Cost/Postengagements
-                    Objetive = 'CPI'
+                    if str(objcon).upper() == 'IN':
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPI'
+                    else:
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    result = Clicks
-                    costo_KPI = Cost/Clicks
-                    Objetive = 'CPC'
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPC'
+                    else:
+                        result = Clicks
+                        if result > 0:
+                            costo_KPI = Cost/Clicks
+                        Objetive = 'CPC'
+                elif str(Result).upper() == 'CPD':
+                    result = Conversions
+                    if result > 0:
+                        costo_KPI = Cost / Conversions
+                    Objetive = 'CPD'
 
             if EndDate == 0 or EndDate == '':
                 EndDate = '2020-12-31'

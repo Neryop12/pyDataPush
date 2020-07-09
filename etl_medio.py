@@ -9,6 +9,7 @@ import sys
 
 if __name__ == '__main__':
 
+    
     # Iniciamos la conexion
     conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
                             db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
