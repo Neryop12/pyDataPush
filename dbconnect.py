@@ -254,3 +254,26 @@ class connect(object):
             cur.close()
         except Exception as e:
             print(e)
+
+    def ObtenerIDMFC(Id, conn):
+        cur = conn.cursor()
+        query = """ SELECT ID FROM mfcgt.mfccompradiaria 
+                    WHERE multiplestiposg like '%{}%';
+                """.format(Id)
+        cur.execute(query)
+        return cur.fetchone()
+
+    def insertCampanasReport(campanas, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO Campaings(
+                CampaingID,Campaingname,CampaingIDMFC,CreateDate)
+                VALUES (%s,%s,%s,%s)
+                 ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), CreateDate=VALUES(CreateDate)
+                """
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.executemany(query, campanas)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Campanas almacenadas ')
+        except Exception as e:
+            print(e)

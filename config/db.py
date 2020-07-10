@@ -12,7 +12,8 @@ DBA = {
 
 # Produccion
 DB = {
-    'host': '3.95.117.169',
+    #'host': '3.95.117.169',
+    'host': 'localhost',
     # 'dbname': 'MediaPlatformsReports',
     'dbname': 'MediaPlatforms',
     'user': 'root',
@@ -21,8 +22,17 @@ DB = {
     'autocommit': 'True'
 }
 # Desarrollo
-
-# Datos de Hojas Medios FB - GO - TW
+DBR = {
+    #'host': '3.95.117.169',
+    'host': 'localhost',
+    # 'dbname': 'MediaPlatformsReports',
+    'dbname': 'MediaPlatformsReports',
+    'user': 'root',
+    'password': 'AnnalectDB2019',
+    'port': 3306,
+    'autocommit': 'True'
+}
+# Datos de Hojas Medios FB - GO - TW 
 FB = {
     'key': '1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',
     'campanas': 0,

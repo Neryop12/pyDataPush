@@ -11,7 +11,7 @@ import numpy as np
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-CreateDate = "2020-06-29"
+#CreateDate = "2020-06-29"
 # CONEXION A SPREADSHEETS
 
 Campaignobjective = ''
