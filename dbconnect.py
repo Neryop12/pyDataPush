@@ -266,14 +266,29 @@ class connect(object):
     def insertCampanasReport(campanas, conn):
         cur = conn.cursor()
         query = """INSERT INTO Campaings(
-                CampaingID,Campaingname,CampaingIDMFC,CreateDate)
-                VALUES (%s,%s,%s,%s)
-                 ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), CreateDate=VALUES(CreateDate)
+                CampaingID,Campaingname,CampaingIDMFC,CreateDate,CloseData)
+                VALUES (%s,%s,%s,%s,1)
+                 ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), CreateDate=VALUES(CreateDate), CloseData=VALUES(CloseData)
                 """
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.executemany(query, campanas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Campanas almacenadas ')
+        except Exception as e:
+            print(e)
+
+    def insertCreadtiveAdsReport(creativeads, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO creativeads(
+                AdcreativeID,Creativename,Linktopromotedpost,AdID,CreateDate)
+                VALUES (%s,%s,%s,%s,%s)
+                 ON DUPLICATE KEY UPDATE Creativename=VALUES(Creativename), CreateDate=VALUES(CreateDate), Linktopromotedpost=VALUES(Linktopromotedpost)
+                """
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.executemany(query, creativeads)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Creative Ads Almacenadas ')
         except Exception as e:
             print(e)
