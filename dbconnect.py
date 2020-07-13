@@ -88,7 +88,7 @@ class connect(object):
                                 Status=VALUES(Status), Adsetend=VALUES(Adsetend), Adsetstart=VALUES(Adsetstart), Media=VALUES(Media)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
-            cur.execute("set global max_allowed_packet=10667108864")
+            cur.execute("set global max_allowed_packet=67108864")
             cur.executemany(query, adsets)
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Adsets almacenadas ' + media)

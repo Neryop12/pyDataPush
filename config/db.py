@@ -1,7 +1,7 @@
 # Localhost
 
 
-DBA = {
+DB_DEV = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatforms',
     'user': 'omgdev',
@@ -20,8 +20,38 @@ DB = {
     'port': 3306,
     'autocommit': 'True'
 }
-# Desarrollo
+# DATOS PARA ERRORES y DIARIOS
+FB = {
+    'key': '1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',
+    'campanas': 0,
+    'adsets': '1405513202',
+    'ads': '357381607',
+    'media': 'FB'
+}
+AF = {
+    'key': '1c4hfSNc_p9PdooU4Kdhem5g_WuNmDd0H75v2k8x4ITk',
+    'campanas': 0,
+    'adsets': '1799727573',
+    'ads': '838905704',
+    'media': 'AF'
+}
 
+
+GO = {
+    'key': '13bmX2G2PX7MHd49bHMRJtkeJZXb0vHClzBJw4_GmvjA',
+    'campanas': 0,
+    'adsets': '224214663',
+    'ads': '2140463057',
+    'media': 'GO'
+}
+
+TW = {
+    'key': '1oVsLY6IdOY4AvFz4BMLlSvlHDmG1rtw9HMZrsZzxqJY',
+    'campanas': 0,
+    'adsets': '1359575009',
+    'ads': '410298309',
+    'media': 'TW'
+}
 # Datos de Hojas Medios FB - GO - TW
 FB = {
     'key': '1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',

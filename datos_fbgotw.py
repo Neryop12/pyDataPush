@@ -11,7 +11,6 @@ import numpy as np
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-CreateDate = "2020-06-29"
 # CONEXION A SPREADSHEETS
 
 Campaignobjective = ''
@@ -211,7 +210,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
-#DES
+# DES
         elif media == 'TW':
 
             CampaingID = row['Campaign ID']
@@ -808,7 +807,7 @@ def diario_campanas(df, media, conn):
                             Cost, Frequency,
                             Reach, Postengagements, Impressions,
                             Clicks,  Landingpageviews,
-                            Videowachesat75, ThruPlay, Conversions, CreateDate,costo_KPI]
+                            Videowachesat75, ThruPlay, Conversions, CreateDate, costo_KPI]
 
                 historico.append(historia)
 
@@ -818,7 +817,7 @@ def diario_campanas(df, media, conn):
                    Cost, Frequency,
                    Reach, Postengagements, Impressions,
                    Clicks,  Landingpageviews,
-                   Videowachesat75, ThruPlay, Conversions, CreateDate,costo_KPI]
+                   Videowachesat75, ThruPlay, Conversions, CreateDate, costo_KPI]
 
         metricas.append(metrica)
 

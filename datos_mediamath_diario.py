@@ -17,6 +17,7 @@ import math
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
+CreateDate = "2020-06-29"
 
 ayer = (datetime.now() - timedelta(1))
 ayer = ayer.strftime("%Y-%m-%d")
@@ -34,7 +35,6 @@ historico = []
 estados = []
 diarios = []
 media = 'MM'
-Result = ''
 ACCESS_TOKEN_URL = "https://auth.mediamath.com/oauth/token"
 
 # API GET, obtiene el token de session para MediaMath
@@ -87,8 +87,8 @@ def CuentasCampanas(conn):
                                 'Cookie': 'adama_session=' + session['sessionid']
             },
             params={
-                'start_date': ayer,
-                'time_rollup': 'by_day',
+                'start_date': '2020-06-29',
+                'time_rollup': 'by_month',
             }
         )
         # Variable para guardar el contenido del request.
@@ -126,8 +126,6 @@ def CuentasCampanas(conn):
             ThruPlay = 0
             Conversions = row['total_conversions']
             CampaignIDMFC = 0
-            Result = ''
-            costo_KPI = 0
 
             if Campaingname != 0 or Campaingname != '':
 
@@ -221,6 +219,8 @@ def CuentasCampanas(conn):
                        EndDate, Campaingbuyingtype, Campaignbudgetremaining,
                        Percentofbudgetused, Cost, CampaignIDMFC, CreateDate]
             cuenta = [AccountID, Account, media, CreateDate]
+            metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
+                       Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI]
             diario = [CampaingID, Campaingname, Campaigndailybudget,
                       Campaignlifetimebudget, Percentofbudgetused,
                       StartDate, EndDate, result, Objetive, CampaignIDMFC,
@@ -233,6 +233,7 @@ def CuentasCampanas(conn):
 
             campanas.append(campana)
             cuentas.append(cuenta)
+            metricas.append(metrica)
 
         #sql.connect.insertCuentas(cuentas, 'MM', conn)
         #sql.connect.insertCampanas(campanas, 'MM', conn)
@@ -293,10 +294,15 @@ def Adsets(conn):
 
             adset = [AdSetID, Adsetname, Adsetlifetimebudget, Adsetdailybudget, Adsettargeting,
                      Adsetend, Adsetstart, CampaingID, Status, CreateDate, Referer, Media]
+            metrica = [AdSetID, Cost, Frequency,
+                       Reach, Postengagements, Impressions, Clicks, Landingpageviews,
+                       Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
+            metricasadsets.append(metrica)
             adsets.append(adset)
 
         sql.connect.insertAdsets(adsets, 'MM', conn)
+        sql.connect.insertMetricasAdSet(metricasadsets, 'MM', conn)
 
     except Exception as e:
         print(e)
@@ -355,6 +361,7 @@ def Ads(conn):
                        Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
 
             ads.append(ad)
+            metricasads.append(metrica)
 
         sql.connect.insertAds(ads, 'MM', conn)
         sql.connect.insertMetricasAd(metricasads, 'MM', conn)
