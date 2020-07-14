@@ -69,7 +69,7 @@ class connect(object):
         (CampaingID,Cost,Frequency,
         Reach,Postengagements,Impressions
         ,Clicks,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, CloseData) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.execute("set global max_allowed_packet=67108864")
@@ -266,9 +266,9 @@ class connect(object):
     def insertCampanasReport(campanas, conn):
         cur = conn.cursor()
         query = """INSERT INTO Campaings(
-                CampaingID,Campaingname,CampaingIDMFC,CreateDate,CloseData)
-                VALUES (%s,%s,%s,%s,1)
-                 ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), CreateDate=VALUES(CreateDate), CloseData=VALUES(CloseData)
+                CampaingID,Campaingname,CampaingIDMFC,CreateDate)
+                VALUES (%s,%s,%s,%s)
+                 ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), CreateDate=VALUES(CreateDate)
                 """
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")

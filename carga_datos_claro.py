@@ -44,6 +44,7 @@ def lectura_Datos(conn, conn_report):
     sql.connect.insertCreadtiveAdsReport(creative_ads, conn_report)
         
         
+        
 
 
 if __name__ == '__main__':
