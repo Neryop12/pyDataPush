@@ -256,12 +256,16 @@ class connect(object):
             print(e)
 
     def ObtenerIDMFC(Id, conn):
-        cur = conn.cursor()
-        query = """ SELECT ID FROM mfcgt.mfccompradiaria 
-                    WHERE multiplestiposg like '%{}%';
-                """.format(Id)
-        cur.execute(query)
-        return cur.fetchone()
+        try:
+            cur = conn.cursor(buffered=True)
+            query = """ SELECT ID FROM mfcgt.mfccompradiaria 
+                        WHERE multiplestiposg like '%{}%';
+                    """.format(Id)
+            cur.execute(query)
+            return cur.fetchone()
+        except Exception as e:
+            print(e)
+            return None
 
     def insertCampanasReport(campanas, conn):
         cur = conn.cursor()

@@ -28,7 +28,7 @@ def lectura_Datos(conn, conn_report):
                 campana = [str(response[0]), nomeclaruta, int(response[0]), CreateDate]
                 campanas.append(campana)
             else:
-                #print(name)
+                print(name)
                 continue
         if response != None:
             creative_id += 1
@@ -43,7 +43,7 @@ def lectura_Datos(conn, conn_report):
     sql.connect.insertMetricasCampanas(metricas_campanas,'Claro_Datos',conn_report)
     sql.connect.insertCreadtiveAdsReport(creative_ads, conn_report)
         
-        
+
         
 
 
