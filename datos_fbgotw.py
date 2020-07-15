@@ -9,6 +9,7 @@ import configparser
 import pandas as pd
 import numpy as np
 
+
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
 # CONEXION A SPREADSHEETS
@@ -34,6 +35,8 @@ def Spreadsheet(Spreadsheet, media, hoja):
 
 def cuentas(df, media, conn):
     # Obtener los datos del Spreasheet
+    AccountID = 0
+    Account = ''
     cuentas = []
     df = df
 
@@ -56,8 +59,11 @@ def cuentas(df, media, conn):
 
 
 def campanas(df, media, conn):
+    AccountID = 0
     campanas = []
     Campaingname = ''
+    CampaingID = 0
+    Account = ''
     # Obtener los datos del Spreasheet
     df = df
     for index, row in df.iterrows():

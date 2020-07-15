@@ -1,27 +1,39 @@
-import config.db as db
+import mysql.connector as mysql
+from mysql.connector import Error
+import config.db as DB
 import dbconnect as sql
 import datos_fbgotw as medios
 import datos_mediamath as mm
 import datos_adform as adf
 import datos_mediosextras as mediosextras
 import datos_adsmovil as am
+import sys
+
+
+def openConnection():
+    try:
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
+                             user='root', password='AnnalectDB2019', autocommit=True)
+        return conn
+    except:
+        print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
+
 
 if __name__ == '__main__':
-
-    # Iniciamos la conexion
-    conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
-                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
+    conn = openConnection()
+    # Facebook
     # Facebook
     try:
         dfdiarios = medios.Spreadsheet(
-            db.FB['key'], db.FB['media'], db.DAY['FB'])
+            DB.FB['key'], DB.FB['media'], DB.DAY['FB'])
 
         medios.diario_campanas(dfdiarios, 'FB', conn)
 
-        dextras = medios.Spreadsheet(db.EXTRA['key'], 'FB', 0)
+        dextras = medios.Spreadsheet(DB.EXTRA['key'], 'FB', 0)
         medios.extrametrics(dextras, 'FB', conn)
 
-        dactions = medios.Spreadsheet(db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
+        dactions = medios.Spreadsheet(
+            DB.EXTRA['key'], 'FB', DB.EXTRA['CONV'])
         medios.actions(dactions, 'FB', conn)
 
     except Exception as e:
@@ -30,7 +42,7 @@ if __name__ == '__main__':
     # Google
     try:
 
-        dfdiarios = medios.Spreadsheet(db.DAY['key'], 'GO', db.DAY['GO'])
+        dfdiarios = medios.Spreadsheet(DB.DAY['key'], 'GO', DB.DAY['GO'])
         medios.actualizarestado(dfdiarios, 'GO', conn)
         medios.diario_campanas(dfdiarios, 'GO', conn)
 
@@ -41,7 +53,7 @@ if __name__ == '__main__':
     # Twitter
     try:
 
-        dfdiarios = medios.Spreadsheet(db.DAY['key'], 'TW', db.DAY['TW'])
+        dfdiarios = medios.Spreadsheet(DB.DAY['key'], 'TW', DB.DAY['TW'])
         medios.actualizarestado(dfdiarios, 'TW', conn)
         medios.diario_campanas(dfdiarios, 'TW', conn)
 
@@ -58,6 +70,15 @@ if __name__ == '__main__':
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+     # Adform
+    try:
+        adf.GetToken()
+        adf.CuentasCampanas(conn)
+        adf.Adsets(conn)
+        adf.Ads(conn)
+    except Exception as e:
+        print('Error on line {}'.format(
+            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     # Cerramos la conexion
-    sql.connect.close(conn)
+    conn.close()

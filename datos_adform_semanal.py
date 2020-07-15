@@ -19,6 +19,10 @@ CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
 
 ayer = (datetime.now() - timedelta(1))
 ayer = ayer.strftime("%Y-%m-%d")
+semana = (datetime.now() - timedelta(7))
+semana = semana.strftime("%Y-%m-%d")
+
+semana = '2020-07-01'
 
 cuentas = []
 campanas = []
@@ -105,8 +109,8 @@ def CuentasCampanas(conn):
                 ],
                 "filter": {
                     "date": {
-                        "from":  str(datetime.now() - timedelta(days=1)),
-                        "to": str(datetime.now() - timedelta(days=1))
+                        "from":  semana,
+                        "to": ayer
                     }
                 },
                 "paging": {
@@ -227,211 +231,9 @@ def CuentasCampanas(conn):
 
         sql.connect.insertCuentas(cuentas, media, conn)
         sql.connect.insertCampanas(campanas, media, conn)
+        sql.connect.insertMetricasCampanas(metricas, media, conn)
         sql.connect.insertDiarioCampanas(diarios, media, conn)
         sql.connect.insertHistoric(historico, media, conn)
 
-    except Exception as e:
-        print(e)
-
-
-def Adsets(conn):
-    try:
-        url = 'https://api.adform.com/v1/reportingstats/agency/reportdata'
-        data = requests.post(
-            url,
-            # Headers: se coloca el token de autorizacion
-            headers={
-                'Authorization': 'Bearer ' + Token['Ticket'],
-                'Content-Type': 'application/json'
-            },
-            # Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-            # Para enviarlo se tiene que guardar en formato Json.
-            json={
-                "dimensions": [
-                    "campaignID",
-                    "lineItemID",
-                    "lineItem",
-                    "lineItemStartDate",
-                    "lineItemEndDate",
-                    "frequencyLineItem",
-                    "media"
-                ],
-                "metrics": [
-                    "clicks",
-                    "impressions",
-                    "cost"
-                ],
-                "filter": {
-                    "date": {
-                        "from": str(datetime.now() - timedelta(days=1)),
-                        "to": str(datetime.now() - timedelta(days=1))
-                    }
-                }
-            }
-        )
-        data = data.json()
-        for row in data['reportData']['rows']:
-            if(row[0] > 0):
-                Status = ''
-                Frequency = 0
-                AdSetID = row[1]
-                Adsetname = row[2]
-                CampaingID = row[0]
-                Adsetlifetimebudget = 0
-                Adsettargeting = ''
-                Adsetdailybudget = 0
-                Cost = row[8]
-                Reach = 0
-                Postengagements = 0
-                Impressions = row[8]
-                Clicks = row[7]
-                Landingpageviews = 0
-                Videowachesat75 = 0
-                ThruPlay = 0
-                Conversions = 0
-                Adsetend = row[4]
-                Adsetstart = row[3]
-                Country = ''
-                Media = row[6]
-                Referer = media
-                if Adsetend > "2020-01-01":
-                    Status = 'Active'
-                else:
-                    Status = 'disabled'
-                adset = [AdSetID, Adsetname, Adsetlifetimebudget, Adsetdailybudget,
-                         Adsettargeting, Adsetend, Adsetstart, CampaingID, Status, CreateDate, Referer, Media]
-
-                adsets.append(adset)
-
-        sql.connect.insertAdsets(adsets, media, conn)
-
-    except Exception as e:
-        print(e)
-
-
-def Ads(conn):
-    try:
-        url = 'https://api.adform.com/v1/reportingstats/agency/reportdata'
-        data = requests.post(
-            url,
-            # Headers: se coloca el token de autorizacion
-            headers={
-                'Authorization': 'Bearer ' + Token['Ticket'],
-                'Content-Type': 'application/json'
-            },
-            # Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-            # Para enviarlo se tiene que guardar en formato Json.
-            json={
-                "dimensions": [
-                    "lineItemID",
-                    "bannerID",
-                    "banner",
-                    "referrerType",
-                    "media"
-                ],
-                "metrics": [
-                    "clicks",
-                    "impressions",
-                    "cost",
-                    "ctr",
-                    "ecpm",
-                    "conversions"
-                ],
-                "filter": {
-                    "date": {
-                        "from": str(datetime.now() - timedelta(days=1)),
-                        "to": str(datetime.now() - timedelta(days=1))
-                    }
-                }
-            }
-        )
-        data = data.json()
-        for row in data['reportData']['rows']:
-            if(row[0] > 0):
-                AdSetID = row[0]
-                Adname = row[2]
-                AdID = row[1]
-                Adsetlifetimebudget = 0
-                Adsettargeting = ''
-                Adsetdailybudget = 0
-                Cost = row[7]
-                Frequency = 0
-                Reach = 0
-                Postengagements = 0
-                Impressions = row[6]
-                Clicks = row[5]
-                Landingpageviews = 0
-                Videowachesat75 = 0
-                ThruPlay = 0
-                Conversions = row[10]
-                Adsetend = ''
-                Adsetstart = ''
-                Adstatus = 'ACTIVE'
-                Country = ''
-                Media = row[4]
-                Referer = media
-
-                ad = [AdID, Adname, Country, Adstatus,
-                      AdSetID,  CreateDate, Referer, Media]
-
-                ads.append(ad)
-
-        sql.connect.insertAds(ads, media, conn)
-
-    except Exception as e:
-        print(e)
-
-
-def CreativesAds(conn):
-    try:
-        url = 'https://api.adform.com/v1/reportingstats/agency/reportdata'
-        data = requests.post(
-            url,
-            # Headers: se coloca el token de autorizacion
-            headers={
-                'Authorization': 'Bearer ' + Token['Ticket'],
-                'Content-Type': 'application/json'
-            },
-            # Para obtener los datos se realiza un POST con los datos de dimension, metricas y filtros, tiene que tener al menos uno de cada uno
-            # Para enviarlo se tiene que guardar en formato Json.
-            json={
-                "dimensions": [
-                    "bannerID",
-                    "banner",
-                    "bannerSize",
-                    "bannerType",
-                    "bannerWeight",
-                    "bannerFormat",
-                    "bannerAdMessage",
-                    "adCreativeType"
-                ],
-                "metrics": [
-                    "clicks",
-                    "impressions"
-                ],
-                "filter": {
-                    "date": {
-                        "from": str(datetime.now() - timedelta(days=1)),
-                        "to": str(datetime.now() - timedelta(days=1))
-                    }
-                }
-            }
-        )
-        data = data.json()
-        for row in data['reportData']['rows']:
-            if(row[0] > 0):
-                AdID = row[0]
-                Weight = 0
-                Adname = row[1]
-                Size = row[2]
-                AdType = row[3]
-                Format = row[5]
-                AdMessage = row[6]
-                CreativeType = row[7]
-                creative = [AdID, Adname, Size,
-                            AdType, Weight, Format,
-                            AdMessage, CreativeType]
-                creatives.append(creative)
-        sql.connect.CreativeAdf(creatives, media, conn)
     except Exception as e:
         print(e)

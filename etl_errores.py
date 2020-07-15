@@ -1,26 +1,37 @@
-import config.db as db
+import config.db as DB
 import dbconnect as sql
 import datos_fbgotw as medios
+import mysql.connector as mysql
+from mysql.connector import Error
+import sys
+
+
+def openConnection():
+    try:
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatforms',
+                             user='root', password='AnnalectDB2019', autocommit=True)
+        return conn
+    except:
+        print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
+        sys.exit()
+
 
 if __name__ == '__main__':
-
-    # Iniciamos la conexion
-    conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
-                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
-
+    conn = openConnection()
     # Facebook
     try:
         dfcampanas = medios.Spreadsheet(
-            db.FB['key'], db.FB['media'], db.FB['campanas'])
+            DB.FB['key'], DB.FB['media'], DB.FB['campanas'])
         dfadsets = medios.Spreadsheet(
-            db.FB['key'], db.FB['media'], db.FB['adsets'])
-        dfads = medios.Spreadsheet(db.FB['key'], db.FB['media'], db.FB['ads'])
+            DB.FB['key'], DB.FB['media'], DB.FB['adsets'])
+        dfads = medios.Spreadsheet(
+            DB.FB['key'], DB.FB['media'], DB.FB['ads'])
 
-        medios.cuentas(dfcampanas, db.FB['media'], conn)
-        medios.campanas(dfcampanas, db.FB['media'], conn)
-        medios.adsets(dfadsets, db.FB['media'], conn)
-        medios.ads(dfads, db.FB['media'], conn)
-        medios.creative_ads(dfads, db.FB['media'], conn)
+        medios.cuentas(dfcampanas, DB.FB['media'], conn)
+        medios.campanas(dfcampanas, DB.FB['media'], conn)
+        medios.adsets(dfadsets, DB.FB['media'], conn)
+        medios.ads(dfads, DB.FB['media'], conn)
+        medios.creative_ads(dfads, DB.FB['media'], conn)
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
@@ -30,15 +41,16 @@ if __name__ == '__main__':
     # Google
     try:
         dfcampanas = medios.Spreadsheet(
-            db.GO['key'], db.GO['media'], db.GO['campanas'])
+            DB.GO['key'], DB.GO['media'], DB.GO['campanas'])
         dfadsets = medios.Spreadsheet(
-            db.GO['key'], db.GO['media'], db.GO['adsets'])
-        dfads = medios.Spreadsheet(db.GO['key'], db.GO['media'], db.GO['ads'])
+            DB.GO['key'], DB.GO['media'], DB.GO['adsets'])
+        dfads = medios.Spreadsheet(
+            DB.GO['key'], DB.GO['media'], DB.GO['ads'])
 
-        medios.cuentas(dfcampanas, db.GO['media'], conn)
-        medios.campanas(dfcampanas, db.GO['media'], conn)
-        medios.adsets(dfadsets, db.GO['media'], conn)
-        medios.ads(dfads, db.GO['media'], conn)
+        medios.cuentas(dfcampanas, DB.GO['media'], conn)
+        medios.campanas(dfcampanas, DB.GO['media'], conn)
+        medios.adsets(dfadsets, DB.GO['media'], conn)
+        medios.ads(dfads, DB.GO['media'], conn)
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
@@ -46,18 +58,19 @@ if __name__ == '__main__':
     # Twitter
     try:
         dfcampanas = medios.Spreadsheet(
-            db.TW['key'], db.TW['media'], db.TW['campanas'])
+            DB.TW['key'], DB.TW['media'], DB.TW['campanas'])
         dfadsets = medios.Spreadsheet(
-            db.TW['key'], db.TW['media'], db.TW['adsets'])
-        dfads = medios.Spreadsheet(db.TW['key'], db.TW['media'], db.TW['ads'])
+            DB.TW['key'], DB.TW['media'], DB.TW['adsets'])
+        dfads = medios.Spreadsheet(
+            DB.TW['key'], DB.TW['media'], DB.TW['ads'])
 
-        medios.cuentas(dfcampanas, db.TW['media'], conn)
-        medios.campanas(dfcampanas, db.TW['media'], conn)
-        medios.adsets(dfadsets, db.TW['media'], conn)
-        medios.ads(dfads, db.TW['media'], conn)
+        medios.cuentas(dfcampanas, DB.TW['media'], conn)
+        medios.campanas(dfcampanas, DB.TW['media'], conn)
+        medios.adsets(dfadsets, DB.TW['media'], conn)
+        medios.ads(dfads, DB.TW['media'], conn)
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     # Cerramos la conexion
-    sql.connect.close(conn)
+    conn.close()

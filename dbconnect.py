@@ -2,18 +2,19 @@ import config.db as db
 import mysql.connector as mysql
 from mysql.connector import Error
 from datetime import date
+import sys
 
 
 class connect(object):
 
-    def open(HOST, USER, PASS, DB, PORT, AUTOCOMMIT):
+    def open(HOST, USER, PASS, DB, AUTOCOMMIT):
         try:
             conn = mysql.connect(host=HOST, database=DB,
-                                 user=USER, password=PASS, autocommit=AUTOCOMMIT, port=PORT)
+                                 user=USER, password=PASS, autocommit=AUTOCOMMIT)
             return conn
         except Exception as e:
-            raise ValueError(
-                'No se pudo establecer conexión con la base de datos!', e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def close(conn):
         if (conn.is_connected()):
@@ -29,7 +30,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Cuentas almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertCampanas(campanas, media, conn):
         cur = conn.cursor()
@@ -60,7 +62,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Campanas almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
     # Metodo para almacenar Metricas de campanas
 
     def insertMetricasCampanas(metricas, media, conn):
@@ -77,7 +80,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Metricas Camp almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertAdsets(adsets, media, conn):
         cur = conn.cursor()
@@ -93,7 +97,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Adsets almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertAds(ads, media, conn):
         cur = conn.cursor()
@@ -105,7 +110,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Ads almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertMetricasAdSet(metricas, media, conn):
         cur = conn.cursor()
@@ -121,7 +127,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Metricas Adsets almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertMetricasAd(metricas, media, conn):
         cur = conn.cursor()
@@ -153,7 +160,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('creatives almacenadas ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertDiarioCampanas(metricas, media, conn):
         cur = conn.cursor()
@@ -189,7 +197,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Reporting Metricas extras ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertHistoric(metricas, media, conn):
         cur = conn.cursor()
@@ -208,7 +217,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Historics ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def CreativeAdf(creatives, media, conn):
         cur = conn.cursor()
@@ -225,7 +235,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Creatives ' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def ActualizarEstado(campanas, media, conn):
         cur = conn.cursor()
@@ -237,7 +248,8 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Estado actualizado' + media)
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def ActionsCamapanas(campanas, media, conn):
         cur = conn.cursor()
@@ -253,4 +265,5 @@ class connect(object):
             print('Actions ' + media)
             cur.close()
         except Exception as e:
-            print(e)
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
