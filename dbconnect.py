@@ -69,7 +69,7 @@ class connect(object):
         (CampaingID,Cost,Frequency,
         Reach,Postengagements,Impressions
         ,Clicks,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, CloseData) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)"""
+        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, AppInstalls,CloseData) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.execute("set global max_allowed_packet=67108864")
@@ -284,7 +284,7 @@ class connect(object):
 
     def insertCreadtiveAdsReport(creativeads, conn):
         cur = conn.cursor()
-        query = """INSERT INTO creativeads(
+        query = """INSERT INTO CreativeAds(
                 AdcreativeID,Creativename,Linktopromotedpost,AdID,CreateDate)
                 VALUES (%s,%s,%s,%s,%s)
                  ON DUPLICATE KEY UPDATE Creativename=VALUES(Creativename), CreateDate=VALUES(CreateDate), Linktopromotedpost=VALUES(Linktopromotedpost)

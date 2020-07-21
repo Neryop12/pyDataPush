@@ -12,8 +12,8 @@ DBA = {
 
 # Produccion
 DB = {
-    #'host': '3.95.117.169',
-    'host': 'localhost',
+    'host': '3.95.117.169',
+    #'host': 'localhost',
     # 'dbname': 'MediaPlatformsReports',
     'dbname': 'MediaPlatforms',
     'user': 'root',
@@ -23,8 +23,8 @@ DB = {
 }
 # Desarrollo
 DBR = {
-    #'host': '3.95.117.169',
-    'host': 'localhost',
+    'host': '3.95.117.169',
+    #'host': 'localhost',
     # 'dbname': 'MediaPlatformsReports',
     'dbname': 'MediaPlatformsReports',
     'user': 'root',

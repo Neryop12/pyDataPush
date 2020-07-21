@@ -17,6 +17,7 @@ def lectura_Datos(conn, conn_report):
     df = df.fillna(0)
     creative_id = 0
     diferent_name = ''
+    Result  = 0
     for index, row in df.iterrows():
         name = str(row['Nombre de la Campaña'])
         if name != diferent_name:
@@ -28,13 +29,28 @@ def lectura_Datos(conn, conn_report):
                 campana = [str(response[0]), nomeclaruta, int(response[0]), CreateDate]
                 campanas.append(campana)
             else:
-                print(name)
+                #print(name)
                 continue
         if response != None:
+            Result  = 0
             creative_id += 1
+            if str(row['Objetivo']) == 'Trafico':
+                Result  =  int(row['Clicks'])
+            if str(row['Objetivo']) == 'Alcance':
+                Result  =  int(row['Alcance'])
+            if str(row['Objetivo']) == 'Brand Awareness':
+                Result  =  int(row['Impresiones'])
+            if str(row['Objetivo']) == 'Conversiones':
+                Result  =  int(row['Conversiones'])
+            if str(row['Objetivo']) == 'Descarga de Aplicaciones':
+                Result  =  int(row['Descargas'])
+            if str(row['Objetivo']) == 'Interacciones':
+                Result  =  int(row['Interacciones'])
+            if str(row['Objetivo']) == 'Reproducciones de Video':
+                Result  =  int(row['VideoWatch'])
             metrica = [ str(response[0]), float(row['Inversión Consumida']), int(row['Frecuencia']),int(row['Alcance']), int(row['Interacciones']), 
-                int(row['Impresiones']), int(row['Clicks']), int(row['Views']), int(row['VideoWatch']), int(row['Visualización de fotos']), int(row['Views']), int(row['Resultados']),
-                str(row['Objetivo']), str(response[0]), CreateDate, int(row['KPI'])
+                int(row['Impresiones']), int(row['Clicks']), int(row['Views']), int(row['VideoWatch']), int(row['Views']), int(row['Conversiones']),  Result,
+                str(row['Objetivo']), str(response[0]), CreateDate, float(row['KPI']), int(row['Descargas'])
             ]
             creative_ad = [ str(response[0]) + '_' + str(creative_id), str(row['Nombre del Anuncio']), str(row['URL']), str(response[0]) , CreateDate]
             metricas_campanas.append(metrica)
