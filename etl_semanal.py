@@ -5,6 +5,7 @@ import dbconnect as sql
 import datos_fbgotw as medios
 import datos_mediamath_semanal as mm
 import datos_adform_semanal as adf
+import sys
 
 
 def openConnection():
@@ -59,6 +60,19 @@ if __name__ == '__main__':
         mm.CuentasCampanas(conn)
     except Exception as e:
         print(e)
+
+    try:
+        dfcampanas = medios.Spreadsheet(
+        db.AFS['key'], db.AFS['media'], db.AFS['campanas'])
+
+        medios.cuentas(dfcampanas, db.AFS['media'], conn)
+        medios.campanas(dfcampanas, db.AFS['media'], conn)
+        medios.metricas_campanas(dfcampanas, db.AFS['media'], conn)
+        
+    except Exception as e:
+        print('Error on line {}'.format(
+            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
 
     # Cerramos la conexion
     sql.connect.close(conn)

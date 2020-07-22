@@ -79,7 +79,11 @@ TWS = {
     'campanas': 0,
     'media': 'TW'
 }
-
+AFS = {
+    'key': '1356ovprYhbNRSvDRB7-HqL0L4tTebe4uGPuaTkCzS7A',
+    'campanas': 0,
+    'media': 'AF'
+}
 
 # APIS
 

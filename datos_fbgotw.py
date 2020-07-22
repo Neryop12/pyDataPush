@@ -200,6 +200,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = 0
             Conversions = 0
+            AppInstall = 0
 
         elif media == 'GO':
             if int(row['Campaign ID']) < 1:
@@ -216,6 +217,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
 # DES
         elif media == 'TW':
 
@@ -231,6 +233,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
 
         elif media == 'AF':
             if int(row['Cost']) < 1:
@@ -247,6 +250,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = 0
             ThruPlay = 0
             Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
 
         if Campaingname != 0 or Campaingname != '':
             regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
@@ -317,12 +321,13 @@ def metricas_campanas(df, media, conn):
                             costo_KPI = Cost/Clicks
                         Objetive = 'CPC'
                 elif str(Result).upper() == 'CPD':
-                    result = Conversions
+                    result = AppInstall
+                    Conversions = 0
                     if result > 0:
-                        costo_KPI = Cost / Conversions
+                        costo_KPI = Cost / AppInstall
                     Objetive = 'CPD'
         metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
-                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI]
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI,AppInstall]
 
         metricas.append(metrica)
 
