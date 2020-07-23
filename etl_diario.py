@@ -60,6 +60,16 @@ if __name__ == '__main__':
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+        # Twitter
+    try:
+
+        dfdiarios = medios.Spreadsheet(DB.DAY['key'], 'AF', DB.DAY['AF'])
+        medios.actualizarestado(dfdiarios, 'AF', conn)
+        medios.diario_campanas(dfdiarios, 'AF', conn)
+
+    except Exception as e:
+        print('Error on line {}'.format(
+            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
      # MediaMath
     try:
         mm.GetToken()
@@ -70,15 +80,7 @@ if __name__ == '__main__':
     except Exception as e:
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
-     # Adform
-    try:
-        adf.GetToken()
-        adf.CuentasCampanas(conn)
-        adf.Adsets(conn)
-        adf.Ads(conn)
-    except Exception as e:
-        print('Error on line {}'.format(
-            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
 
     # Cerramos la conexion
     conn.close()

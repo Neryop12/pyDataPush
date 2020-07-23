@@ -72,5 +72,17 @@ if __name__ == '__main__':
         print('Error on line {}'.format(
             sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
+      # Adform
+    try:
+        dfcampanas = medios.Spreadsheet(
+            DB.AF['key'], DB.AF['media'], DB.TW['campanas'])
+
+        medios.cuentas(dfcampanas, DB.AF['media'], conn)
+        medios.campanas(dfcampanas, DB.AF['media'], conn)
+
+    except Exception as e:
+        print('Error on line {}'.format(
+            sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
     # Cerramos la conexion
     conn.close()
