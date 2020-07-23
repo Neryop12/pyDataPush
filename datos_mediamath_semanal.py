@@ -130,7 +130,7 @@ def CuentasCampanas(conn):
             ThruPlay = 0
             Conversions = row['total_conversions']
             CampaignIDMFC = 0
-
+            costo_KPI = 0
             if Campaingname != 0 or Campaingname != '':
 
                 regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
@@ -143,67 +143,67 @@ def CuentasCampanas(conn):
                     costo_KPI = 0
                     if str(Result).upper() == 'CPVI':
                         result = Clicks
-                    if result > 0:
-                        costo_KPI = Cost / Clicks
-                    Objetive = 'CPVI'
-                elif str(Result).upper() == 'CPMA':
-                    result = Reach
-                    if result > 0:
-                        costo_KPI = Cost / (Reach * 1000)
-                    Objetive = 'CPMA'
-                elif str(Result).upper() == 'CPM':
-                    result = Impressions
-                    if result > 0:
-                        costo_KPI = Cost / (Impressions * 1000)
-                    Objetive = 'CPM'
-                elif str(Result).upper() == 'CPV':
-                    result = Videowachesat75
-                    if result > 0:
-                        costo_KPI = Cost/Videowachesat75
-                    Objetive = 'CPV'
-                elif str(Result).upper() == 'CPCO':
-                    if str(objcon).upper() == 'MESAD':
+                        if result > 0:
+                            costo_KPI = Cost / Clicks
+                        Objetive = 'CPVI'
+                    elif str(Result).upper() == 'CPMA':
+                        result = Reach
+                        if result > 0:
+                            costo_KPI = Cost / (Reach * 1000)
+                        Objetive = 'CPMA'
+                    elif str(Result).upper() == 'CPM':
+                        result = Impressions
+                        if result > 0:
+                            costo_KPI = Cost / (Impressions * 1000)
+                        Objetive = 'CPM'
+                    elif str(Result).upper() == 'CPV':
+                        result = Videowachesat75
+                        if result > 0:
+                            costo_KPI = Cost/Videowachesat75
+                        Objetive = 'CPV'
+                    elif str(Result).upper() == 'CPCO':
+                        if str(objcon).upper() == 'MESAD':
+                            result = Conversions
+                            if result > 0:
+                                costo_KPI = Cost/Conversions
+                            Objetive = 'MESAD'
+                        elif str(objcon).upper() == 'LE':
+                            result = Conversions
+                            if result > 0:
+                                costo_KPI = Cost/Conversions
+                            Objetive = 'LE'
+                        else:
+                            result = Clicks
+                            if result > 0:
+                                costo_KPI = Cost/Clicks
+                            Objetive = 'CPCO'
+                    elif str(Result).upper() == 'CPI':
+                        if str(objcon).upper() == 'IN':
+                            result = Postengagements
+                            if result > 0:
+                                costo_KPI = Cost/Postengagements
+                            Objetive = 'CPI'
+                        else:
+                            result = Postengagements
+                            if result > 0:
+                                costo_KPI = Cost/Postengagements
+                            Objetive = 'CPI'
+                    elif str(Result).upper() == 'CPC':
+                        if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
+                            result = Postengagements
+                            if result > 0:
+                                costo_KPI = Cost/Postengagements
+                            Objetive = 'CPC'
+                        else:
+                            result = Clicks
+                            if result > 0:
+                                costo_KPI = Cost/Clicks
+                            Objetive = 'CPC'
+                    elif str(Result).upper() == 'CPD':
                         result = Conversions
                         if result > 0:
-                            costo_KPI = Cost/Conversions
-                        Objetive = 'MESAD'
-                    elif str(objcon).upper() == 'LE':
-                        result = Conversions
-                        if result > 0:
-                            costo_KPI = Cost/Conversions
-                        Objetive = 'LE'
-                    else:
-                        result = Clicks
-                        if result > 0:
-                            costo_KPI = Cost/Clicks
-                        Objetive = 'CPCO'
-                elif str(Result).upper() == 'CPI':
-                    if str(objcon).upper() == 'IN':
-                        result = Postengagements
-                        if result > 0:
-                            costo_KPI = Cost/Postengagements
-                        Objetive = 'CPI'
-                    else:
-                        result = Postengagements
-                        if result > 0:
-                            costo_KPI = Cost/Postengagements
-                        Objetive = 'CPI'
-                elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
-                        result = Postengagements
-                        if result > 0:
-                            costo_KPI = Cost/Postengagements
-                        Objetive = 'CPC'
-                    else:
-                        result = Clicks
-                        if result > 0:
-                            costo_KPI = Cost/Clicks
-                        Objetive = 'CPC'
-                elif str(Result).upper() == 'CPD':
-                    result = Conversions
-                    if result > 0:
-                        costo_KPI = Cost / Conversions
-                    Objetive = 'CPD'
+                            costo_KPI = Cost / Conversions
+                        Objetive = 'CPD'
             if EndDate == 0 or EndDate == '':
                 EndDate = '2020-12-31'
             if datetime.strptime(EndDate, '%Y-%m-%d') < datetime.now() - timedelta(days=1):
@@ -224,7 +224,7 @@ def CuentasCampanas(conn):
                        Percentofbudgetused, Cost, CampaignIDMFC, CreateDate]
             cuenta = [AccountID, Account, media, CreateDate]
             metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
-                       Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI]
+                       Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, None]
             diario = [CampaingID, Campaingname, Campaigndailybudget,
                       Campaignlifetimebudget, Percentofbudgetused,
                       StartDate, EndDate, result, Objetive, CampaignIDMFC,
