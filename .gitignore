@@ -7,3 +7,4 @@ __pycache__/datos_mediosextras.cpython-38.pyc
 __pycache__/dbconnect.cpython-38.pyc
 config/__pycache__/db.cpython-38.pyc
 MAYO.xlsx
+*.pyc
