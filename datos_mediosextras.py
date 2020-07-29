@@ -112,27 +112,54 @@ def metricas_campanas(df, conn):
                 CampaignIDMFC = match.group(1)
                 Result = (match.group(15))
                 objcon = (match.group(13))
+                Objetive = ''
+                result = 0
                 costo_KPI = 0
                 if str(Result).upper() == 'CPVI':
                     result = Clicks
                     if result > 0:
-                        costo_KPI = Cost / Clicks
+                        costo_KPI = Cost / result
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                     Objetive = 'CPVI'
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
                     if result > 0:
                         costo_KPI = Cost / (Reach * 1000)
                     Objetive = 'CPMA'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPM':
                     result = Impressions
                     if result > 0:
                         costo_KPI = Cost / (Impressions * 1000)
                     Objetive = 'CPM'
+                    Clicks = 0
+                    Postengagements = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPV':
                     result = Videowachesat75
                     if result > 0:
                         costo_KPI = Cost/Videowachesat75
                     Objetive = 'CPV'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
                         result = Conversions
@@ -145,10 +172,16 @@ def metricas_campanas(df, conn):
                             costo_KPI = Cost/Conversions
                         Objetive = 'LE'
                     else:
-                        result = Clicks
+                        result = Conversions
                         if result > 0:
-                            costo_KPI = Cost/Clicks
+                            costo_KPI = Cost/Conversions
                         Objetive = 'CPCO'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPI':
                     if str(objcon).upper() == 'IN':
                         result = Postengagements
@@ -160,29 +193,52 @@ def metricas_campanas(df, conn):
                         if result > 0:
                             costo_KPI = Cost/Postengagements
                         Objetive = 'CPI'
+                    Clicks = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR'):
+                    if (str(objcon).upper() == 'BA') and media == 'FB':
                         result = Postengagements
                         if result > 0:
                             costo_KPI = Cost/Postengagements
                         Objetive = 'CPC'
+                        Clicks = 0
+                        Impressions = 0
+                        Videowachesat75 = 0
+                        ThruPlay = 0
+                        Conversions = 0
+                        AppInstall = 0
                     else:
                         result = Clicks
                         if result > 0:
                             costo_KPI = Cost/Clicks
                         Objetive = 'CPC'
+                        Postengagements = 0
+                        Impressions = 0
+                        Videowachesat75 = 0
+                        ThruPlay = 0
+                        Conversions = 0
+                        AppInstall = 0
                 elif str(Result).upper() == 'CPD':
-                    result = Conversions
+                    result = AppInstall
                     if result > 0:
-                        costo_KPI = Cost / Conversions
+                        costo_KPI = Cost / AppInstall
                     Objetive = 'CPD'
-        metrica = [CampaingID, Cost, Frequency,
-                   Reach, Postengagements, Impressions, Clicks, Landingpageviews,
-                   Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate]
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+        metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, AppInstall]
 
         metricas.append(metrica)
 
-    sql.connect.insertMetricasCampanas(metricas, 'Extras', conn)
+    sql.connect.insertMetricasCampanas(metricas, 'EXTRAS', conn)
 
 
 def diario_campanas(df, conn):
@@ -268,7 +324,7 @@ def diario_campanas(df, conn):
                             costo_KPI = Cost/Postengagements
                         Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') :
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR'):
                         result = Postengagements
                         if result > 0:
                             costo_KPI = Cost/Postengagements
