@@ -75,8 +75,7 @@ if __name__ == '__main__':
       # Adform
     try:
         dfcampanas = medios.Spreadsheet(
-            DB.AF['key'], DB.AF['media'], DB.TW['campanas'])
-
+            DB.AF['key'], DB.AF['media'], DB.AF['campanas'])
         medios.cuentas(dfcampanas, DB.AF['media'], conn)
         medios.campanas(dfcampanas, DB.AF['media'], conn)
 

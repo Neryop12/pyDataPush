@@ -1,7 +1,7 @@
 # Localhost
 
 
-DB = {
+DBA = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatforms',
     'user': 'omgdev',
