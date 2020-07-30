@@ -28,7 +28,7 @@ DBASD = {
     'port': 3306,
     'autocommit': 'True'
 }
-# DATOS PARA ERRORES y DIARIOS
+# Datos de Hojas Medios FB - GO - TW 
 FB = {
     'key': '1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',
     'campanas': 0,

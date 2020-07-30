@@ -260,7 +260,7 @@ def update_cammetrics(df, conn):
     Metricas = []
     df = df
     query = """Update Campaings set Campaignlifetimebudget=%s,Cost=%s where CampaingIDMFC= %s """
-    query2 = """Update CampaingMetrics set 
+    query2 = """Update CampaingMetrics set
                 Cost = %s,
                 Reach=%s,
                 Clicks=%s,
@@ -326,7 +326,7 @@ def update_cammetrics(df, conn):
                     costo_KPI = Cost/Interacciones
                     Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':  
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
                         result = Interacciones
                         costo_KPI = Cost/Interacciones
                         Objetive = 'CPC'
@@ -360,14 +360,14 @@ def update_cammetrics_kpi(conn):
 				from Campaings CAMP
                 INNER JOIN CampaingMetrics METRICS on METRICS.CampaignIDMFC = CAMP.CampaingIDMFC
                 Inner JOIN Accounts ACC on ACC.AccountsID = CAMP.AccountsID
-                WHERE Result <=0
+                WHERE Result <=0 AND CloseData > 0
                 GROUP BY CAMP.CampaingID;
                 """
+
     query2 = """Update CampaingMetrics set 
-                Result=%s
-                Objetive=%s
-                KPICost=%s
-                where Id = %s """
+                Result=%s,
+                Objetive=%s,
+
 
     try:
         result = 0
@@ -378,7 +378,7 @@ def update_cammetrics_kpi(conn):
         resultscon = cur.fetchall()
         CampaingIDMFC = 0
         for row in resultscon:
-            
+
             regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
             match = re.search(regex, str(row[0]))
             if match != None:
@@ -391,55 +391,66 @@ def update_cammetrics_kpi(conn):
                 Reproducciones = int(row[6])
                 Conversiones = int(row[7])
                 media = str(row[8])
-                CampaingIDMFC = int(row[10])
+                CampaingIDMFC = int(row[9])
                 Result = (match.group(15))
                 objcon = (match.group(13))
                 costo_KPI = 0
                 if str(Result).upper() == 'CPVI':
                     result = Clicks
-                    costo_KPI = Cost / Clicks
+                    if Clicks > 0: 
+                        costo_KPI = Cost / Clicks
                     Objetive = 'CPVI'
                 elif str(Result).upper() == 'CPMA':
                     result = Alcance
-                    costo_KPI = Cost / (Alcance * 1000)
+                    if Alcance > 0:
+                        costo_KPI = Cost / (Alcance * 1000)
                     Objetive = 'CPMA'
                 elif str(Result).upper() == 'CPM':
                     result = Impresiones
-                    costo_KPI = Cost / (Impresiones * 1000)
+                    if Impresiones > 0:
+                        costo_KPI = Cost / (Impresiones * 1000)
                     Objetive = 'CPM'
                 elif str(Result).upper() == 'CPV':
                     result = Reproducciones
-                    costo_KPI = Cost/Reproducciones
+                    if Reproducciones > 0:
+                        costo_KPI = Cost/Reproducciones
                     Objetive = 'CPV'
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
                         result = Conversiones
-                        costo_KPI = Cost/Conversiones
+                        if Conversiones > 0:
+                            costo_KPI = Cost/Conversiones
                         Objetive = 'MESAD'
                     elif str(objcon).upper() == 'LE':
                         result = Conversiones
-                        costo_KPI = Cost/Conversiones
+                        if Conversiones > 0:
+                            costo_KPI = Cost/Conversiones
                         Objetive = 'LE'
                     else:
                         result = Clicks
-                        costo_KPI = Cost / Clicks
+                        if Clicks > 0:
+                            costo_KPI = Cost / Clicks
                         Objetive = 'CPCO'
                 elif str(Result).upper() == 'CPI':
                     result = Interacciones
-                    costo_KPI = Cost/Interacciones
+                    if Interacciones > 0: 
+                        costo_KPI = Cost/Interacciones
                     Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':  
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
                         result = Interacciones
-                        costo_KPI = Cost/Interacciones
+                        if Interacciones > 0:
+                            costo_KPI = Cost/Interacciones
                         Objetive = 'CPC'
                     else:
                         result = Clicks
-                        costo_KPI = Cost/Clicks
+                        if Clicks > 0:
+                            costo_KPI = Cost/Clicks
                         Objetive = 'CPC'
                 elif str(Result).upper() == 'CPD':
                     result = Conversiones
-                    costo_KPI = Cost / Conversiones
+                    if Conversiones > 0:
+                        costo_KPI = Cost / Conversiones
                     Objetive = 'CPD'
                 Metrica = (result, Objetive, costo_KPI,CampaingIDMFC)
                 Metricas.append(Metrica)
@@ -449,15 +460,41 @@ def update_cammetrics_kpi(conn):
         cur.close()
     except Exception as e:
         print(e)
+
     
     
+def update_AppInstall(conn):
+    cur = conn.cursor()
+    Metricas = []
+    query = """
+                SELECT CampaingID, Conversions FROM HistoricCampaings METRIC
+	            WHERE Campaingname like '%DES%';
+                """
+    query2 = """Update HistoricCampaings set 
+                AppInstalls=%s
+                where CampaingID = %s ;"""
+    try:
+        cur.execute("SET FOREIGN_KEY_CHECKS=0")
+        cur.execute(query, )
+        resultscon = cur.fetchall()
+        for row in resultscon:
+            metrica = [int(row[1]),str(row[0])]
+            Metricas.append(metrica)
+        cur.executemany(query2, Metricas)
+        cur.execute("SET FOREIGN_KEY_CHECKS=1")
+        cur.close()
+    except Exception as e:
+        print(e)
+
+
+
 
 
 if __name__ == '__main__':
 
     # Iniciamos la conexion
-    conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
-                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
+    conn = sql.connect.open(db.DBR['host'], db.DB['user'], db.DB['password'],
+                            db.DBR['dbname'], db.DB['port'], db.DB['autocommit'])
 
     try:
         #dfni = Spreadsheet(db.CLARO['key'],  db.CLARO['SV'])

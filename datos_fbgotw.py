@@ -12,7 +12,7 @@ import numpy as np
 Week = datetime.now().isocalendar()[1]
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-
+#CreateDate = "2020-06-29"
 # CONEXION A SPREADSHEETS
 
 Campaignobjective = ''
@@ -199,8 +199,8 @@ def metricas_campanas(df, media, conn):
             Clicks = int(row['Outbound clicks'])
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
-            ThruPlay = int(row['ThruPlay actions'])
-            Conversions = int(row['Website leads'])
+            ThruPlay = 0
+            Conversions = 0
             AppInstall = 0
 
         elif media == 'GO':
@@ -260,7 +260,7 @@ def metricas_campanas(df, media, conn):
             ThruPlay = 0
             Conversions = int(row['Conversions'])
             AppInstall = int(row['Conversions'])
-
+            
         if Campaingname != 0 or Campaingname != '':
             regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
             match = re.search(regex, Campaingname)
@@ -356,6 +356,7 @@ def metricas_campanas(df, media, conn):
         metricas.append(metrica)
 
     sql.connect.insertMetricasCampanas(metricas, media, conn)
+
 
 
 def adsets(df, media, conn):
