@@ -69,7 +69,7 @@ class connect(object):
         (CampaingID,Cost,Frequency,
         Reach,Postengagements,Impressions
         ,Clicks,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, AppInstalls,CloseData) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,1)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.execute("set global max_allowed_packet=67108864")
@@ -252,5 +252,47 @@ class connect(object):
             cur.execute("SET FOREIGN_KEY_CHECKS=1")
             print('Actions ' + media)
             cur.close()
+        except Exception as e:
+            print(e)
+
+    def ObtenerIDMFC(Id, conn):
+        try:
+            cur = conn.cursor(buffered=True)
+            query = """ SELECT ID FROM mfcgt.mfccompradiaria 
+                        WHERE multiplestiposg like '%{}%';
+                    """.format(Id)
+            cur.execute(query)
+            return cur.fetchone()
+        except Exception as e:
+            print(e)
+            return None
+
+    def insertCampanasReport(campanas, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO Campaings(
+                CampaingID,Campaingname,CampaingIDMFC,CreateDate)
+                VALUES (%s,%s,%s,%s)
+                 ON DUPLICATE KEY UPDATE Campaingname=VALUES(Campaingname), CreateDate=VALUES(CreateDate)
+                """
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.executemany(query, campanas)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Campanas almacenadas ')
+        except Exception as e:
+            print(e)
+
+    def insertCreadtiveAdsReport(creativeads, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO CreativeAds(
+                AdcreativeID,Creativename,Linktopromotedpost,AdID,CreateDate)
+                VALUES (%s,%s,%s,%s,%s)
+                 ON DUPLICATE KEY UPDATE Creativename=VALUES(Creativename), CreateDate=VALUES(CreateDate), Linktopromotedpost=VALUES(Linktopromotedpost)
+                """
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.executemany(query, creativeads)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Creative Ads Almacenadas ')
         except Exception as e:
             print(e)

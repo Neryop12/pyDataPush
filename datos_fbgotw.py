@@ -11,7 +11,7 @@ import numpy as np
 
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
-CreateDate = "2020-06-29"
+#CreateDate = "2020-06-29"
 # CONEXION A SPREADSHEETS
 
 Campaignobjective = ''
@@ -195,6 +195,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = 0
             Conversions = 0
+            AppInstall = 0
 
         elif media == 'GO':
             if int(row['Campaign ID']) < 1:
@@ -211,7 +212,8 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Watch 75% views'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
-#DES
+            AppInstall = int(row['Conversions'])
+# DES
         elif media == 'TW':
 
             CampaingID = row['Campaign ID']
@@ -226,6 +228,7 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = int(row['Video views (75% complete)'])
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
 
         elif media == 'AF':
             if int(row['Cost']) < 1:
@@ -242,7 +245,8 @@ def metricas_campanas(df, media, conn):
             Videowachesat75 = 0
             ThruPlay = 0
             Conversions = int(row['Conversions'])
-
+            AppInstall = int(row['Conversions'])
+            
         if Campaingname != 0 or Campaingname != '':
             regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
             match = re.search(regex, Campaingname)
@@ -256,23 +260,48 @@ def metricas_campanas(df, media, conn):
                 if str(Result).upper() == 'CPVI':
                     result = Clicks
                     if result > 0:
-                        costo_KPI = Cost / Clicks
+                        costo_KPI = Cost / result
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                     Objetive = 'CPVI'
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
                     if result > 0:
                         costo_KPI = Cost / (Reach * 1000)
                     Objetive = 'CPMA'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPM':
                     result = Impressions
                     if result > 0:
                         costo_KPI = Cost / (Impressions * 1000)
                     Objetive = 'CPM'
+                    Clicks = 0
+                    Postengagements = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPV':
                     result = Videowachesat75
                     if result > 0:
                         costo_KPI = Cost/Videowachesat75
                     Objetive = 'CPV'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPCO':
                     if str(objcon).upper() == 'MESAD':
                         result = Conversions
@@ -285,10 +314,16 @@ def metricas_campanas(df, media, conn):
                             costo_KPI = Cost/Conversions
                         Objetive = 'LE'
                     else:
-                        result = Clicks
+                        result = Conversions
                         if result > 0:
-                            costo_KPI = Cost/Clicks
+                            costo_KPI = Cost/Conversions
                         Objetive = 'CPCO'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPI':
                     if str(objcon).upper() == 'IN':
                         result = Postengagements
@@ -300,28 +335,53 @@ def metricas_campanas(df, media, conn):
                         if result > 0:
                             costo_KPI = Cost/Postengagements
                         Objetive = 'CPI'
+                    Clicks = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
+                    AppInstall = 0
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
+                    if (str(objcon).upper() == 'BA') and media == 'FB':
                         result = Postengagements
                         if result > 0:
                             costo_KPI = Cost/Postengagements
                         Objetive = 'CPC'
+                        Clicks = 0
+                        Impressions = 0
+                        Videowachesat75 = 0
+                        ThruPlay = 0
+                        Conversions = 0
+                        AppInstall = 0
                     else:
                         result = Clicks
                         if result > 0:
                             costo_KPI = Cost/Clicks
                         Objetive = 'CPC'
+                        Postengagements = 0
+                        Impressions = 0
+                        Videowachesat75 = 0
+                        ThruPlay = 0
+                        Conversions = 0
+                        AppInstall = 0
                 elif str(Result).upper() == 'CPD':
-                    result = Conversions
+                    result = AppInstall
                     if result > 0:
-                        costo_KPI = Cost / Conversions
+                        costo_KPI = Cost / AppInstall
                     Objetive = 'CPD'
+                    Clicks = 0
+                    Postengagements = 0
+                    Impressions = 0
+                    Videowachesat75 = 0
+                    ThruPlay = 0
+                    Conversions = 0
         metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
-                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI]
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI,AppInstall]
 
         metricas.append(metrica)
 
     sql.connect.insertMetricasCampanas(metricas, media, conn)
+
 
 
 def adsets(df, media, conn):
