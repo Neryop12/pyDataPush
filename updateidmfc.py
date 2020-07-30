@@ -260,7 +260,7 @@ def update_cammetrics(df, conn):
     Metricas = []
     df = df
     query = """Update Campaings set Campaignlifetimebudget=%s,Cost=%s where CampaingIDMFC= %s """
-    query2 = """Update CampaingMetrics set 
+    query2 = """Update CampaingMetrics set
                 Cost = %s,
                 Reach=%s,
                 Clicks=%s,
@@ -326,7 +326,7 @@ def update_cammetrics(df, conn):
                     costo_KPI = Cost/Interacciones
                     Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':  
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
                         result = Interacciones
                         costo_KPI = Cost/Interacciones
                         Objetive = 'CPC'
@@ -363,11 +363,11 @@ def update_cammetrics_kpi(conn):
                 WHERE Result <=0 AND CloseData > 0
                 GROUP BY CAMP.CampaingID;
                 """
+
     query2 = """Update CampaingMetrics set 
                 Result=%s,
                 Objetive=%s,
-                KPICost=%s
-                where Id = %s """
+
 
     try:
         result = 0
@@ -378,7 +378,7 @@ def update_cammetrics_kpi(conn):
         resultscon = cur.fetchall()
         CampaingIDMFC = 0
         for row in resultscon:
-            
+
             regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
             match = re.search(regex, str(row[0]))
             if match != None:
@@ -437,7 +437,7 @@ def update_cammetrics_kpi(conn):
                         costo_KPI = Cost/Interacciones
                     Objetive = 'CPI'
                 elif str(Result).upper() == 'CPC':
-                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':  
+                    if (str(objcon).upper() == 'BA' or str(objcon).upper() == 'TR') and media == 'FB':
                         result = Interacciones
                         if Interacciones > 0:
                             costo_KPI = Cost/Interacciones
@@ -460,6 +460,7 @@ def update_cammetrics_kpi(conn):
         cur.close()
     except Exception as e:
         print(e)
+
     
     
 def update_AppInstall(conn):
@@ -484,6 +485,7 @@ def update_AppInstall(conn):
         cur.close()
     except Exception as e:
         print(e)
+
 
 
 
