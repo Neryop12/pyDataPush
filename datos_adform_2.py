@@ -212,6 +212,7 @@ def CuentasCampanas(conn):
 
                 # Se verifica si Frequency es numerico
 
+
                 cuenta = [AccountID, Account, media, CreateDate]
                 diario = [CampaingID, Campaingname, Campaigndailybudget,
                           Campaignlifetimebudget, Percentofbudgetused,
@@ -227,6 +228,7 @@ def CuentasCampanas(conn):
 
         sql.connect.insertCuentas(cuentas, media, conn)
         sql.connect.insertCampanas(campanas, media, conn)
+        sql.connect.insertMetricasCampanas(metricas, media, conn)
         sql.connect.insertDiarioCampanas(diarios, media, conn)
         sql.connect.insertHistoric(historico, media, conn)
 

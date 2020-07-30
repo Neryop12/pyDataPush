@@ -10,14 +10,11 @@ if __name__ == '__main__':
 
     # Iniciamos la conexion
     conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
-                            db.DB['dbname'],  db.DB['autocommit'])
+                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
     # Facebook
     try:
         dfcampanas = medios.Spreadsheet(
             db.FB['key'], db.FB['media'], db.FB['campanas'])
-        dfadsets = medios.Spreadsheet(
-            db.FB['key'], db.FB['media'], db.FB['adsets'])
-        dfads = medios.Spreadsheet(db.FB['key'], db.FB['media'], db.FB['ads'])
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'FB', db.DAY['FB'])
         medios.actualizarestado(dfdiarios, 'FB', conn)
@@ -31,14 +28,10 @@ if __name__ == '__main__':
 
     except Exception as e:
         print(e)
-
     # Google
     try:
         dfcampanas = medios.Spreadsheet(
             db.GO['key'], db.GO['media'], db.GO['campanas'])
-        dfadsets = medios.Spreadsheet(
-            db.GO['key'], db.GO['media'], db.GO['adsets'])
-        dfads = medios.Spreadsheet(db.GO['key'], db.GO['media'], db.GO['ads'])
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'GO', db.DAY['GO'])
         medios.actualizarestado(dfdiarios, 'GO', conn)
@@ -51,9 +44,6 @@ if __name__ == '__main__':
     try:
         dfcampanas = medios.Spreadsheet(
             db.TW['key'], db.TW['media'], db.TW['campanas'])
-        dfadsets = medios.Spreadsheet(
-            db.TW['key'], db.TW['media'], db.TW['adsets'])
-        dfads = medios.Spreadsheet(db.TW['key'], db.TW['media'], db.TW['ads'])
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'TW', db.DAY['TW'])
         medios.actualizarestado(dfdiarios, 'TW', conn)
@@ -61,10 +51,7 @@ if __name__ == '__main__':
 
     except Exception as e:
         print(e)
-    # Cerramos la conexion
-
-
-# MediaMath
+     # MediaMath
     try:
         mm.GetToken()
         mm.GetSession()

@@ -13,19 +13,15 @@ DBA = {
 # Produccion
 DB = {
     'host': '3.95.117.169',
-    #'host': 'localhost',
-    # 'dbname': 'MediaPlatformsReports',
     'dbname': 'MediaPlatforms',
     'user': 'root',
     'password': 'AnnalectDB2019',
     'port': 3306,
     'autocommit': 'True'
 }
-# Desarrollo
-DBR = {
+# Produccion
+DBASD = {
     'host': '3.95.117.169',
-    #'host': 'localhost',
-    # 'dbname': 'MediaPlatformsReports',
     'dbname': 'MediaPlatformsReports',
     'user': 'root',
     'password': 'AnnalectDB2019',
@@ -64,6 +60,33 @@ TW = {
     'ads': '410298309',
     'media': 'TW'
 }
+
+# SEMANALES
+FBS = {
+    'key': '1wK7X0QqtgQ7xPpDhYsHcOJMlYT5X5Q39jWWlEFqfSg0',
+    'campanas': 0,
+    'media': 'FB'
+}
+
+GOS = {
+    'key': '1S2LE6QQ1LSUPK9gW-pTOgaU8aerd7v-zHa76jfkNtFs',
+    'campanas': 0,
+    'media': 'GO'
+}
+
+TWS = {
+    'key': '1FtMBkKQAADYHRuY5kESkz2Yehx4d-KPuWeyFgfSwED8',
+    'campanas': 0,
+    'media': 'TW'
+}
+AFS = {
+    'key': '1356ovprYhbNRSvDRB7-HqL0L4tTebe4uGPuaTkCzS7A',
+    'campanas': 0,
+    'media': 'AF'
+}
+
+# APIS
+
 
 MM = {
     "username": "sfranco@omg.com.gt",

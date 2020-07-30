@@ -17,7 +17,6 @@ def openConnection():
                              user=db.DB['user'], password=db.DB['password'], autocommit=db.DB['autocommit'], port=db.DB['port'])
     except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
-        sys.exit()
 
 
 def errors_fb_inv(conn):
