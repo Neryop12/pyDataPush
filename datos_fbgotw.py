@@ -9,9 +9,10 @@ import configparser
 import pandas as pd
 import numpy as np
 
-
+Week = datetime.now().isocalendar()[1]
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
+
 # CONEXION A SPREADSHEETS
 
 Campaignobjective = ''
@@ -195,7 +196,7 @@ def metricas_campanas(df, media, conn):
             Reach = row['Reach']
             Postengagements = row['Post engagements']
             Impressions = int(row['Impressions'])
-            Clicks = int(row['Link clicks'])
+            Clicks = int(row['Outbound clicks'])
             Landingpageviews = int(row['Landing page views'])
             Videowachesat75 = int(row['Video watches at 75%'])
             ThruPlay = int(row['ThruPlay actions'])
@@ -226,7 +227,7 @@ def metricas_campanas(df, media, conn):
             Cost = row['Cost']
             Frequency = 0
             Reach = 0
-            Postengagements = 0
+            Postengagements = row['Engagements']
             Impressions = row['Impressions']
             Clicks = int(row['Clicks'])
             Landingpageviews = 0
@@ -350,7 +351,7 @@ def metricas_campanas(df, media, conn):
                     Objetive = 'CPD'
                     Conversions = 0
         metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
-                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, AppInstall]
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, AppInstall, Week]
 
         metricas.append(metrica)
 
