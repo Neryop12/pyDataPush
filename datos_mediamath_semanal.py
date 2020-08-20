@@ -14,7 +14,7 @@ from xml.etree import ElementTree
 import io
 import math
 
-
+Week = datetime.now().isocalendar()[1]
 now = datetime.now()
 CreateDate = now.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -23,7 +23,7 @@ ayer = ayer.strftime("%Y-%m-%d")
 semana = (datetime.now() - timedelta(7))
 semana = semana.strftime("%Y-%m-%d")
 
-semana = '2020-07-01'
+
 
 Objetive = ''
 result = 0
@@ -224,7 +224,8 @@ def CuentasCampanas(conn):
                        Percentofbudgetused, Cost, CampaignIDMFC, CreateDate]
             cuenta = [AccountID, Account, media, CreateDate]
             metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
-                       Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, None]
+                       Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, 
+                       costo_KPI, None, Week,0]
             diario = [CampaingID, Campaingname, Campaigndailybudget,
                       Campaignlifetimebudget, Percentofbudgetused,
                       StartDate, EndDate, result, Objetive, CampaignIDMFC,

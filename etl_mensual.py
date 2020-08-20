@@ -13,7 +13,7 @@ def openConnection():
         conn = mysql.connect(host='3.95.117.169', database='MediaPlatformsReports',
                              user='root', password='AnnalectDB2019', autocommit=True)
         return conn
-    except Exception as e:
+    except:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
 
 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     # Facebook
     try:
         dfcampanas = medios.Spreadsheet(
-            db.FBS['key'], db.FBS['media'], db.FBS['campanas'])
+            db.FBM['key'], db.FBM['media'], db.FBM['campanas'])
 
         medios.cuentas(dfcampanas, db.FBS['media'], conn)
         medios.campanas(dfcampanas, db.FBS['media'], conn)
@@ -33,7 +33,7 @@ if __name__ == '__main__':
     # GOSogle
     try:
         dfcampanas = medios.Spreadsheet(
-            db.GOS['key'], db.GOS['media'], db.GOS['campanas'])
+            db.GOM['key'], db.GOM['media'], db.GOM['campanas'])
 
         medios.cuentas(dfcampanas, db.GOS['media'], conn)
         medios.campanas(dfcampanas, db.GOS['media'], conn)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     # TWSitter
     try:
         dfcampanas = medios.Spreadsheet(
-            db.TWS['key'], db.TWS['media'], db.TWS['campanas'])
+            db.TWM['key'], db.TWM['media'], db.TWM['campanas'])
 
         medios.cuentas(dfcampanas, db.TWS['media'], conn)
         medios.campanas(dfcampanas, db.TWS['media'], conn)
@@ -60,14 +60,14 @@ if __name__ == '__main__':
         mm.CuentasCampanas(conn)
     except Exception as e:
         print(e)
-    #ADFROM
+
     try:
         dfcampanas = medios.Spreadsheet(
-        db.AFS['key'], db.AFS['media'], db.AFS['campanas'])
+        db.AFM['key'], db.AFM['media'], db.AFM['campanas'])
 
-        #medios.cuentas(dfcampanas, db.AFS['media'], conn)
-        #medios.campanas(dfcampanas, db.AFS['media'], conn)
-        #medios.metricas_campanas(dfcampanas, db.AFS['media'], conn)
+        medios.cuentas(dfcampanas, db.AFS['media'], conn)
+        medios.campanas(dfcampanas, db.AFS['media'], conn)
+        medios.metricas_campanas(dfcampanas, db.AFS['media'], conn)
         
     except Exception as e:
         print('Error on line {}'.format(

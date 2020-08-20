@@ -351,7 +351,7 @@ def metricas_campanas(df, media, conn):
                     Objetive = 'CPD'
                     Conversions = 0
         metrica = [CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
-                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, AppInstall, Week]
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, AppInstall, Week,0]
 
         metricas.append(metrica)
 

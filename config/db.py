@@ -3,7 +3,7 @@
 
 DBA = {
     'host': '127.0.0.1',
-    'dbname': 'mediaplatforms',
+    'dbname': 'mediaplatformsreports',
     'user': 'omgdev',
     'password': 'Sdev@2002!',
     'port': 3306,
@@ -85,6 +85,30 @@ AFS = {
     'media': 'AF'
 }
 
+# MENSUALES
+FBM = {
+    'key': '1TnheIjrMybyBwwZLtHhrD4-9s2OlBDAVHtM8giDJxG8',
+    'campanas': 0,
+    'media': 'FB'
+}
+
+GOM = {
+    'key': '1CFbcOR7EKSw2bAzCOsq4YoTtGQ5MgRKcXy00IxZ9aEw',
+    'campanas': 0,
+    'media': 'GO'
+}
+
+TWM = {
+    'key': '1WGJY75bmr3WI1KtkB_AI2_4hxI8kZTghvvXXEWDL5Oc',
+    'campanas': 0,
+    'media': 'TW'
+}
+AFM = {
+    'key': '1356ovprYhbNRSvDRB7-HqL0L4tTebe4uGPuaTkCzS7A',
+    'campanas': 0,
+    'media': 'AF'
+}
+
 # APIS
 
 
@@ -130,9 +154,45 @@ CLARO = {
     "PA": 1865537210
 }
 
+CLARO_Medios_Externos = {
+    "key": "1vK5V5zYE3tDpS7irmtFZQaXLuNYz4KeNvYOwQGUGEfI",
+    "NI": 1615861699,
+    "GT": 1768488806,
+    "CR": 1424071698,
+    "HN": 286156122,
+    "SV": 1751136440,
+    "PA": 2089235985
+}
+
+CLARO_ADSMOVIL = {
+    "key": "1lmr6LibQBw6U6REoFerPMC7Fm0UduqIDkWoJSWvAFAg",
+    "NI": 1913620454,
+    "GT": 1042994173,
+    "CR": 609347004,
+    "HN": 1293007035,
+    "SV": 1120741206,
+    "PA": 34978249
+}
+
+CLARO_GO_SEARCH = {
+    "key": "1s-HZy4_091Vq86Rw7IiyV8D07Yj_QJxheNZRH6IU-ds",
+    "NI": 1501641103,
+    "GT": 1277666541,
+    "CR": 2085969324,
+    "HN": 1798595301,
+    "SV": 35797802,
+    "PA": 960926093
+}
+
 PHD = {
     "key": "1fkjQjNbZtgr0yvZmjhjO-QSAuFW1efSR7aplwUIhccc",
     "DATA": 0
+}
+
+PHD_Medios_Externos = {
+    "key": "1owODC8hYL2FjM-0ZPvLJDcRq_x1sUzix_W-_sjifSdg",
+    "DATA": 0,
+    "FB": 979768254
 }
 
 
