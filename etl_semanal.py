@@ -10,8 +10,8 @@ import sys
 
 def openConnection():
     try:
-        conn = mysql.connect(host='3.95.117.169', database='MediaPlatformsReports',
-                             user='root', password='AnnalectDB2019', autocommit=True)
+        #conn = mysql.connect(host='127.0.0.1', database='MediaPlatformsReports',user='root', password='', autocommit=True)
+        conn = mysql.connect(host='3.95.117.169', database='MediaPlatformsReports',user='root', password='AnnalectDB2019', autocommit=True)
         return conn
     except Exception as e:
         print("ERROR: NO SE PUEDO ESTABLECER CONEXION MYSQL.")
@@ -56,8 +56,8 @@ if __name__ == '__main__':
      # MediaMath
     try:
         mm.GetToken()
-        mm.GetSession()
-        mm.CuentasCampanas(conn)
+        #mm.GetSession()
+        #mm.CuentasCampanas(conn)
     except Exception as e:
         print(e)
     #ADFROM
@@ -65,7 +65,7 @@ if __name__ == '__main__':
         dfcampanas = medios.Spreadsheet(
         db.AFS['key'], db.AFS['media'], db.AFS['campanas'])
 
-        #medios.cuentas(dfcampanas, db.AFS['media'], conn)
+        medios.cuentas(dfcampanas, db.AFS['media'], conn)
         #medios.campanas(dfcampanas, db.AFS['media'], conn)
         #medios.metricas_campanas(dfcampanas, db.AFS['media'], conn)
         

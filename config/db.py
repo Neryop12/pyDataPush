@@ -85,6 +85,24 @@ AFS = {
     'media': 'AF'
 }
 
+#ANUAL
+FBA = {
+    'key': '10A4gPPW4M8I_fofFEic0rcmM5yEGmecDjGIX_yxKT-o',
+    'campanas': 0,
+    'media': 'FB'
+}
+GOA = {
+    'key': '1yC3DIMBRbrWBjUg-rgTPMJ96z9KnWV1KsmJUobwn3tw',
+    'campanas': 0,
+    'media': 'GO'
+}
+TWA = {
+    'key': '1lmrXeeDIEQ3cCAksM6ko1iUZTaOnyotwZnfRJMCJkZM',
+    'campanas': 0,
+    'media': 'TW'
+}
+
+
 # MENSUALES
 FBM = {
     'key': '1TnheIjrMybyBwwZLtHhrD4-9s2OlBDAVHtM8giDJxG8',
@@ -157,7 +175,7 @@ CLARO = {
 CLARO_Medios_Externos = {
     "key": "1vK5V5zYE3tDpS7irmtFZQaXLuNYz4KeNvYOwQGUGEfI",
     "NI": 1615861699,
-    "GT": 1768488806,
+    "GT": 813866195,
     "CR": 1424071698,
     "HN": 286156122,
     "SV": 1751136440,
@@ -204,4 +222,28 @@ ADS_CLARO = {
     "HN": 1928652091,
     "SV": 1300252618,
     "PA": 175918674
+}
+
+# PHD
+FBP = {
+    'key': '1uTBqeV7e0Ja1Nij1ED5iwIUcFQNO_HY62GTSPWJOiq4',
+    'campanas': 0,
+    'media': 'FB'
+}
+
+GOP = {
+    'key': '1k0la2Tm6rI8LgFS1A5lrvdWzTCSvqaYoxAqEhQjMlKw',
+    'campanas': 0,
+    'media': 'GO'
+}
+
+TWP = {
+    'key': '18CCnYyQ7TuuZOxKLQcfrPo1dBq53TJfM-j_68Q63tFc',
+    'campanas': 0,
+    'media': 'TW'
+}
+AFP = {
+    'key': '1joR29INWYl401qX0AbswxY4lzm_tVsO_a-gW3ltyKj0',
+    'campanas': 0,
+    'media': 'AF'
 }

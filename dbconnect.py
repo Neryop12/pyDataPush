@@ -82,6 +82,23 @@ class connect(object):
         except Exception as e:
             print('Error on line {}'.format(
                 sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+                
+    def insertMetricasCampanasTemp(metricas, media, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO CampaingMetricsTemp
+        (CampaingID,Cost,Frequency,
+        Reach,Postengagements,Impressions
+        ,Clicks,Landingpageviews,
+        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, AppInstalls, Week,CloseData) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
+            cur.executemany(query, metricas)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Metricas Camp almacenadas ' + media)
+        except Exception as e:
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
     def insertAdsets(adsets, media, conn):
         cur = conn.cursor()
@@ -308,3 +325,16 @@ class connect(object):
             print('Creative Ads Almacenadas ')
         except Exception as e:
             print(e)
+
+    def ActualizarConversiones(metricas, conn):
+        cur = conn.cursor()
+        query = """Update CampaingMetrics set Result=%s,Conversions=%s where id>0 and Week = 46 and CampaignIDMFC=%s"""
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
+            cur.executemany(query, metricas)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Estado actualizado')
+        except Exception as e:
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)

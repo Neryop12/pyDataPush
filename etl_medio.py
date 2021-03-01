@@ -21,7 +21,7 @@ if __name__ == '__main__':
         
         mediosextras.campanas(dfni, conn)
         mediosextras.metricas_campanas(dfni, conn,'NI')
-        # mediosextras.diario_campanas(dfni, conn)
+        #mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
         print('Error on line {}'.format(
@@ -32,8 +32,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_Medios_Externos['key'],  db.CLARO_Medios_Externos['HN'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'HN')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'HN')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -44,8 +44,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_Medios_Externos['key'],  db.CLARO_Medios_Externos['PA'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'PA')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'PA')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -56,8 +56,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_Medios_Externos['key'],  db.CLARO_Medios_Externos['SV'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'SV')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'SV')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         
         mediosextras.campanas(dfni, conn)
         mediosextras.metricas_campanas(dfni, conn, 'NI')
-        # mediosextras.diario_campanas(dfni, conn)
+        #mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
         print('Error on line {}'.format(
@@ -82,8 +82,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_ADSMOVIL['key'],  db.CLARO_ADSMOVIL['HN'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'HN')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'HN')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -93,8 +93,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_ADSMOVIL['key'],  db.CLARO_ADSMOVIL['PA'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'PA')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'PA')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -105,8 +105,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_ADSMOVIL['key'],  db.CLARO_ADSMOVIL['SV'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'SV')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'SV')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -120,7 +120,7 @@ if __name__ == '__main__':
         
         mediosextras.campanas(dfni, conn)
         mediosextras.metricas_campanas(dfni, conn,'NI')
-        # mediosextras.diario_campanas(dfni, conn)
+        #mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
         print('Error on line {}'.format(
@@ -131,8 +131,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_GO_SEARCH['key'],  db.CLARO_GO_SEARCH['HN'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'HN')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'HN')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -143,8 +143,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_GO_SEARCH['key'],  db.CLARO_GO_SEARCH['PA'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'PA')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'PA')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
@@ -155,8 +155,8 @@ if __name__ == '__main__':
         dfni = mediosextras.Spreadsheet(db.CLARO_GO_SEARCH['key'],  db.CLARO_GO_SEARCH['SV'])
 
         
-        mediosextras.campanas(dfni, conn)
-        mediosextras.metricas_campanas(dfni, conn,'SV')
+        #mediosextras.campanas(dfni, conn)
+        #mediosextras.metricas_campanas(dfni, conn,'SV')
         # mediosextras.diario_campanas(dfni, conn)
 
     except Exception as e:
