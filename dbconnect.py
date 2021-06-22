@@ -72,7 +72,8 @@ class connect(object):
         (CampaingID,Cost,Frequency,
         Reach,Postengagements,Impressions
         ,Clicks,Landingpageviews,
-        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, AppInstalls, Week,CloseData) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        Videowachesat75,ThruPlay,Conversions,Result,Objetive,CampaignIDMFC,CreateDate, KPICost, AppInstalls, Week,CloseData)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0")
             cur.execute("set global max_allowed_packet=67108864")
@@ -147,6 +148,30 @@ class connect(object):
             print('Error on line {}'.format(
                 sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
 
+    def insertMetricasAdSet_daily(metricas, media, conn):
+        cur = conn.cursor()
+        query = """INSERT INTO AdSetMetrics_daily
+        (id,AdSetID,Cost,Frequency,
+        Reach,Postengagements,Impressions
+        ,Clicks,Landingpageviews,
+        Videowachesat75,ThruPlay,Conversions,Country,CreateDate,CampaignIDMFC,Result) 
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON duplicate key update
+        Cost=VALUES(Cost),Frequency=VALUES(Frequency),Reach=VALUES(Reach),Postengagements=VALUES(Postengagements)
+        ,Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Landingpageviews=VALUES(Landingpageviews)
+        ,Videowachesat75=VALUES(Videowachesat75),Result=VALUES(Result),
+        UpdateDate=VALUES(CreateDate)
+        """
+        try:
+            cur.execute("SET FOREIGN_KEY_CHECKS=0")
+            cur.execute("set global max_allowed_packet=67108864")
+            cur.executemany(query, metricas)
+            cur.execute("SET FOREIGN_KEY_CHECKS=1")
+            print('Metricas Adsets almacenadas ' + media)
+        except Exception as e:
+            print('Error on line {}'.format(
+                sys.exc_info()[-1].tb_lineno), type(e).__name__, e)
+
     def insertMetricasAd(metricas, media, conn):
         cur = conn.cursor()
         query = """INSERT INTO MetricsAds
@@ -183,20 +208,22 @@ class connect(object):
     def insertDiarioCampanas(metricas, media, conn):
         cur = conn.cursor()
 
-        query = """INSERT INTO dailycampaing
-            (CampaingID,Campaingname,Campaigndailybudget,
-            Campaignlifetimebudget,Percentofbudgetused,
-            StartDate,EndDate,Result,Objetive,CampaignIDMFC,
-            Cost,Frequency,
-            Reach,Postengagements,Impressions,
-            Clicks,Landingpageviews,
-            VideoWatches75,ThruPlay,Conversions,CreateDate,KPICost) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        query = """INSERT INTO CampaingMetrics_daily
+        (id,CampaingID,Cost,Frequency,
+        Reach,Postengagements,Impressions
+        ,Clicks,Landingpageviews,
+        Videowachesat75,ThruPlay,Conversions,
+        Result,Objetive,CampaignIDMFC,CreateDate, KPICost, AppInstalls, Week,CloseData)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        ON duplicate key update
+        Cost=VALUES(Cost),Frequency=VALUES(Frequency),Reach=VALUES(Reach),Postengagements=VALUES(Postengagements)
+        ,Impressions=VALUES(Impressions),Clicks=VALUES(Clicks),Landingpageviews=VALUES(Landingpageviews)
+        ,Videowachesat75=VALUES(Videowachesat75),Result=VALUES(Result),Objetive=VALUES(Objetive),
+        KPICost=VALUES(KPICost),AppInstalls=VALUES(AppInstalls),UpdateDate=VALUES(CreateDate)
+        """
 
         try:
             cur.execute("SET FOREIGN_KEY_CHECKS=0;")
-            cur.execute("set global max_allowed_packet=67108864")
-            if media == 'FB':
-                cur.execute("TRUNCATE TABLE dailycampaing;")
             cur.executemany(query, metricas)
             cur.execute("SET FOREIGN_KEY_CHECKS=1;")
             print('Camps Diario ' + media)

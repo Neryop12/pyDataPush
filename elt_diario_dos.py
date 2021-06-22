@@ -5,12 +5,16 @@ import datos_mediamath as mm
 import datos_adform as adf
 import datos_mediosextras as mediosextras
 import datos_adsmovil as am
-
+import psycopg2
 if __name__ == '__main__':
 
     # Iniciamos la conexion
-    conn = sql.connect.open(db.DB['host'], db.DB['user'], db.DB['password'],
-                            db.DB['dbname'], db.DB['port'], db.DB['autocommit'])
+    conn = conn = psycopg2.connect(
+            host='visor-rds.cebdvwvqle9k.us-west-1.rds.amazonaws.com',
+            database='MediaPlatformsReports',
+            user='postgres',
+            password='Postgres21'
+        )
     # Facebook
     try:
         dfcampanas = medios.Spreadsheet(
@@ -26,11 +30,7 @@ if __name__ == '__main__':
         #medios.actualizarestado(dfdiarios, 'FB', conn)
         medios.diario_campanas(dfdiarios, 'FB', conn)
 
-        #dextras = medios.Spreadsheet(db.EXTRA['key'], 'FB', 0)
-        #medios.extrametrics(dextras, 'FB', conn)
-
-        #dactions = medios.Spreadsheet(db.EXTRA['key'], 'FB', db.EXTRA['CONV'])
-        #medios.actions(dactions, 'FB', conn)
+       
 
     except Exception as e:
         print(e)
@@ -43,9 +43,9 @@ if __name__ == '__main__':
             db.GO['key'], db.GO['media'], db.GO['adsets'])
         dfads = medios.Spreadsheet(db.GO['key'], db.GO['media'], db.GO['ads'])
 
-        #medios.metricas_campanas(dfcampanas, db.GO['media'], conn)
-        #medios.metricas_adsets(dfadsets, db.GO['media'], conn)
-        #medios.metricas_ads(dfads, db.GO['media'], conn)
+        medios.metricas_campanas(dfcampanas, db.GO['media'], conn)
+        medios.metricas_adsets(dfadsets, db.GO['media'], conn)
+        medios.metricas_ads(dfads, db.GO['media'], conn)
 
         dfdiarios = medios.Spreadsheet(db.DAY['key'], 'GO', db.DAY['GO'])
         #medios.actualizarestado(dfdiarios, 'GO', conn)

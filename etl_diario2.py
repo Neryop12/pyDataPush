@@ -1,10 +1,10 @@
 import config.db as db
 import dbconnect as sql
-import datos_fbgotw as medios
-import datos_mediamath as mm
-import datos_adform as adf
-import datos_mediosextras as mediosextras
-import datos_adsmovil as am
+import datos.datos_fbgotw as medios
+import datos.datos_mediamath as mm
+import datos.datos_adform as adf
+import datos.datos_mediosextras as mediosextras
+import datos.datos_adsmovil as am
 
 if __name__ == '__main__':
 

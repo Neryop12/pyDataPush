@@ -177,7 +177,7 @@ def campanas(df, media, conn):
     sql.connect.insertCampanas(campanas, media, conn)
 
 
-def metricas_campanas(df, media, conn):
+def metricas_campanas(df, media, conn,kind):
     metricas = []
     # Obtener los datos del Spreasheet
     df = df
@@ -356,7 +356,7 @@ def metricas_campanas(df, media, conn):
 
         metricas.append(metrica)
 
-    sql.connect.insertMetricasCampanas(metricas, media, conn)
+    sql.connect.insertMetricasCampanas(metricas, media, conn,kind)
 
 def metricas_campanas_temp(df, media, conn):
     metricas = []
@@ -665,7 +665,7 @@ def ads(df, media, conn):
     sql.connect.insertAds(ads, media, conn)
 
 
-def metricas_adsets(df, media, conn):
+def metricas_adsets(df, media, conn,kind):
     metricas = []
     # Obtener los datos del Spreasheet
     df = df
@@ -736,17 +736,22 @@ def metricas_adsets(df, media, conn):
 
         metricas.append(metrica)
 
-    sql.connect.insertMetricasAdSet(metricas, media, conn)
+    sql.connect.insertMetricasAdSet(metricas, media, conn, kind)
 
-
-def metricas_ads(df, media, conn):
+def metricas_adsets_daily(df, media, conn):
     metricas = []
     # Obtener los datos del Spreasheet
     df = df
+    
     for index, row in df.iterrows():
-
+        result = 0
+        Objetive = ''
+        objcon = ''
+        CampaignIDMFC = 0
+        costo_KPI = 0
         if media == 'FB':
-            AdID = int(row['Ad ID'])
+            AdSetID = row['Ad set ID']
+            Campaingname = row['Campaign name']
             Cost = row['Cost']
             Frequency = row['Frequency']
             Reach = row['Reach']
@@ -760,8 +765,8 @@ def metricas_ads(df, media, conn):
             Country = row['Country']
 
         elif media == 'GO':
-
-            AdID = int(row['Ad ID'])
+            Campaingname = row['Campaign name']
+            AdSetID = row['Ad group ID']
             Cost = row['Cost']
             Frequency = 0
             Reach = 0
@@ -775,8 +780,8 @@ def metricas_ads(df, media, conn):
             Country = ''
 
         if media == 'TW':
-
-            AdID = row['Line item ID']
+            Campaingname = row['Campaign']
+            AdSetID = row['Campaign ID']+row['Funding instrument ID']
             Cost = row['Cost']
             Frequency = 0
             Reach = 0
@@ -788,10 +793,12 @@ def metricas_ads(df, media, conn):
             ThruPlay = int(row['Video views'])
             Conversions = int(row['Conversions'])
             Country = ''
+
         if media == 'AF':
             if int(row['Cost']) < 1:
                 continue
-            AdID = row['Banner ID']
+            AdSetID = row['Line item ID']
+            Campaingname = row['Campaign']
             Cost = row['Cost']
             Frequency = 0
             Reach = 0
@@ -803,149 +810,7 @@ def metricas_ads(df, media, conn):
             ThruPlay = 0
             Conversions = int(row['Conversions'])
             Country = ''
-
-        metrica = [AdID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
-                   Landingpageviews, Videowachesat75, ThruPlay, Conversions, Country, CreateDate]
-
-        metricas.append(metrica)
-
-    sql.connect.insertMetricasAd(metricas, media, conn)
-
-
-def creative_ads(df, media, conn):
-    creatives = []
-    # Obtener los datos del Spreasheet
-    df = df
-    for index, row in df.iterrows():
-        if media == 'FB':
-            AdcreativeID = row['Ad creative ID']
-            Creativename = row['Creative title']
-            Linktopromotedpost = ''
-            AdcreativethumbnailURL = row['Ad creative thumbnail URL']
-            AdcreativeimageURL = row['Ad creative image URL']
-            ExternaldestinationURL = ''
-            Adcreativeobjecttype = row['Ad creative object type']
-            PromotedpostID = ''
-            Promotedpostname = ''
-            PromotedpostInstagramID = ''
-            Promotedpostmessage = ''
-            Promotedpostcaption = ''
-            PromotedpostdestinationURL = ''
-            PromotedpostimageURL = ''
-            LinktopromotedInstagrampost = row['Link to promoted Instagram post']
-            AdID = int(row['Ad ID'])
-            Adname = row['Ad name']
-            Country = row['Country']
-
-        creative = [AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname,
-                    PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID, Adname, Country, CreateDate]
-
-        creatives.append(creative)
-
-    sql.connect.insertCreativesAd(creatives, media, conn)
-
-
-def diario_campanas(df, media, conn):
-    metricas = []
-    historico = []
-    Campaingname = ''
-    result = 0
-    Objetive = ''
-    Percentofbudgetused = 0
-    costo_KPI = 0
-    # Obtener los datos del Spreasheet
-    df = df
-    for index, row in df.iterrows():
-        CampaignIDMFC = 0
-        if media == 'FB':
-            if int(row['Campaign ID']) < 1:
-                continue
-            CampaingID = int(row['Campaign ID'])
-            Campaingname = row['Campaign name']
-            Campaigndailybudget = row['Campaign daily budget']
-            Campaignlifetimebudget = row['Campaign lifetime budget']
-            Percentofbudgetused = 0
-            StartDate = row['Campaign start date']
-            EndDate = row['Campaign end date']
-            Cost = row['Cost']
-            Frequency = row['Frequency']
-            Reach = row['Reach']
-            Postengagements = row['Post engagements']
-            Impressions = int(row['Impressions'])
-            Clicks = int(row['Link clicks'])
-            Landingpageviews = int(row['Landing page views'])
-            Videowachesat75 = int(row['Video watches at 75%'])
-            ThruPlay = 0
-            Conversions = int(row['Website leads'])
-
-        elif media == 'GO':
-            if int(row['Campaign ID']) < 1:
-                continue
-            CampaingID = int(row['Campaign ID'])
-            Campaingname = row['Campaign name']
-            Campaignspendinglimit = 0
-            Campaigndailybudget = row['Daily budget']
-            Campaignlifetimebudget = row['Budget']
-            Percentofbudgetused = row['Percent of budget used']
-            StartDate = row['Start date']
-            EndDate = row['End date']
-            if EndDate == '' or EndDate == ' --' or EndDate == 0:
-                EndDate = '2019-01-01'
-            Cost = row['Cost']
-            Frequency = 0
-            Reach = 0
-            Postengagements = 0
-            Impressions = row['Impressions']
-            Clicks = int(row['Clicks'])
-            Landingpageviews = 0
-            Videowachesat75 = int(row['Watch 75% views'])
-            ThruPlay = int(row['Video views'])
-            Conversions = int(row['Conversions'])
-
-        if media == 'TW':
-
-            if row['Campaign ID'] == '':
-                continue
-            CampaingID = row['Campaign ID']
-            Campaingname = row['Campaign']
-            Campaignspendinglimit = 0
-            Campaigndailybudget = row['Campaign daily budget']
-            Campaignlifetimebudget = row['Campaign total budget']
-            StartDate = row['Campaign start time']
-            EndDate = row['Campaign end time']
-            Cost = row['Cost']
-            Frequency = 0
-            Reach = 0
-            Postengagements = 0
-            Impressions = row['Impressions']
-            Clicks = int(row['Clicks'])
-            Landingpageviews = 0
-            Videowachesat75 = int(row['Video views (75% complete)'])
-            ThruPlay = int(row['Video views'])
-            Conversions = int(row['Conversions'])
-
-        if media == 'AF':
-            if int(row['Cost']) < 1:
-                continue
-            CampaingID = row['Campaign ID']
-            Campaingname = row['Campaign']
-            Campaignspendinglimit = 0
-            Campaigndailybudget = 0
-            Campaignlifetimebudget = 0
-            StartDate = row['Campaign start date']
-            EndDate = row['Campaign end date']
-            Cost = row['Cost']
-            Frequency = 0
-            Reach = 0
-            Postengagements = 0
-            Impressions = row['Impressions campaign unique']
-            Clicks = int(row['Clicks'])
-            Landingpageviews = 0
-            Videowachesat75 = 0
-            ThruPlay = int(row['ThruPlay actions'])
-            Conversions = int(row['Conversions'])
-            costo_KPI = 0
-
+        
         if Campaingname != 0 or Campaingname != '':
             regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020|2021|21)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
             match = re.search(regex, Campaingname)
@@ -966,7 +831,7 @@ def diario_campanas(df, media, conn):
                 elif str(Result).upper() == 'CPMA':
                     result = Reach
                     if result > 0:
-                        costo_KPI = Cost / (Reach * 1000)
+                        costo_KPI = (Cost / Reach) * 1000
                     Objetive = 'CPMA'
                     Conversions = 0
                     AppInstall = 0
@@ -1035,32 +900,228 @@ def diario_campanas(df, media, conn):
                         costo_KPI = Cost / AppInstall
                     Objetive = 'CPD'
                     Conversions = 0
+        metrica = [AdSetID,AdSetID, Cost, Frequency, Reach, Postengagements, Impressions, Clicks,
+                   Landingpageviews, Videowachesat75, ThruPlay, Conversions, Country, CreateDate,CampaignIDMFC,result]
 
-            if EndDate == 0 or EndDate == '':
-                EndDate = '2020-12-31'
-            if datetime.strptime(EndDate, '%Y-%m-%d') < datetime.now() - timedelta(days=1):
-                historia = [CampaingID, Campaingname, Campaigndailybudget,
-                            Campaignlifetimebudget, Percentofbudgetused,
-                            StartDate, EndDate, result, Objetive, CampaignIDMFC,
-                            Cost, Frequency,
-                            Reach, Postengagements, Impressions,
-                            Clicks,  Landingpageviews,
-                            Videowachesat75, ThruPlay, Conversions, CreateDate, costo_KPI]
+        metricas.append(metrica)
 
-                historico.append(historia)
+    sql.connect.insertMetricasAdSet_daily(metricas, media, conn)
 
-        metrica = [CampaingID, Campaingname, Campaigndailybudget,
-                   Campaignlifetimebudget, Percentofbudgetused,
-                   StartDate, EndDate, result, Objetive, CampaignIDMFC,
-                   Cost, Frequency,
-                   Reach, Postengagements, Impressions,
-                   Clicks,  Landingpageviews,
-                   Videowachesat75, ThruPlay, Conversions, CreateDate, costo_KPI]
+
+def creative_ads(df, media, conn):
+    creatives = []
+    # Obtener los datos del Spreasheet
+    df = df
+    for index, row in df.iterrows():
+        if media == 'FB':
+            AdcreativeID = row['Ad creative ID']
+            Creativename = row['Creative title']
+            Linktopromotedpost = ''
+            AdcreativethumbnailURL = row['Ad creative thumbnail URL']
+            AdcreativeimageURL = row['Ad creative image URL']
+            ExternaldestinationURL = ''
+            Adcreativeobjecttype = row['Ad creative object type']
+            PromotedpostID = ''
+            Promotedpostname = ''
+            PromotedpostInstagramID = ''
+            Promotedpostmessage = ''
+            Promotedpostcaption = ''
+            PromotedpostdestinationURL = ''
+            PromotedpostimageURL = ''
+            LinktopromotedInstagrampost = row['Link to promoted Instagram post']
+            AdID = int(row['Ad ID'])
+            Adname = row['Ad name']
+            Country = row['Country']
+
+        creative = [AdcreativeID, Creativename, Linktopromotedpost, AdcreativethumbnailURL, AdcreativeimageURL, ExternaldestinationURL, Adcreativeobjecttype, PromotedpostID, Promotedpostname,
+                    PromotedpostInstagramID, Promotedpostmessage, Promotedpostcaption, PromotedpostdestinationURL, PromotedpostimageURL, LinktopromotedInstagrampost, AdID, Adname, Country, CreateDate]
+
+        creatives.append(creative)
+
+    sql.connect.insertCreativesAd(creatives, media, conn)
+
+
+def diario_campanas(df, media, conn):
+    metricas = []
+    # Obtener los datos del Spreasheet
+    df = df
+    for index, row in df.iterrows():
+        result = 0
+        Objetive = ''
+        objcon = ''
+        CampaignIDMFC = 0
+        costo_KPI = 0
+        if media == 'FB':
+            if int(row['Campaign ID']) < 1:
+                continue
+            CampaingID = int(row['Campaign ID'])
+            Campaingname = row['Campaign name']
+            Cost = row['Cost']
+            Frequency = row['Frequency']
+            Reach = row['Reach']
+            Postengagements = row['Post engagements']
+            Impressions = int(row['Impressions'])
+            Clicks = int(row['Outbound clicks'])
+            Landingpageviews = int(row['Landing page views'])
+            Videowachesat75 = int(row['Video watches at 75%'])
+            ThruPlay = 0
+            Conversions = 0
+            AppInstall = 0
+
+        elif media == 'GO':
+            if int(row['Campaign ID']) < 1:
+                continue
+            CampaingID = int(row['Campaign ID'])
+            Campaingname = row['Campaign name']
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = 0
+            Impressions = row['Impressions']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = int(row['Watch 75% views'])
+            ThruPlay = int(row['Video views'])
+            Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
+# DES
+        elif media == 'TW':
+
+            CampaingID = row['Campaign ID']
+            Campaingname = row['Campaign']
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = row['Engagements']
+            Impressions = row['Impressions']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = int(row['Video views (75% complete)'])
+            ThruPlay = int(row['Video views'])
+            Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
+
+        elif media == 'AF':
+            if int(row['Cost']) < 1:
+                continue
+            CampaingID = row['Campaign ID']
+            Campaingname = row['Campaign']
+            LineItem = row['Line item']
+            if LineItem != 0 or LineItem != '':
+                regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020|2021|21)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+                match = re.search(regex, LineItem)
+                if match != None:
+                    MedioNomenclatura = match.group(8)
+                    if MedioNomenclatura != 'ADF':
+                        continue
+            Cost = row['Cost']
+            Frequency = 0
+            Reach = 0
+            Postengagements = 0
+            Impressions = row['Tracked ads']
+            Clicks = int(row['Clicks'])
+            Landingpageviews = 0
+            Videowachesat75 = 0
+            ThruPlay = 0
+            Conversions = int(row['Conversions'])
+            AppInstall = int(row['Conversions'])
+            
+        if Campaingname != 0 or Campaingname != '':
+            regex = '([0-9,.]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_(ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC)_(2019|19|20|2020|2021|21)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9., ]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([ a-zA-ZáéíóúÁÉÍÓÚÑñ\s0-9-/.%+&!"#$%&()*+,/=@-]+)_([0-9, .-]+)?(_B-)?(_)?([0-9., ]+)?(_S-)?(_)?([0-9., ]+)?(\(([0-9.)])\))?(/[0-9].+)?'
+            match = re.search(regex, Campaingname)
+            if match != None:
+                CampaignIDMFC = match.group(1)
+                Result = (match.group(15))
+                objcon = (match.group(13))
+                Objetive = ''
+                result = 0
+                costo_KPI = 0
+                if str(Result).upper() == 'CPVI':
+                    result = Clicks
+                    if result > 0:
+                        costo_KPI = Cost / result
+                    Conversions = 0
+                    AppInstall = 0
+                    Objetive = 'CPVI'
+                elif str(Result).upper() == 'CPMA':
+                    result = Reach
+                    if result > 0:
+                        costo_KPI = (Cost / Reach) * 1000
+                    Objetive = 'CPMA'
+                    Conversions = 0
+                    AppInstall = 0
+                elif str(Result).upper() == 'CPM':
+                    result = Impressions
+                    if result > 0:
+                        costo_KPI = (Cost / Impressions) * 1000
+                    Objetive = 'CPM'
+                    Conversions = 0
+                    AppInstall = 0
+                elif str(Result).upper() == 'CPV':
+                    result = Videowachesat75
+                    if result > 0:
+                        costo_KPI = Cost/Videowachesat75
+                    Objetive = 'CPV'
+                    Conversions = 0
+                    AppInstall = 0
+                elif str(Result).upper() == 'CPCO':
+                    if str(objcon).upper() == 'MESAD':
+                        result = Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
+                        Objetive = 'MESAD'
+                    elif str(objcon).upper() == 'LE':
+                        result = Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
+                        Objetive = 'LE'
+                    else:
+                        result = Conversions
+                        if result > 0:
+                            costo_KPI = Cost/Conversions
+                        Objetive = 'CPCO'
+                    AppInstall = 0
+                elif str(Result).upper() == 'CPI':
+                    if str(objcon).upper() == 'IN':
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPI'
+                    else:
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPI'
+                    Conversions = 0
+                    AppInstall = 0
+                elif str(Result).upper() == 'CPC':
+                    if (str(objcon).upper() == 'BA') and media == 'FB':
+                        result = Postengagements
+                        if result > 0:
+                            costo_KPI = Cost/Postengagements
+                        Objetive = 'CPC'
+                        Conversions = 0
+                        AppInstall = 0
+                    else:
+                        result = Clicks
+                        if result > 0:
+                            costo_KPI = Cost/Clicks
+                        Objetive = 'CPC'
+                        Conversions = 0
+                        AppInstall = 0
+                elif str(Result).upper() == 'CPD':
+                    result = AppInstall
+                    if result > 0:
+                        costo_KPI = Cost / AppInstall
+                    Objetive = 'CPD'
+                    Conversions = 0
+        metrica = [CampaingID,CampaingID, Cost, Frequency, Reach, Postengagements, Impressions,
+                   Clicks, Landingpageviews, Videowachesat75, ThruPlay, Conversions, result, Objetive, CampaignIDMFC, CreateDate, costo_KPI, AppInstall, Week,0]
 
         metricas.append(metrica)
 
     sql.connect.insertDiarioCampanas(metricas, media, conn)
-    sql.connect.insertHistoric(historico, media, conn)
+    #sql.connect.insertHistoric(historico, media, conn)
 
 
 def actualizarestado(df, media, conn):

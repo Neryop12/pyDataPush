@@ -4,8 +4,8 @@
 DBA = {
     'host': '127.0.0.1',
     'dbname': 'mediaplatformsreports',
-    'user': 'omgdev',
-    'password': 'Sdev@2002!',
+    'user': 'root',
+    'password': '',
     'port': 3306,
     'autocommit': 'True'
 }
@@ -28,7 +28,7 @@ DBASD = {
     'port': 3306,
     'autocommit': 'True'
 }
-# Datos de Hojas Medios FB - GO - TW 
+# Datos de Hojas Medios Hora FB - GO - TW 
 FB = {
     'key': '1fqS12Wc1UIo7v9Ma7OUjY00AdyAuBWnRuY0wx9wrVo4',
     'campanas': 0,
@@ -61,27 +61,67 @@ TW = {
     'media': 'TW'
 }
 
+# Diarios
+FBD = {
+    'key': '1kd0MxSJOmZm9nL5dol3L8HS8_3_3Vdlz0wxnCvcJ1Vw',
+    'campanas': 0,
+    'adsets':'1405513202',
+    'ads':'357381607',
+    'media': 'FB'
+}
+
+GOD = {
+    'key': '1AR4y28VLdBQ5GzctwuSdiI35oiFnnVAajbm1SDVetP8',
+    'campanas': 0,
+    'adsets':'224214663',
+    'ads':'2140463057',
+    'media': 'GO'
+}
+
+TWD = {
+    'key': '1UR1R0VYDltgyPPuNyaWXovtLe4mJ0ugB5iIYhJ7wIlQ',
+    'campanas': 0,
+    'adsets':'1359575009',
+    'ads':'410298309',
+    'media': 'TW'
+}
+AFD = {
+    'key': '1fYJFAJkuV13WRFMa2s7MEbsOQ9-RWL04Sep7HF1qHbs',
+    'campanas': 0,
+    'adsets':'1799727573',
+    'ads':'838905704',
+    'media': 'AF'
+}
+
 # SEMANALES
 FBS = {
     'key': '1wK7X0QqtgQ7xPpDhYsHcOJMlYT5X5Q39jWWlEFqfSg0',
     'campanas': 0,
+    'adsets':'1759763955',
+    'ads':'437197695',
     'media': 'FB'
 }
 
 GOS = {
     'key': '1S2LE6QQ1LSUPK9gW-pTOgaU8aerd7v-zHa76jfkNtFs',
     'campanas': 0,
+    'adsets':'224214663',
+    'ads':'2140463057',
     'media': 'GO'
 }
 
 TWS = {
     'key': '1FtMBkKQAADYHRuY5kESkz2Yehx4d-KPuWeyFgfSwED8',
     'campanas': 0,
+    'adsets':'2137163495',
+    'ads':'1023908554',
     'media': 'TW'
 }
 AFS = {
     'key': '1356ovprYhbNRSvDRB7-HqL0L4tTebe4uGPuaTkCzS7A',
     'campanas': 0,
+    'adsets':'822203917',
+    'ads':'826997623',
     'media': 'AF'
 }
 
@@ -107,23 +147,31 @@ TWA = {
 FBM = {
     'key': '1TnheIjrMybyBwwZLtHhrD4-9s2OlBDAVHtM8giDJxG8',
     'campanas': 0,
+    'adsets':'1405513202',
+    'ads':'357381607',
     'media': 'FB'
 }
 
 GOM = {
     'key': '1CFbcOR7EKSw2bAzCOsq4YoTtGQ5MgRKcXy00IxZ9aEw',
     'campanas': 0,
+    'adsets':'224214663',
+    'ads':'2140463057',
     'media': 'GO'
 }
 
 TWM = {
     'key': '1WGJY75bmr3WI1KtkB_AI2_4hxI8kZTghvvXXEWDL5Oc',
     'campanas': 0,
+    'adsets':'1359575009',
+    'ads':'410298309',
     'media': 'TW'
 }
 AFM = {
     'key': '1356ovprYhbNRSvDRB7-HqL0L4tTebe4uGPuaTkCzS7A',
     'campanas': 0,
+    'adsets':'1799727573',
+    'ads':'838905704',
     'media': 'AF'
 }
 
